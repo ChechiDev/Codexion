@@ -1,0 +1,2 @@
+# Phase 06 — Dongle arbitration
+- goal: atomic two-dongle acquisition (a coder takes both only when it is the head of both dongle heaps and both are available with cooldown elapsed, mutexes locked lower-index first), release with cooldown, pthread_cond_timedwait waits with no busy-wait and wake-all on stop, with arbiter-level tests (head-of-both rule, fifo/edf ordering, cooldown, stop wake-up) as evidence for the PLAN.md progress argument

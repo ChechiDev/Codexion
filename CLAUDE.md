@@ -22,7 +22,11 @@ subagent) writes the code.
 
 `docs/codexion-rules.md` is the 42 subject: requirements, allowed functions,
 Norm, deliverables. Read it before planning and check every phase, spec and
-gate against it. On conflict it wins over any other doc.
+gate against it. On conflict it wins over any other doc. Tests (inner TDD and
+acceptance) must also be checked against it.
+
+Reference project: <https://github.com/IntRogerYT/Codexion>. Use it only to
+calibrate the phase/task/subtask breakdown; never copy its code.
 
 ### Hard harness rules
 
@@ -55,9 +59,17 @@ inside the harness close step, with **no agent attribution**.
 - Conceptual questions / exploration (read-only) → answer directly.
 - Changes outside `src/`/`include/`/`tests/` (docs/plan, progress, config) → you may edit them.
 
-## Project context ‹filled in by the leader during discovery›
+## Project context
 
-- **Domain:** ‹what this program/library does›
-- **Build:** ‹plain Makefile | CMake wrapper› · C standard ‹c11›
-- **Test framework:** ‹assert.h runner (default) | Unity | Criterion›
-- **Own commands:** ‹how to build/run the binary, fuzzers, benchmarks…›
+- **Domain:** 42 *Codexion*: thread/mutex simulation of coders sharing dongles
+  (fifo/edf heap arbitration, cooldown, monitor thread, burnout ≤ 10 ms). Mandatory part only.
+- **Layout:** deliverable in `coders/` (`Makefile`, `main.c`, `main.h`, `src/<module>/*.c`);
+  single header `coders/main.h`. Root `Makefile`/`harness/`/`docs/`/`tests/` are dev-only, not delivered.
+- **Build:** deliverable `coders/Makefile` (`cc -Wall -Wextra -Werror -pthread`,
+  `NAME/all/clean/fclean/re`, no relink). Root `Makefile` = harness contract, delegates to `make -C coders`.
+- **Test framework:** `assert.h` runner (unit + full-binary simulation tests).
+- **Constraints:** Norm (norminette), allowed functions only, no globals, no libft.
+- **CI:** norminette + build + `make check` + valgrind + TSan on every push.
+- **README:** English, no icons, didactic/conversational tone, login `sperez-l`
+  (rules in `docs/conventions.md`).
+- **Own commands:** `make -C coders` · `./coders/codexion 4 800 200 200 200 3 50 edf`.

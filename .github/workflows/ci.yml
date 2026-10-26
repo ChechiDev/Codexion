@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  norminette:
+    name: Norminette
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install norminette
+        run: pip install norminette==3.3.60
+
+      # The subject delivers Makefile, *.c and *.h in coders/: every .c/.h there is checked.
+      - name: Run norminette on coders/
+        run: |
+          if [ -z "$(find coders -name '*.[ch]' 2>/dev/null)" ]; then
+            echo "No C sources in coders/ yet: nothing to check."
+            exit 0
+          fi
+          norminette coders/
+
+  build-test:
+    name: Build, tests, valgrind, TSan
+    runs-on: ubuntu-latest
+    env:
+      # Shared runners are slower and noisier than a local machine: timing
+      # assertions in simulation tests get this extra slack (local default: 0).
+      CODEXION_TIME_SLACK_MS: "40"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install valgrind
+        run: sudo apt-get update && sudo apt-get install -y valgrind
+
+      # harness/ is a local symlink: run the tooling targets, not `make check`.
+      - name: Build + no relink + tests
+        run: make verify
+
+      - name: Valgrind (leaks, memory errors)
+        run: make memcheck
+
+      - name: ThreadSanitizer (data races)
+        run: make tsan

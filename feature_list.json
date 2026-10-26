@@ -17,6 +17,87 @@
       "baseline"
     ]
   },
-  "phases": [],
+  "phases": [
+    {
+      "id": "01",
+      "title": "Build skeleton",
+      "goal": "a Norm-clean `coders/` that builds `codexion` with the deliverable Makefile (cc -Wall -Wextra -Werror -pthread, NAME/all/clean/fclean/re, no relink), a `main.h` with the base types and a minimal `main.c`",
+      "file": "docs/plan/phase-01-build-skeleton.md",
+      "status": "pending",
+      "tasks": []
+    },
+    {
+      "id": "02",
+      "title": "Argument parsing and validation",
+      "goal": "strictly parse and validate the 8 arguments into a config (digits only, overflow-safe up to INT_MAX, per-field minimums, scheduler exactly fifo/edf); any invalid input prints usage to stderr and exits non-zero before allocating or starting threads",
+      "file": "docs/plan/phase-02-argument-parsing.md",
+      "status": "pending",
+      "tasks": []
+    },
+    {
+      "id": "03",
+      "title": "Time and serialized logging",
+      "goal": "millisecond clock relative to the simulation start (gettimeofday), a stop-aware sliced sleep, and a mutex-serialized logger that prints the five subject state lines and nothing after the stop except the burnout line",
+      "file": "docs/plan/phase-03-time-and-log.md",
+      "status": "pending",
+      "tasks": []
+    },
+    {
+      "id": "04",
+      "title": "Priority queue",
+      "goal": "a hand-written binary min-heap of dongle requests ordered by key then arrival ticket, supporting the fifo key (arrival ticket) and the edf key (last_compile_start + time_to_burnout)",
+      "file": "docs/plan/phase-04-priority-queue.md",
+      "status": "pending",
+      "tasks": []
+    },
+    {
+      "id": "05",
+      "title": "Simulation state init and teardown",
+      "goal": "build the `t_sim` (coders, dongles with mutex/cond/heap, stop and log mutexes, seat-to-dongle mapping with 1 dongle for 1 coder) and tear it down completely, cleaning up partial initialisation on any malloc or pthread init failure without leaks",
+      "file": "docs/plan/phase-05-simulation-state.md",
+      "status": "pending",
+      "tasks": []
+    },
+    {
+      "id": "06",
+      "title": "Dongle arbitration",
+      "goal": "atomic two-dongle acquisition (a coder takes both only when it is the head of both dongle heaps and both are available with cooldown elapsed, mutexes locked lower-index first), release with cooldown, pthread_cond_timedwait waits with no busy-wait and wake-all on stop, with arbiter-level tests (head-of-both rule, fifo/edf ordering, cooldown, stop wake-up) as evidence for the PLAN.md progress argument",
+      "file": "docs/plan/phase-06-dongle-arbitration.md",
+      "status": "pending",
+      "tasks": []
+    },
+    {
+      "id": "07",
+      "title": "Coder thread",
+      "goal": "the coder routine loops take dongles, compiling, release, debugging, refactoring with correct logs, updates last_compile_start and compile_count under its own mutex, and exits promptly on stop (single coder takes its only dongle and waits to burn out)",
+      "file": "docs/plan/phase-07-coder-thread.md",
+      "status": "pending",
+      "tasks": []
+    },
+    {
+      "id": "08",
+      "title": "Monitor thread",
+      "goal": "a separate monitor thread that detects a burnout and logs it within 10 ms, or detects that every coder reached number_of_compiles_required, then sets stop and wakes all waiting threads",
+      "file": "docs/plan/phase-08-monitor.md",
+      "status": "pending",
+      "tasks": []
+    },
+    {
+      "id": "09",
+      "title": "Simulation lifecycle",
+      "goal": "main wires parse, init, start the coder and monitor threads, join and teardown end to end, with clean shutdown on pthread_create failure and the edge cases (1 coder, zero compiles required) behaving as specified",
+      "file": "docs/plan/phase-09-lifecycle.md",
+      "status": "pending",
+      "tasks": []
+    },
+    {
+      "id": "10",
+      "title": "Hardening and README",
+      "goal": "prove the whole program against the subject with full-binary simulation tests (fifo/edf ordering, cooldown, no burnout under edf at and above the PLAN.md viability boundary including the N = 6 interleaved case, typical evaluation runs, valgrind leak-free, TSan race-free, Norm-clean) and complete the README with its mandatory sections, real outputs and didactic tone",
+      "file": "docs/plan/phase-10-hardening-and-readme.md",
+      "status": "pending",
+      "tasks": []
+    }
+  ],
   "features": []
 }
