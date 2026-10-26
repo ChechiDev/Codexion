@@ -41,6 +41,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Acceptance tests run norminette themselves (Norm is part of the subject).
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install norminette
+        run: pip install norminette==3.3.60
+
       # Hosted-runner apt mirrors stall now and then: bound every network wait,
       # retry the whole install, and skip the slow man-db trigger.
       - name: Install valgrind
