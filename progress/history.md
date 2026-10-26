@@ -33,3 +33,12 @@ Entry template (filled in at close):
 - **Verification:** supplied `make check` green (exit code 0). Code review: APPROVED (`progress/review_1.2.1.md`).
 - **Documentation:** docs/reference/1.2.1-config-types.md
 - **Commit:** feat(core): add configuration types [1.2.1]
+
+## 2026-10-26 — Subtask 1.2.2: Rename scheduling policy to mode
+- **Layer:** core
+- **Plan:** docs/plan/phase-01-build-skeleton/1.2.2-rename-mode.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/main.h` renames the scheduling enum and configuration field; both acceptance oracles use the renamed API.
+- **Acceptance:** `tests/acceptance/test_1.2.2.c` — AC1–AC4 covered and green in the supplied check.
+- **Verification:** supplied `make check` green (exit code 0). Code review: APPROVED (`progress/review_1.2.2.md`).
+- **Documentation:** docs/reference/1.2.2-rename-mode.md
+- **Commit:** feat(core): rename scheduling policy to mode [1.2.2]

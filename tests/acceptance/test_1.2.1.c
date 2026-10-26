@@ -42,7 +42,7 @@ static void test_ac1_config_fields(void)
 	assert(_Generic(config.time_to_refactor, int: 1, default: 0));
 	assert(_Generic(config.number_of_compiles_required, int: 1, default: 0));
 	assert(_Generic(config.dongle_cooldown, int: 1, default: 0));
-	assert(_Generic(config.scheduler, t_policy: 1, default: 0));
+	assert(_Generic(config.mode, t_mode: 1, default: 0));
 	config.number_of_coders = 2;
 	config.time_to_burnout = 3;
 	config.time_to_compile = 4;
@@ -50,22 +50,22 @@ static void test_ac1_config_fields(void)
 	config.time_to_refactor = 6;
 	config.number_of_compiles_required = 7;
 	config.dongle_cooldown = 8;
-	config.scheduler = POLICY_FIFO;
+	config.mode = MODE_FIFO;
 	assert(config.number_of_coders == 2 && config.time_to_burnout == 3);
 	assert(config.time_to_compile == 4 && config.time_to_debug == 5);
 	assert(config.time_to_refactor == 6);
 	assert(config.number_of_compiles_required == 7);
-	assert(config.dongle_cooldown == 8 && config.scheduler == POLICY_FIFO);
+	assert(config.dongle_cooldown == 8 && config.mode == MODE_FIFO);
 }
 
-/* AC2: fifo and edf are distinct t_policy values. */
+/* AC2: fifo and edf are distinct t_mode values. */
 static void test_ac2_distinct_policies(void)
 {
-	t_policy fifo;
-	t_policy edf;
+	t_mode fifo;
+	t_mode edf;
 
-	fifo = POLICY_FIFO;
-	edf = POLICY_EDF;
+	fifo = MODE_FIFO;
+	edf = MODE_EDF;
 	assert(fifo != edf);
 }
 
@@ -74,8 +74,8 @@ static void test_ac3_header_twice_compiles(void)
 {
 	t_config config;
 
-	config.scheduler = POLICY_EDF;
-	assert(config.scheduler == POLICY_EDF);
+	config.mode = MODE_EDF;
+	assert(config.mode == MODE_EDF);
 }
 
 /* AC4: changing main.h triggers object recompilation on the next make. */
