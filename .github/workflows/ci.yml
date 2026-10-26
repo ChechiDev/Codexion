@@ -33,6 +33,7 @@ jobs:
   build-test:
     name: Build, tests, valgrind, TSan
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     env:
       # Shared runners are slower and noisier than a local machine: timing
       # assertions in simulation tests get this extra slack (local default: 0).
@@ -40,8 +41,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # The man-db trigger can stall apt for minutes on hosted runners: skip it.
       - name: Install valgrind
-        run: sudo apt-get update && sudo apt-get install -y valgrind
+        timeout-minutes: 3
+        run: |
+          echo 'set man-db/auto-update false' | sudo debconf-communicate >/dev/null
+          sudo rm -f /var/lib/man-db/auto-update
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends valgrind
 
       # harness/ is a local symlink: run the tooling targets, not `make check`.
       - name: Build + no relink + tests
