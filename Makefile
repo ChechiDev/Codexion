@@ -101,6 +101,7 @@ tsan: $(TSAN_OBJ)
 	  TSAN_OPTIONS=exitcode=66 $(TSAN_RUN) ./$$bin >/dev/null || { $(STATUS) fail "tsan: $$t"; exit 1; }; \
 	done
 	@if [ -f $(DELIV)/main.c ]; then \
+	  mkdir -p $(BUILD)/tsan; \
 	  $(CC) $(CFLAGS) $(TSAN) $(DELIV)/main.c $(TSAN_OBJ) -o $(BUILD)/tsan/codexion || exit 1; \
 	  echo '$(SCENARIOS)' | tr '|' '\n' | while read -r args; do \
 	    TSAN_OPTIONS=exitcode=66 $(TSAN_RUN) ./$(BUILD)/tsan/codexion $$args >/dev/null 2>$(BUILD)/tsan/last.log; \
