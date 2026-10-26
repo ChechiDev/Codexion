@@ -49,19 +49,38 @@ jobs:
       - name: Install norminette
         run: pip install norminette==3.3.60
 
-      # Hosted-runner apt mirrors stall now and then: bound every network wait,
-      # retry the whole install, and skip the slow man-db trigger.
+      # The Azure apt mirror sometimes stalls on libc6-dbg (a valgrind dependency):
+      # keep the downloaded .debs in the Actions cache so most runs skip the network.
+      - name: Restore valgrind packages
+        id: valgrind-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/valgrind-debs
+          key: valgrind-debs-${{ runner.os }}-noble-v1
+
       - name: Install valgrind
         timeout-minutes: 8
+        env:
+          CACHE_HIT: ${{ steps.valgrind-cache.outputs.cache-hit }}
         run: |
-          echo 'set man-db/auto-update false' | sudo debconf-communicate >/dev/null
           sudo rm -f /var/lib/man-db/auto-update
-          APT_OPTS="-o Acquire::Retries=3 -o Acquire::http::Timeout=20 -o Acquire::https::Timeout=20"
+          if [ "$CACHE_HIT" = true ]; then
+            if sudo dpkg -i ~/valgrind-debs/*.deb; then valgrind --version; exit 0; fi
+            echo "cached packages no longer match this image: downloading again"
+            sudo apt-get install -f -y
+          fi
+          APT_OPTS="-o Acquire::Retries=2 -o Acquire::http::Timeout=20"
           for attempt in 1 2 3; do
+            # Retries go to the main Ubuntu archive instead of the stalled mirror.
+            if [ "$attempt" -gt 1 ]; then
+              echo "http://archive.ubuntu.com/ubuntu/" | sudo tee /etc/apt/apt-mirrors.txt >/dev/null
+            fi
             echo "::group::apt attempt $attempt"
             if timeout 120 sudo apt-get $APT_OPTS update \
-              && timeout 120 sudo apt-get $APT_OPTS install -y --no-install-recommends valgrind; then
+              && timeout 150 sudo apt-get $APT_OPTS install -y --no-install-recommends valgrind; then
               echo "::endgroup::"
+              mkdir -p ~/valgrind-debs
+              cp /var/cache/apt/archives/valgrind_*.deb /var/cache/apt/archives/libc6-dbg_*.deb ~/valgrind-debs/
               valgrind --version
               exit 0
             fi
