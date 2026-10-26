@@ -62,6 +62,45 @@ Code, names, and comments in **English**. C standard: **C11** (`-std=c11`).
 
 - ‹concurrency rules, allocator, platform specifics…›
 
+### 42 header (every file in `coders/`)
+
+Every `.c`, `.h` and the `Makefile` in `coders/` start with the official 42
+header (norminette fails with `INVALID_HEADER` without it), followed by one
+empty line. **Never write it by hand: generate it with the official `:Stdheader`
+plugin** (`42Paris/42header`, installed at `~/.vim/pack/42/start/42header`;
+login `sperez-l`, mail `sperez-l@student.42barcelona.com`).
+
+The harness blocks shell writes to `coders/`, so generate the header on a
+scratch copy with the same file name and paste it with the Edit/Write tools:
+
+```bash
+d="$(mktemp -d)" && : > "$d/main.c" && \
+vim -u NONE -N -es --cmd 'set rtp+=~/.vim/pack/42/start/42header' \
+  -c "let g:user42='sperez-l'" -c "let g:mail42='sperez-l@student.42barcelona.com'" \
+  -c 'runtime! plugin/stdheader.vim' -c 'Stdheader' -c 'wq' "$d/main.c" && cat "$d/main.c"
+```
+
+Expected shape (the mail is too long for `By: login <mail>`, so the plugin
+writes the mail alone; `Created`/`Updated` carry the real date):
+
+```c
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/10/26 16:40:33 by sperez-l          #+#    #+#             */
+/*   Updated: 2026/10/26 16:40:33 by sperez-l         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+```
+
+`Makefile` gets the `#` variant (`# ****...**** #`) from the same command run on
+a file named `Makefile`. When editing an existing file, refresh its `Updated:`
+line the same way (the plugin also does it on every `:w` in Vim).
+
 ### Build and test tooling (root Makefile, not delivered)
 
 - Production code lives in `coders/` (`harness.toml` `src_dirs = ["coders"]`); the

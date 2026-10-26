@@ -24,7 +24,10 @@
       "goal": "a Norm-clean `coders/` that builds `codexion` with the deliverable Makefile (cc -Wall -Wextra -Werror -pthread, NAME/all/clean/fclean/re, no relink), a `main.h` with the base types and a minimal `main.c`",
       "file": "docs/plan/phase-01-build-skeleton.md",
       "status": "pending",
-      "tasks": []
+      "tasks": [
+        "1.1",
+        "1.2"
+      ]
     },
     {
       "id": "02",
@@ -99,5 +102,169 @@
       "tasks": []
     }
   ],
-  "features": []
+  "features": [
+    {
+      "id": "1.1",
+      "title": "Deliverable build",
+      "phase": "01",
+      "layer": "interfaces",
+      "goal": "`coders/Makefile` builds `codexion` from an explicit source list with the subject flags, the mandatory rules and no relink",
+      "status": "pending",
+      "subtasks": [
+        {
+          "id": "1.1.1",
+          "title": "Deliverable Makefile",
+          "status": "pending",
+          "layer": "interfaces",
+          "depends": [],
+          "files": [
+            "coders/Makefile",
+            "coders/main.c",
+            "README.md"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "`make -C coders` creates the executable `coders/codexion` and exits 0",
+              "test": "tests/acceptance/test_1.1.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "the compile and link commands shown by `make -C coders -n` (after `fclean`) use `cc` with `-Wall`, `-Wextra`, `-Werror` and `-pthread`",
+              "test": "tests/acceptance/test_1.1.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "no relink: a second `make -C coders` with nothing changed runs no compiler command and leaves the binary's mtime unchanged",
+              "test": "tests/acceptance/test_1.1.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "`make -C coders clean` removes every object file and keeps `coders/codexion`",
+              "test": "tests/acceptance/test_1.1.1.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "`make -C coders fclean` removes the objects and `coders/codexion`",
+              "test": "tests/acceptance/test_1.1.1.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "`make -C coders re` rebuilds `coders/codexion` from scratch (objects recompiled)",
+              "test": "tests/acceptance/test_1.1.1.c"
+            },
+            {
+              "id": "AC7",
+              "criterion": "`make -C coders codexion` (the `$(NAME)` rule) builds the binary",
+              "test": "tests/acceptance/test_1.1.1.c"
+            },
+            {
+              "id": "AC8",
+              "criterion": "`norminette coders/` reports no error",
+              "test": "tests/acceptance/test_1.1.1.c"
+            },
+            {
+              "id": "AC9",
+              "criterion": "`README.md` starts with the italic line `*This project has been created as part of the 42 curriculum by sperez-l.*`, has the sections Description, Instructions, Resources, Blocking cases handled and Thread synchronization mechanisms, contains no emoji, and its Instructions explain `make -C coders` / `make`, `clean`, `fclean`, `re`",
+              "test": "tests/acceptance/test_1.1.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-01-build-skeleton/1.1.1-deliverable-makefile.md"
+        }
+      ]
+    },
+    {
+      "id": "1.2",
+      "title": "Header and entry point",
+      "phase": "01",
+      "layer": "interfaces",
+      "goal": "`main.h` declares the base configuration types and `main.c` rejects a wrong argument count with a usage message",
+      "status": "pending",
+      "subtasks": [
+        {
+          "id": "1.2.1",
+          "title": "Configuration types",
+          "status": "pending",
+          "layer": "core",
+          "depends": [
+            "1.1.1"
+          ],
+          "files": [
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "a test that includes `\"main.h\"` can declare a `t_config` and set and read its eight fields: `number_of_coders`, `time_to_burnout`, `time_to_compile`, `time_to_debug`, `time_to_refactor`, `number_of_compiles_required`, `dongle_cooldown` (all `int`) and `scheduler` (`t_policy`)",
+              "test": "tests/acceptance/test_1.2.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "`t_policy` has two distinct values `POLICY_FIFO` and `POLICY_EDF`",
+              "test": "tests/acceptance/test_1.2.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "`\"main.h\"` can be included twice in one translation unit and compiles with `-Wall -Wextra -Werror -pthread`",
+              "test": "tests/acceptance/test_1.2.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "touching `coders/main.h` makes the next `make -C coders` recompile the objects",
+              "test": "tests/acceptance/test_1.2.1.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "`norminette coders/` reports no error",
+              "test": "tests/acceptance/test_1.2.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-01-build-skeleton/1.2.1-config-types.md"
+        },
+        {
+          "id": "1.2.2",
+          "title": "Argument count and usage",
+          "status": "pending",
+          "layer": "interfaces",
+          "depends": [
+            "1.2.1"
+          ],
+          "files": [
+            "coders/main.c",
+            "coders/main.h",
+            "README.md"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "`codexion` with no argument writes a usage message to stderr, nothing to stdout, and exits with status 1",
+              "test": "tests/acceptance/test_1.2.2.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "7 arguments and 9 arguments are rejected the same way (usage on stderr, empty stdout, status 1)",
+              "test": "tests/acceptance/test_1.2.2.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "the usage message starts with `Usage:` and names the eight arguments in the subject's order: `number_of_coders time_to_burnout time_to_compile time_to_debug time_to_refactor number_of_compiles_required dongle_cooldown scheduler`, and says that `scheduler` is `fifo` or `edf`",
+              "test": "tests/acceptance/test_1.2.2.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "`norminette coders/` reports no error",
+              "test": "tests/acceptance/test_1.2.2.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "`README.md` Instructions show how to run `./coders/codexion` with its eight arguments, explain each one, and include a wrong-argument-count run with the exact usage output",
+              "test": "tests/acceptance/test_1.2.2.c"
+            }
+          ],
+          "spec": "docs/plan/phase-01-build-skeleton/1.2.2-argument-count-usage.md"
+        }
+      ]
+    }
+  ]
 }
