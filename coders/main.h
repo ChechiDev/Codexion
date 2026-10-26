@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/10/26 18:41:08 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/10/26 18:50:17 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,5 +30,9 @@ typedef struct s_config
 	int		dongle_cooldown;
 	t_mode	mode;
 }	t_config;
+
+# define EXIT_USAGE 1
+
+void	print_usage(void);
 
 #endif

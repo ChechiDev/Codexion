@@ -42,3 +42,12 @@ Entry template (filled in at close):
 - **Verification:** supplied `make check` green (exit code 0). Code review: APPROVED (`progress/review_1.2.2.md`).
 - **Documentation:** docs/reference/1.2.2-rename-mode.md
 - **Commit:** feat(core): rename scheduling policy to mode [1.2.2]
+
+## 2026-10-26 — Subtask 1.2.3: Argument count and usage
+- **Layer:** interfaces
+- **Plan:** docs/plan/phase-01-build-skeleton/1.2.3-argument-count-usage.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/main.c`, `coders/main.h`, and `README.md` implement and explain the early argument-count check.
+- **Acceptance:** `tests/acceptance/test_1.2.3.c` — AC1–AC5 covered and green in the supplied check.
+- **Verification:** supplied `make check` green (exit code 0). Code review: APPROVED (`progress/review_1.2.3.md`).
+- **Documentation:** docs/reference/1.2.3-argument-count-usage.md
+- **Commit:** feat(interfaces): reject wrong argument counts [1.2.3]

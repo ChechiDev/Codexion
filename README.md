@@ -48,7 +48,47 @@ only on the object files, and each object depends on its source file, so when
 nothing changed `make` has nothing to do and says so. Relinking on every call
 would waste time and is not allowed by the subject.
 
-How to run the program is documented later, once it does something.
+### Running it
+
+The program takes exactly eight arguments, all of them required:
+
+```
+./coders/codexion number_of_coders time_to_burnout time_to_compile time_to_debug time_to_refactor number_of_compiles_required dongle_cooldown scheduler
+```
+
+Here is what each one means, in plain words:
+
+- `number_of_coders`: how many coders sit at the table. There are as many
+  dongles as coders.
+- `time_to_burnout`: how long, in milliseconds, a coder can go without starting
+  a compile before burning out. Burning out ends the simulation.
+- `time_to_compile`: how long, in milliseconds, a coder spends compiling while
+  holding two dongles.
+- `time_to_debug`: how long, in milliseconds, a coder spends debugging after a
+  compile.
+- `time_to_refactor`: how long, in milliseconds, a coder spends refactoring
+  after debugging, before trying to compile again.
+- `number_of_compiles_required`: how many times each coder has to compile for
+  the simulation to be considered a success.
+- `dongle_cooldown`: how long, in milliseconds, a dongle rests after being
+  released before anyone can take it again.
+- `scheduler`: the rule used to decide who gets a dongle first when several
+  coders want it. It is either `fifo` (first come, first served) or `edf`
+  (earliest deadline first, so the coder closest to burning out goes first).
+
+If the number of arguments is wrong, the program prints a short reminder to the
+error output and stops with exit status 1. For example, running it with no
+arguments at all:
+
+```
+$ ./coders/codexion
+Usage: ./codexion number_of_coders time_to_burnout time_to_compile time_to_debug time_to_refactor number_of_compiles_required dongle_cooldown scheduler
+  scheduler is either fifo or edf
+```
+
+For now that is all the program does: it only checks how many arguments you
+gave. Checking the values themselves and running the simulation are added in
+later steps, and this section will grow with them.
 
 ## Resources
 
