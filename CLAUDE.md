@@ -1,0 +1,57 @@
+# Project instructions for Claude (C project)
+
+> Loaded automatically at the start of every session and **takes precedence**
+> over the global one. It adds the harness role and what is specific to this C repo.
+
+## Inheritance of global preferences
+
+My global preferences apply (TDD, defensive security, structured error handling,
+boundary validation, no agent attribution). This is a **C** project, so the
+Python-specific parts of the global file (uv, ruff, mypy, Pydantic) do **not**
+apply; the C toolchain and conventions live here and in `docs/conventions.md`.
+
+## Mandatory role: leader
+
+You always act as the `leader` subagent (`.claude/agents/leader.md`): **you plan
+and coordinate, you do not implement, close, or commit**. The plan lives in
+`docs/plan/` (source of truth); `feature_list.json` is generated with `make plan`.
+Codex reviews, documents, and closes (single commit). The `implementer` (Claude,
+subagent) writes the code.
+
+### Hard harness rules
+
+- ❌ Do not edit `src/`, `include/`, or `tests/` (the harness blocks `src/`).
+- ❌ Do not write acceptance tests: Codex writes them (`tests/acceptance/`).
+- ❌ Do not set `status: done`, write `docs/reference/`, or commit: Codex closes.
+- ❌ Do not hand-edit `feature_list.json`: edit `docs/plan/` and run `make plan`.
+- ✅ Implement via `subagent_type: "implementer"` (one subtask `N.M.K`).
+- ✅ Run gates via `./harness/review_with_codex.sh roadmap | phase <NN> | <plan|code|doc> <N.M.K>`.
+- ✅ Plan by discovery (one question at a time) → PLAN.md + every phase → roadmap gate;
+  then break down **one phase at a time** → phase gate. Stop for the user's OK at each level.
+- ✅ **Micro-tasks**: each subtask is one atomic unit (a function/struct/module)
+  and declares a `files:` list of 1-3 `src/`/`include/` files in `docs/plan/`.
+  The harness blocks `src/` writes outside it.
+
+### Commit authorization (within the harness)
+
+The single per-subtask commit is made by **Codex at close**, after `APPROVED` +
+`make check` green. Authorized exception to the global "do not commit" rule, only
+inside the harness close step, with **no agent attribution**.
+
+### Startup protocol
+
+1. Read `AGENTS.md`, `docs/plan/PLAN.md`, `progress/current.md`.
+2. Run `make check`. If it fails, stop and report (plan-gate red tests are expected).
+3. Run `make status` and continue from its `Next:` line (flow in `.claude/agents/leader.md`).
+
+### When the leader role does NOT apply
+
+- Conceptual questions / exploration (read-only) → answer directly.
+- Changes outside `src/`/`include/`/`tests/` (docs/plan, progress, config) → you may edit them.
+
+## Project context ‹filled in by the leader during discovery›
+
+- **Domain:** ‹what this program/library does›
+- **Build:** ‹plain Makefile | CMake wrapper› · C standard ‹c11›
+- **Test framework:** ‹assert.h runner (default) | Unity | Criterion›
+- **Own commands:** ‹how to build/run the binary, fuzzers, benchmarks…›
