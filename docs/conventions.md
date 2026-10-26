@@ -1,5 +1,8 @@
 # Conventions (C)
 
+> **Binding subject:** `docs/codexion-rules.md` (42 Codexion). Everything here
+> applies only where it does not contradict it; on conflict the subject wins.
+
 Code, names, and comments in **English**. C standard: **C11** (`-std=c11`).
 
 ## Toolchain

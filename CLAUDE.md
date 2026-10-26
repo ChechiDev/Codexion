@@ -18,6 +18,12 @@ and coordinate, you do not implement, close, or commit**. The plan lives in
 Codex reviews, documents, and closes (single commit). The `implementer` (Claude,
 subagent) writes the code.
 
+### Project subject (binding)
+
+`docs/codexion-rules.md` is the 42 subject: requirements, allowed functions,
+Norm, deliverables. Read it before planning and check every phase, spec and
+gate against it. On conflict it wins over any other doc.
+
 ### Hard harness rules
 
 - ❌ Do not edit `src/`, `include/`, or `tests/` (the harness blocks `src/`).
@@ -40,7 +46,7 @@ inside the harness close step, with **no agent attribution**.
 
 ### Startup protocol
 
-1. Read `AGENTS.md`, `docs/plan/PLAN.md`, `progress/current.md`.
+1. Read `AGENTS.md`, `docs/codexion-rules.md`, `docs/plan/PLAN.md`, `progress/current.md`.
 2. Run `make check`. If it fails, stop and report (plan-gate red tests are expected).
 3. Run `make status` and continue from its `Next:` line (flow in `.claude/agents/leader.md`).
 

@@ -35,6 +35,7 @@ every subtask, documents, and closes (single commit). The unit of work is the
 | `progress/roadmap_review.md`, `progress/phase_review_<NN>.md` | Codex plan verdicts | Gate status |
 | `progress/current.md`        | Current session + gate status                      | Always, at start |
 | `progress/history.md`        | Append-only log                                    | Historical context |
+| `docs/codexion-rules.md`     | **Project subject (42): binding requirements**     | Always: planning, implementing, every gate |
 | `docs/architecture.md`       | What "good work" means: hexagonal layers           | Before planning/implementing |
 | `docs/conventions.md`        | Style, naming, errors, DI                          | Before writing code |
 | `docs/verification.md`       | How to prove it works                              | Before declaring `done` |
@@ -50,6 +51,8 @@ every subtask, documents, and closes (single commit). The unit of work is the
 
 ## 4. Hard rules (non-negotiable)
 
+- **`docs/codexion-rules.md` is binding.** Every plan, spec, implementation and
+  gate verdict must comply with it; on conflict it wins over any other doc.
 - **One subtask `N.M.K` at a time.** At most one leaf `in_progress`.
 - **One phase at a time.** A phase is broken down only once the previous one is done.
 - **Plan lives in `docs/plan/`.** Never hand-edit `feature_list.json`; run `make plan`.
