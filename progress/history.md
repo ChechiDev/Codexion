@@ -24,3 +24,30 @@ Entry template (filled in at close):
 - **Verification:** supplied `make check` green (exit code 0). Code review: APPROVED (`progress/review_1.1.1.md`).
 - **Documentation:** docs/reference/1.1.1-deliverable-makefile.md
 - **Commit:** feat(build): add deliverable Makefile [1.1.1]
+
+## 2026-10-26 — Subtask 1.2.1: Configuration types
+- **Layer:** core
+- **Plan:** docs/plan/phase-01-build-skeleton/1.2.1-config-types.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/main.h` defines configuration and scheduling types; `coders/Makefile` tracks the shared header dependency.
+- **Acceptance:** `tests/acceptance/test_1.2.1.c` — AC1–AC5 covered and green in the supplied check.
+- **Verification:** supplied `make check` green (exit code 0). Code review: APPROVED (`progress/review_1.2.1.md`).
+- **Documentation:** docs/reference/1.2.1-config-types.md
+- **Commit:** feat(core): add configuration types [1.2.1]
+
+## 2026-10-26 — Subtask 1.2.2: Rename scheduling policy to mode
+- **Layer:** core
+- **Plan:** docs/plan/phase-01-build-skeleton/1.2.2-rename-mode.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/main.h` renames the scheduling enum and configuration field; both acceptance oracles use the renamed API.
+- **Acceptance:** `tests/acceptance/test_1.2.2.c` — AC1–AC4 covered and green in the supplied check.
+- **Verification:** supplied `make check` green (exit code 0). Code review: APPROVED (`progress/review_1.2.2.md`).
+- **Documentation:** docs/reference/1.2.2-rename-mode.md
+- **Commit:** feat(core): rename scheduling policy to mode [1.2.2]
+
+## 2026-10-26 — Subtask 1.2.3: Argument count and usage
+- **Layer:** interfaces
+- **Plan:** docs/plan/phase-01-build-skeleton/1.2.3-argument-count-usage.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/main.c`, `coders/main.h`, and `README.md` implement and explain the early argument-count check.
+- **Acceptance:** `tests/acceptance/test_1.2.3.c` — AC1–AC5 covered and green in the supplied check.
+- **Verification:** supplied `make check` green (exit code 0). Code review: APPROVED (`progress/review_1.2.3.md`).
+- **Documentation:** docs/reference/1.2.3-argument-count-usage.md
+- **Commit:** feat(interfaces): reject wrong argument counts [1.2.3]

@@ -1,34 +1,27 @@
 # Current session
 
-> This file is emptied when each session closes and its summary is moved to
-> `history.md`. Keep it updated in real time, not at the end.
-
-- **Current subtask:** 1.1.1 Deliverable Makefile (branch `feat/1.1-deliverable-build`)
+- **Current subtask:** 1.2.3 Argument count and usage (branch `feat/1.2-header-and-entry-point`)
 - **Layer:** interfaces
 - **Start:** 2026-10-26
-- **Engine/role:** documenter & close
+- **Engine/role:** implementer → code review → documenter & close
 
 ## Plan and execution
 
-- [x] Plan approved: `progress/plan_review_1.1.1.md` = `PLAN_APPROVED`.
-- [x] Acceptance coverage written for AC1–AC9.
-- [x] Implementation complete; supplied `make check` exit code 0.
-- [x] Code approved: `progress/review_1.1.1.md` = `APPROVED`.
-- [x] Close documentation and tracking prepared; commit is left to the harness.
+- [x] Plan approved: `progress/plan_review_1.2.3.md` = `PLAN_APPROVED`.
+- [x] Acceptance tests: `tests/acceptance/test_1.2.3.c` (AC1–AC5), sealed.
+- [x] Implementation and unit tests: `progress/impl_1.2.3.md`.
+- [x] Code review: `progress/review_1.2.3.md` = `APPROVED`.
+- [x] Close documentation and tracking prepared; plan status is `done`.
+- [x] Supplied session-start `make check` exit code 0; harness performs final close check and commit.
 
 ## Gate status
 
-- [x] **Plan approved by Codex** → `PLAN_APPROVED`
-- [x] **Acceptance tests written** → `tests/acceptance/test_1.1.1.c`
-- [x] **Implementation** → `make verify` green in supplied check
-- [x] **Code approved by Codex** → `APPROVED`
-- [x] **Closed by Codex** → reference, done status, generated index, history, commit message
-
-## Log
-
-- External session-start `make check` passed (exit code 0); no tests were run in this sandbox.
-- Reference documentation and close metadata are ready for the harness commit.
+- [x] **Plan approved** → `PLAN_APPROVED`
+- [x] **Acceptance tests written** → `tests/acceptance/test_1.2.3.c`
+- [x] **Implementation** → `progress/impl_1.2.3.md`
+- [x] **Code approved** → `progress/review_1.2.3.md` = `APPROVED`
+- [x] **Close prepared** → reference note, plan sync, history, and commit message
 
 ## Next step
 
-Run `make status`; after user acceptance, proceed to subtask 1.2.1.
+Harness runs `make check` and creates the single close commit. Then `make status` identifies the next planning step.

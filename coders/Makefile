@@ -6,7 +6,7 @@
 #    By: sperez-l@student.42barcelona.com           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/10/26 16:47:34 by sperez-l          #+#    #+#              #
-#    Updated: 2026/10/26 16:47:34 by sperez-l         ###   ########.fr        #
+#    Updated: 2026/10/26 18:02:34 by sperez-l         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
 
-%.o: %.c
+%.o: %.c main.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:

@@ -23,7 +23,7 @@
       "title": "Build skeleton",
       "goal": "a Norm-clean `coders/` that builds `codexion` with the deliverable Makefile (cc -Wall -Wextra -Werror -pthread, NAME/all/clean/fclean/re, no relink), a `main.h` with the base types and a minimal `main.c`",
       "file": "docs/plan/phase-01-build-skeleton.md",
-      "status": "in_progress",
+      "status": "done",
       "tasks": [
         "1.1",
         "1.2"
@@ -179,12 +179,12 @@
       "phase": "01",
       "layer": "interfaces",
       "goal": "`main.h` declares the base configuration types and `main.c` rejects a wrong argument count with a usage message",
-      "status": "pending",
+      "status": "done",
       "subtasks": [
         {
           "id": "1.2.1",
           "title": "Configuration types",
-          "status": "pending",
+          "status": "done",
           "layer": "core",
           "depends": [
             "1.1.1"
@@ -224,11 +224,46 @@
         },
         {
           "id": "1.2.2",
-          "title": "Argument count and usage",
-          "status": "pending",
-          "layer": "interfaces",
+          "title": "Rename scheduling policy to mode",
+          "status": "done",
+          "layer": "core",
           "depends": [
             "1.2.1"
+          ],
+          "files": [
+            "coders/main.h"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "a test that includes `\"main.h\"` can declare a `t_config` and set and read its field `mode` of type `t_mode`, alongside the seven `int` fields from 1.2.1",
+              "test": "tests/acceptance/test_1.2.2.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "`t_mode` has two distinct values `MODE_FIFO` and `MODE_EDF`",
+              "test": "tests/acceptance/test_1.2.2.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "the old names no longer exist: a translation unit that includes `\"main.h\"` and uses `t_policy`, `POLICY_FIFO`, `POLICY_EDF` or the field `scheduler` fails to compile",
+              "test": "tests/acceptance/test_1.2.2.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "`norminette coders/` reports no error",
+              "test": "tests/acceptance/test_1.2.2.c"
+            }
+          ],
+          "spec": "docs/plan/phase-01-build-skeleton/1.2.2-rename-mode.md"
+        },
+        {
+          "id": "1.2.3",
+          "title": "Argument count and usage",
+          "status": "done",
+          "layer": "interfaces",
+          "depends": [
+            "1.2.2"
           ],
           "files": [
             "coders/main.c",
@@ -239,30 +274,30 @@
             {
               "id": "AC1",
               "criterion": "`codexion` with no argument writes a usage message to stderr, nothing to stdout, and exits with status 1",
-              "test": "tests/acceptance/test_1.2.2.c"
+              "test": "tests/acceptance/test_1.2.3.c"
             },
             {
               "id": "AC2",
               "criterion": "7 arguments and 9 arguments are rejected the same way (usage on stderr, empty stdout, status 1)",
-              "test": "tests/acceptance/test_1.2.2.c"
+              "test": "tests/acceptance/test_1.2.3.c"
             },
             {
               "id": "AC3",
               "criterion": "the usage message starts with `Usage:` and names the eight arguments in the subject's order: `number_of_coders time_to_burnout time_to_compile time_to_debug time_to_refactor number_of_compiles_required dongle_cooldown scheduler`, and says that `scheduler` is `fifo` or `edf`",
-              "test": "tests/acceptance/test_1.2.2.c"
+              "test": "tests/acceptance/test_1.2.3.c"
             },
             {
               "id": "AC4",
               "criterion": "`norminette coders/` reports no error",
-              "test": "tests/acceptance/test_1.2.2.c"
+              "test": "tests/acceptance/test_1.2.3.c"
             },
             {
               "id": "AC5",
               "criterion": "`README.md` Instructions show how to run `./coders/codexion` with its eight arguments, explain each one, and include a wrong-argument-count run with the exact usage output",
-              "test": "tests/acceptance/test_1.2.2.c"
+              "test": "tests/acceptance/test_1.2.3.c"
             }
           ],
-          "spec": "docs/plan/phase-01-build-skeleton/1.2.2-argument-count-usage.md"
+          "spec": "docs/plan/phase-01-build-skeleton/1.2.3-argument-count-usage.md"
         }
       ]
     }
