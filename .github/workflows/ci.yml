@@ -41,14 +41,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # The man-db trigger can stall apt for minutes on hosted runners: skip it.
+      # Hosted-runner apt mirrors stall now and then: bound every network wait,
+      # retry the whole install, and skip the slow man-db trigger.
       - name: Install valgrind
-        timeout-minutes: 3
+        timeout-minutes: 8
         run: |
           echo 'set man-db/auto-update false' | sudo debconf-communicate >/dev/null
           sudo rm -f /var/lib/man-db/auto-update
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq --no-install-recommends valgrind
+          APT_OPTS="-o Acquire::Retries=3 -o Acquire::http::Timeout=20 -o Acquire::https::Timeout=20"
+          for attempt in 1 2 3; do
+            echo "::group::apt attempt $attempt"
+            if timeout 120 sudo apt-get $APT_OPTS update \
+              && timeout 120 sudo apt-get $APT_OPTS install -y --no-install-recommends valgrind; then
+              echo "::endgroup::"
+              valgrind --version
+              exit 0
+            fi
+            echo "::endgroup::"
+            echo "apt attempt $attempt failed, retrying in 10 s"
+            sleep 10
+          done
+          echo "::error::could not install valgrind after 3 attempts"
+          exit 1
 
       # harness/ is a local symlink: run the tooling targets, not `make check`.
       - name: Build + no relink + tests
