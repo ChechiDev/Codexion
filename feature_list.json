@@ -179,12 +179,12 @@
       "phase": "01",
       "layer": "interfaces",
       "goal": "`main.h` declares the base configuration types and `main.c` rejects a wrong argument count with a usage message",
-      "status": "pending",
+      "status": "in_progress",
       "subtasks": [
         {
           "id": "1.2.1",
           "title": "Configuration types",
-          "status": "pending",
+          "status": "done",
           "layer": "core",
           "depends": [
             "1.1.1"

@@ -24,3 +24,12 @@ Entry template (filled in at close):
 - **Verification:** supplied `make check` green (exit code 0). Code review: APPROVED (`progress/review_1.1.1.md`).
 - **Documentation:** docs/reference/1.1.1-deliverable-makefile.md
 - **Commit:** feat(build): add deliverable Makefile [1.1.1]
+
+## 2026-10-26 — Subtask 1.2.1: Configuration types
+- **Layer:** core
+- **Plan:** docs/plan/phase-01-build-skeleton/1.2.1-config-types.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/main.h` defines configuration and scheduling types; `coders/Makefile` tracks the shared header dependency.
+- **Acceptance:** `tests/acceptance/test_1.2.1.c` — AC1–AC5 covered and green in the supplied check.
+- **Verification:** supplied `make check` green (exit code 0). Code review: APPROVED (`progress/review_1.2.1.md`).
+- **Documentation:** docs/reference/1.2.1-config-types.md
+- **Commit:** feat(core): add configuration types [1.2.1]
