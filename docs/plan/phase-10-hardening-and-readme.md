@@ -1,0 +1,2 @@
+# Phase 10 — Hardening and README
+- goal: prove the whole program against the subject with full-binary simulation tests (fifo/edf ordering, cooldown, no burnout under edf at and above the PLAN.md viability boundary including the N = 6 interleaved case, typical evaluation runs, valgrind leak-free, TSan race-free, Norm-clean) and complete the README with its mandatory sections, real outputs and didactic tone

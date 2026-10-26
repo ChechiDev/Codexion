@@ -1,7 +1,11 @@
 # CHECKPOINTS — Final-state evaluation (C)
 
 > Objective criteria that Codex walks through marking `[x]`/`[ ]` before closing
-> a subtask `N.M.K`. It rejects the close if any box in C1–C6 is left empty.
+> a subtask `N.M.K`. It rejects the close if any box in C0–C6 is left empty.
+
+## C0 — The subject is respected
+- [ ] The subtask complies with `docs/codexion-rules.md` (allowed functions, no
+      globals, Norm, required behaviour/log format) and contradicts none of it.
 
 ## C1 — The harness is complete
 - [ ] Base files: `AGENTS.md`, `CLAUDE.md`, `Makefile`, `CHECKPOINTS.md`, `docs/plan/PLAN.md`.

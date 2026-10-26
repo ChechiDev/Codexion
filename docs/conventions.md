@@ -1,5 +1,8 @@
 # Conventions (C)
 
+> **Binding subject:** `docs/codexion-rules.md` (42 Codexion). Everything here
+> applies only where it does not contradict it; on conflict the subject wins.
+
 Code, names, and comments in **English**. C standard: **C11** (`-std=c11`).
 
 ## Toolchain
@@ -58,3 +61,38 @@ Code, names, and comments in **English**. C standard: **C11** (`-std=c11`).
 ## ‹Project additions›
 
 - ‹concurrency rules, allocator, platform specifics…›
+
+### Build and test tooling (root Makefile, not delivered)
+
+- Production code lives in `coders/` (`harness.toml` `src_dirs = ["coders"]`); the
+  deliverable `coders/Makefile` is the only thing that builds `codexion`.
+- Tests link `build/obj/coders/**/*.o` (every source except `coders/main.c`) with
+  flags `-Wall -Wextra -Werror -pthread -Icoders` and include `"main.h"`.
+- Simulation tests run the binary from the `CODEXION_BIN` env var (set by
+  `make test`; default `coders/codexion`) and widen every timing assertion by
+  `CODEXION_TIME_SLACK_MS` (default 0 locally, 40 in CI). The subject limits
+  themselves (burnout logged within 10 ms) are never relaxed locally.
+- `make verify` = norminette + build + no-relink check + tests.
+  `make memcheck` = valgrind on `tests/unit/` and on the `SCENARIOS` runs.
+  `make tsan` = `-fsanitize=thread` build of the unit tests and of the binary,
+  run on the same scenarios. CI runs all three on every push.
+
+### README.md (repo root, written in English)
+
+Must satisfy `docs/codexion-rules.md` §7 and these style rules:
+
+- **No icons or emojis** anywhere (titles included).
+- First line, in italics:
+  `*This project has been created as part of the 42 curriculum by sperez-l.*`
+- Mandatory sections: **Description**, **Instructions**, **Resources** (classic
+  references + how AI was used, for which tasks and in which parts),
+  **Blocking cases handled**, **Thread synchronization mechanisms** (with examples
+  of how races are avoided and how coders and monitor communicate thread-safely).
+- **Tone: didactic and conversational.** Explain as if to a peer who has never
+  seen the project: short paragraphs, plain words, the "why" before the "how".
+- **Instructions** covers the most relevant parts of the project with
+  explanatory examples: how to build, the 8 arguments one by one, several
+  example runs (normal end by compile count, a burnout, `fifo` vs `edf`, invalid
+  input) each with its **real output** and a short walkthrough of what it shows.
+- Grows with the project: every subtask with user-visible behaviour updates it
+  at close; examples must match the current binary's actual output.

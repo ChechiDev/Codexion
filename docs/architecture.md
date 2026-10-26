@@ -1,5 +1,8 @@
 # Architecture (C)
 
+> **Binding subject:** `docs/codexion-rules.md` (42 Codexion). Everything here
+> applies only where it does not contradict it; on conflict the subject wins.
+
 > What "good work" means in this repo. The hexagonal idea still applies, adapted
 > to C: dependencies point toward the core; I/O and platform code sit at the edges.
 
