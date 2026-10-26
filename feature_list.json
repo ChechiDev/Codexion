@@ -23,7 +23,7 @@
       "title": "Build skeleton",
       "goal": "a Norm-clean `coders/` that builds `codexion` with the deliverable Makefile (cc -Wall -Wextra -Werror -pthread, NAME/all/clean/fclean/re, no relink), a `main.h` with the base types and a minimal `main.c`",
       "file": "docs/plan/phase-01-build-skeleton.md",
-      "status": "pending",
+      "status": "in_progress",
       "tasks": [
         "1.1",
         "1.2"
@@ -109,12 +109,12 @@
       "phase": "01",
       "layer": "interfaces",
       "goal": "`coders/Makefile` builds `codexion` from an explicit source list with the subject flags, the mandatory rules and no relink",
-      "status": "pending",
+      "status": "done",
       "subtasks": [
         {
           "id": "1.1.1",
           "title": "Deliverable Makefile",
-          "status": "pending",
+          "status": "done",
           "layer": "interfaces",
           "depends": [],
           "files": [

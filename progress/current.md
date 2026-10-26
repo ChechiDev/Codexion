@@ -1,34 +1,34 @@
 # Current session
 
 > This file is emptied when each session closes and its summary is moved to
-> `history.md`. Keep it updated **in real time**, not at the end.
+> `history.md`. Keep it updated in real time, not at the end.
 
-- **Current subtask:** _none_   (`N.M.K`)
-- **Layer:** _domain | application | infrastructure | interfaces_
-- **Start:** _—_
-- **Engine/role:** _leader (Claude) | implementer (Claude) | Codex_
+- **Current subtask:** 1.1.1 Deliverable Makefile (branch `feat/1.1-deliverable-build`)
+- **Layer:** interfaces
+- **Start:** 2026-10-26
+- **Engine/role:** documenter & close
 
-## Plan (leader)
+## Plan and execution
 
-_3-6 bullets: which layers it touches, ports/adapters, what crosses the
-boundaries. The plan itself lives in docs/plan/; no code until PLAN_APPROVED._
-
-- ...
+- [x] Plan approved: `progress/plan_review_1.1.1.md` = `PLAN_APPROVED`.
+- [x] Acceptance coverage written for AC1–AC9.
+- [x] Implementation complete; supplied `make check` exit code 0.
+- [x] Code approved: `progress/review_1.1.1.md` = `APPROVED`.
+- [x] Close documentation and tracking prepared; commit is left to the harness.
 
 ## Gate status
 
-- [ ] **Plan approved by Codex** → `progress/plan_review_<N.M.K>.md` = `PLAN_APPROVED`
-- [ ] **Acceptance tests written** (Codex) → `tests/acceptance/test_<N.M.K>.py` (red)
-- [ ] **Implementation** → `progress/impl_<N.M.K>.md`, `make verify` green
-- [ ] **Code approved by Codex** → `progress/review_<N.M.K>.md` = `APPROVED`
-- [ ] **Closed by Codex** → `docs/reference/<N.M.K>-<name>.md` + `status: done` + single commit
+- [x] **Plan approved by Codex** → `PLAN_APPROVED`
+- [x] **Acceptance tests written** → `tests/acceptance/test_1.1.1.c`
+- [x] **Implementation** → `make verify` green in supplied check
+- [x] **Code approved by Codex** → `APPROVED`
+- [x] **Closed by Codex** → reference, done status, generated index, history, commit message
 
 ## Log
 
-_Each significant step: decisions, files, blockers._
-
-- ...
+- External session-start `make check` passed (exit code 0); no tests were run in this sandbox.
+- Reference documentation and close metadata are ready for the harness commit.
 
 ## Next step
 
-_If the session is interrupted, the first thing the next session should do._
+Run `make status`; after user acceptance, proceed to subtask 1.2.1.
