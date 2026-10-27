@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/10/27 18:18:29 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/10/27 18:25:04 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ typedef struct s_slice
 
 /* ---- Utils ---- */
 
+int		is_space(char c);
 t_slice	trim_slice(const char *str);
 
 /* ---- Parsing ---- */
