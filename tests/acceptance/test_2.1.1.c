@@ -9,52 +9,52 @@
 #include <sys/wait.h>
 
 /* AC1: trim outer spaces and retain a pointer into the original string. */
-static void test_ac1_basic_span(void)
+static void test_ac1_basic_slice(void)
 {
 	const char *padded = "     0007     ";
 	const char *plain = "fifo";
-	t_span span;
+	t_slice slice;
 
-	span = trim_span(padded);
-	assert(span.start == padded + 5 && span.len == 4);
-	span = trim_span(plain);
-	assert(span.start == plain && span.len == 4);
+	slice = trim_slice(padded);
+	assert(slice.start == padded + 5 && slice.len == 4);
+	slice = trim_slice(plain);
+	assert(slice.start == plain && slice.len == 4);
 }
 
 /* AC2: all six C-locale whitespace bytes are trimmed on both sides. */
 static void test_ac2_six_whitespace_bytes(void)
 {
 	const char *input = " \t\n\v\f\r edf \r\f\v\n\t ";
-	t_span span;
+	t_slice slice;
 
-	span = trim_span(input);
-	assert(span.start == strchr(input, 'e'));
-	assert(span.len == 3);
-	assert(strncmp(span.start, "edf", (size_t)span.len) == 0);
+	slice = trim_slice(input);
+	assert(slice.start == strchr(input, 'e'));
+	assert(slice.len == 3);
+	assert(strncmp(slice.start, "edf", (size_t)slice.len) == 0);
 }
 
-/* AC3: whitespace between non-whitespace bytes remains in the span. */
+/* AC3: whitespace between non-whitespace bytes remains in the slice. */
 static void test_ac3_inner_whitespace_preserved(void)
 {
 	const char *input = "  fi fo  ";
-	t_span span;
+	t_slice slice;
 
-	span = trim_span(input);
-	assert(span.start == input + 2 && span.len == 5);
-	assert(strncmp(span.start, "fi fo", (size_t)span.len) == 0);
+	slice = trim_slice(input);
+	assert(slice.start == input + 2 && slice.len == 5);
+	assert(strncmp(slice.start, "fi fo", (size_t)slice.len) == 0);
 }
 
 /* AC4: empty and all-space input have zero length; NULL has a NULL start. */
 static void test_ac4_empty_and_null(void)
 {
-	t_span span;
+	t_slice slice;
 
-	span = trim_span("");
-	assert(span.len == 0);
-	span = trim_span("   ");
-	assert(span.len == 0);
-	span = trim_span(NULL);
-	assert(span.start == NULL && span.len == 0);
+	slice = trim_slice("");
+	assert(slice.len == 0);
+	slice = trim_slice("   ");
+	assert(slice.len == 0);
+	slice = trim_slice(NULL);
+	assert(slice.start == NULL && slice.len == 0);
 }
 
 /* AC5: trimming does not alter any byte of its input. */
@@ -62,11 +62,11 @@ static void test_ac5_input_unchanged(void)
 {
 	char input[] = " \t0007 fi\r\n ";
 	char original[sizeof(input)];
-	t_span span;
+	t_slice slice;
 
 	memcpy(original, input, sizeof(input));
-	span = trim_span(input);
-	assert(span.start == input + 2 && span.len == 7);
+	slice = trim_slice(input);
+	assert(slice.start == input + 2 && slice.len == 7);
 	assert(memcmp(input, original, sizeof(input)) == 0);
 }
 
@@ -89,7 +89,7 @@ static void test_ac6_build_and_norm(void)
 	assert(used < sizeof(makefile) - 1 || fgetc(file) == EOF);
 	makefile[used] = '\0';
 	assert(fclose(file) == 0);
-	assert(strstr(makefile, "src/parsing/trim_span.c") != NULL);
+	assert(strstr(makefile, "src/utils/trim_slice.c") != NULL);
 	pipe = popen("make -C coders 2>&1", "r");
 	assert(pipe != NULL);
 	while (fread(output, 1, sizeof(output), pipe) != 0)
@@ -114,7 +114,7 @@ static void test_ac6_build_and_norm(void)
 
 int main(void)
 {
-	test_ac1_basic_span();
+	test_ac1_basic_slice();
 	test_ac2_six_whitespace_bytes();
 	test_ac3_inner_whitespace_preserved();
 	test_ac4_empty_and_null();

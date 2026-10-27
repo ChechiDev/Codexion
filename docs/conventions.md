@@ -2,65 +2,147 @@
 
 > **Binding subject:** `docs/codexion-rules.md` (42 Codexion). Everything here
 > applies only where it does not contradict it; on conflict the subject wins.
+> The Norm (norminette) is part of the subject.
 
-Code, names, and comments in **English**. C standard: **C11** (`-std=c11`).
+Code, names, and comments in **English**.
 
 ## Toolchain
 
-- Build via the `Makefile` (`make lint`, `make type`, `make test`, `make verify`).
-- **`type`** = a strict warning-clean compile: `-Wall -Wextra -Werror -pedantic`.
-  A warning is an error. This is the C equivalent of the type gate.
-- **`lint`** = `clang-format` (style), `cppcheck` and `clang-tidy` (static
-  analysis) when installed. On a bare box they are skipped, and the compiler
-  warnings plus the Codex review carry the quality gate.
-- Prefer `clang`/`gcc`; keep the code portable between both.
+- Build via the root `Makefile` (`make lint`, `make type`, `make test`, `make verify`).
+- **`lint`** = `norminette coders/` (any error is a fail), plus `cppcheck` when
+  installed.
+- **`type`** = a warning-clean compile of the deliverable with
+  `cc -Wall -Wextra -Werror -pthread`, plus the no-relink check. A warning is an
+  error.
 
 ## Layout
 
-- `include/<name>/…h` — **public** headers (the API surface).
-- `src/…c` (+ private `.h`) — implementation. One translation unit per module.
+```
+coders/
+├── Makefile           # deliverable build (NAME, all, clean, fclean, re)
+├── main.c             # entry point
+├── main.h             # the single header of the project
+└── src/
+    ├── utils/         # generic helpers, no domain knowledge
+    └── <module>/      # one folder per module: parsing/, cli/, ...
+```
+
+- **One header only**: `coders/main.h`. No `include/` folder, no private headers.
+- **One public function per `.c` file**, and the file is named after it
+  (`is_space` lives in `src/utils/is_space.c`). A file may add `static` helpers
+  that only make sense inside it (the Norm caps a file at 5 functions).
 - `tests/unit/` — unit tests (Claude). `tests/acceptance/` — oracle (Codex).
-- No implementation in public headers except `static inline` where justified.
+
+## `main.h` layout
+
+Ordered sections, each opened by a one-line title comment in this exact format:
+
+```c
+/* ---- Macros ---- */
+/* ---- Types ---- */
+/* ---- Utils ---- */
+/* ---- Parsing ---- */
+/* ---- CLI ---- */
+```
+
+- **Macros**, then **Types** (every `typedef`, since a type can be shared by
+  several modules), then **one prototype section per `src/` folder**, `Utils`
+  first. The title is the folder name capitalised (`src/parsing/` → `Parsing`);
+  `CLI` stays upper case. Prototypes of `main.c` itself, if any, go last under
+  `/* ---- Main ---- */`.
+- A new `src/` folder adds its section; an empty section is not written.
+- `main.h` includes no system header (each `.c` includes what it uses).
+
+## Utils
+
+`coders/src/utils/` holds helpers that are:
+
+- **Generic**: they know nothing about the domain (no coders, dongles, monitor,
+  `t_config`). If it needs a domain type, it belongs to its module.
+- **Reusable**: used, or obviously usable, by more than one function.
+
+Rules:
+
+- When a function can be written more cleanly with a utils helper, use or add
+  the helper instead of inlining the logic (e.g. `is_digit(c)` rather than
+  `c >= '0' && c <= '9'`).
+- **Never reimplement an authorized function** (`strlen`, `strcmp`, `memset`,
+  ...): call the original.
 
 ## Naming
 
-- Functions/variables: `snake_case`. Types/structs: `snake_case_t` (typedef'd).
-- Macros and constants: `UPPER_SNAKE`. Prefix public symbols with `<name>_`.
-- Names by intent, not by type (`buffer_append`, not `do_data`).
+- Functions and variables: `snake_case`. Types follow the Norm: `s_` struct,
+  `t_` typedef, `e_` enum, `u_` union. Macros and enum values: `UPPER_SNAKE`.
+- Names by intent, not by type.
+- **Every function name starts with a verb from this closed list** (public and
+  `static` alike):
+
+  | Prefix | Use | Example |
+  |---|---|---|
+  | `is_` / `has_` | yes/no question, returns 0 or 1 | `is_space`, `has_finished` |
+  | `get_` | reads or computes a value, changes nothing | `get_arg_minimum` |
+  | `set_` | changes a field or a state | `set_mode` |
+  | `build_` / `init_` | builds or initialises a structure | `init_config` |
+  | `free_` / `destroy_` | releases resources | `destroy_mutexes` |
+  | `parse_` | turns text into a validated value | `parse_number` |
+  | `print_` | writes to an output | `print_usage` |
+  | `trim_` | trims text | `trim_slice` |
+
+  A new verb is added to this table first (in a `style/` branch), then used.
+- **Exception — names fixed by the subject keep their exact spelling**: `main`,
+  the authorized functions, the binary `codexion`, the argument names
+  (`number_of_coders`, ..., `scheduler`; they are also the `t_config` field
+  names, except `scheduler` which maps to `mode`) and the log messages.
 
 ## Errors & resources
 
-- Report failure with an explicit return code (`int`/`enum`) or a sentinel; do
-  not hide errors. Use a typed `enum` error set per module.
+- Report failure with an explicit return code (`0` ok / `-1` error, or an
+  `enum`); do not hide errors. Results go through an out-parameter, which is
+  left untouched on failure.
 - **Ownership is explicit**: document who allocates and who frees. Every `malloc`
-  has a matching `free` on every path; no leaks (verify with Valgrind/ASan when available).
+  has a matching `free` on every path; no leaks (`make memcheck`).
 - Check the return value of every allocation and syscall. No undefined behavior.
 
-## Clean code / SOLID
+## Clean code
 
-- One responsibility per function; keep functions short and low-complexity.
-  (`clang-tidy` readability checks enforce this when installed; otherwise Codex
-  rejects monster functions in review.)
-- No mutable global state; pass context via parameters (opaque struct + funcs =
-  the C way to inject dependencies). Keep modules decoupled, no circular includes.
+- One responsibility per function; keep functions short (the Norm caps them at
+  25 lines).
+- No global variables (subject); pass context via parameters.
 
 ## Security (defensive)
 
-- Bounds-check every buffer; prefer `snprintf`/`memcpy_s`-style bounded calls.
-  Never `gets`, never unbounded `strcpy`/`sprintf`.
-- Treat all external input as untrusted; validate at the boundary.
-- No secrets in code; do not log sensitive data.
+- Bounds-check every buffer; prefer views (`t_slice`) over copies.
+- Treat all external input (`argv`) as untrusted; validate at the boundary.
 
 ## Tests
 
 - `tests/unit/` (Claude) and `tests/acceptance/` (Codex, read-only for Claude).
 - Default runner: each `tests/**/test_*.c` has its own `main()` using `assert.h`;
-  `make test` compiles it against the `src/` objects and runs it (non-zero = fail).
+  `make test` compiles it against the `coders/` objects and runs it (non-zero = fail).
 - One test per observable behavior; descriptive names.
 
-## ‹Project additions›
+## Style branches
 
-- ‹concurrency rules, allocator, platform specifics…›
+Project-wide convention changes are made on a `style/<name>` branch: first the
+rule here, then the refactor subtasks that apply it to the existing code. Once
+merged, the rule binds every later subtask. Superseded subtasks stay as
+delivered (commit, spec and reference doc unchanged); the new subtask states
+what it supersedes.
+
+Changing an approved plan breaks its seal, so `make check` goes red and the
+reviewer will not approve. Re-gate it through the project wrapper, which counts
+the check as green only when every failure is a plan seal under re-review
+(roadmap first, then each changed phase):
+
+```bash
+HARNESS_CHECK_CMD="./scripts/regate_check.sh roadmap" ./harness/review_with_codex.sh roadmap
+HARNESS_CHECK_CMD="./scripts/regate_check.sh phase 02" ./harness/review_with_codex.sh phase 02
+```
+
+`harness/` and `.claude/{agents,codex,skills}` are symlinks to the shared global
+harness: never edit through them; project-level fixes go in `scripts/` or `docs/`.
+
+## Project additions
 
 ### 42 header (every file in `coders/`)
 

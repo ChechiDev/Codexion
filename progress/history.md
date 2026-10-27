@@ -69,3 +69,102 @@ Entry template (filled in at close):
 - **Verification:** supplied `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.1.2.md`).
 - **Documentation:** docs/reference/2.1.2-parse-number.md
 - **Commit:** feat(core): parse numbers safely [2.1.2]
+
+## 2026-10-27 — Subtask 2.2.1: Move print usage
+- **Layer:** interfaces
+- **Plan:** docs/plan/phase-02-argument-parsing/2.2.1-move-print-usage.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/cli/print_usage.c`, `coders/main.c`, and `coders/Makefile` place usage output in the CLI layer while preserving the entry point behavior.
+- **Acceptance:** `tests/acceptance/test_2.2.1.c` — AC1–AC3 covered and green in the supplied check.
+- **Verification:** supplied `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.1.md`).
+- **Documentation:** docs/reference/2.2.1-move-print-usage.md
+- **Commit:** feat(interfaces): move usage output to CLI [2.2.1]
+
+## 2026-10-27 — Subtask 2.2.2: Move trim span
+- **Layer:** core
+- **Plan:** docs/plan/phase-02-argument-parsing/2.2.2-move-trim-span.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/utils/trim_span.c` and `coders/Makefile` move the generic whitespace span helper into utils; the former parsing source is removed. The 2.1.1 acceptance path check was migrated and resealed.
+- **Acceptance:** `tests/acceptance/test_2.2.2.c` — AC1–AC2 covered and green in the supplied check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.2.md`).
+- **Documentation:** docs/reference/2.2.2-move-trim-span.md
+- **Commit:** refactor(utils): move trim_span into utils [2.2.2]
+
+## 2026-10-27 — Subtask 2.2.3: Header sections
+- **Layer:** core
+- **Plan:** docs/plan/phase-02-argument-parsing/2.2.3-header-sections.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/main.h` groups the existing declarations under the Macros, Types, Utils, Parsing and CLI section titles without changing the public API.
+- **Acceptance:** `tests/acceptance/test_2.2.3.c` — AC1–AC4 covered and green in the supplied check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.3.md`).
+- **Documentation:** docs/reference/2.2.3-header-sections.md
+- **Commit:** feat(core): organize header declarations [2.2.3]
+
+## 2026-10-27 — Subtask 2.2.4: Trim slice
+- **Layer:** core
+- **Plan:** docs/plan/phase-02-argument-parsing/2.2.4-trim-slice.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/utils/trim_slice.c`, `coders/main.h`, and `coders/Makefile` add a public non-owning slice view as a thin delegate to `trim_span`; unit coverage checks edge cases and source preservation.
+- **Acceptance:** `tests/acceptance/test_2.2.4.c` — AC1–AC6 covered and green in the supplied check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.4.md`).
+- **Documentation:** docs/reference/2.2.4-trim-slice.md
+- **Commit:** feat(utils): add trimmed slice view [2.2.4]
+
+## 2026-10-27 — Subtask 2.2.5: Use trim slice
+- **Layer:** core
+- **Plan:** docs/plan/phase-02-argument-parsing/2.2.5-use-trim-slice.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/parsing/parse_number.c` now consumes the non-owning `t_slice` returned by `trim_slice`; parsing behavior is unchanged.
+- **Acceptance:** `tests/acceptance/test_2.2.5.c` — AC1–AC3 covered and green in the supplied check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.5.md`).
+- **Documentation:** docs/reference/2.2.5-use-trim-slice.md
+- **Commit:** refactor(parsing): use trim slice in number parser [2.2.5]
+
+## 2026-10-27 — Subtask 2.2.6: Move trim logic
+- **Layer:** core
+- **Plan:** docs/plan/phase-02-argument-parsing/2.2.6-move-trim-logic.md (plan_review: PLAN_APPROVED)
+- **Changes:** `trim_slice.c` now owns the single trimming algorithm; `trim_span.c` delegates and maps the result into the legacy span type.
+- **Acceptance:** `tests/acceptance/test_2.2.6.c` — AC1–AC4 covered and green in the supplied check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.6.md`).
+- **Documentation:** docs/reference/2.2.6-move-trim-logic.md
+- **Commit:** refactor(utils): move trim algorithm to slice [2.2.6]
+
+## 2026-10-27 — Subtask 2.2.7: Remove trim span
+- **Layer:** core
+- **Plan:** docs/plan/phase-02-argument-parsing/2.2.7-remove-trim-span.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/main.h` and `coders/Makefile` retire the span API and its build entry; the delegate and obsolete unit test were removed, with edge cases retained against `trim_slice`.
+- **Acceptance:** `tests/acceptance/test_2.2.7.c` — AC1–AC3 covered and green in the supplied check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.7.md`).
+- **Documentation:** docs/reference/2.2.7-remove-trim-span.md
+- **Commit:** chore(utils): remove trim span API [2.2.7]
+
+## 2026-10-27 — Subtask 2.2.8: Is space
+- **Layer:** core
+- **Plan:** docs/plan/phase-02-argument-parsing/2.2.8-is-space.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/utils/is_space.c`, `coders/main.h`, and `coders/Makefile` add the generic six-character whitespace predicate; unit and acceptance coverage exercise its contract.
+- **Acceptance:** `tests/acceptance/test_2.2.8.c` — AC1–AC4 covered and green in the supplied check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.8.md`).
+- **Documentation:** docs/reference/2.2.8-is-space.md
+- **Commit:** feat(utils): add whitespace predicate [2.2.8]
+
+## 2026-10-27 — Subtask 2.2.9: Use is space
+- **Layer:** core
+- **Plan:** docs/plan/phase-02-argument-parsing/2.2.9-use-is-space.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/utils/trim_slice.c` now uses the shared `is_space` predicate in both boundary scans, preserving the established trimming behavior.
+- **Acceptance:** `tests/acceptance/test_2.2.9.c` — AC1–AC3 covered and green in the supplied check; the leading offset oracle was corrected from 6 to 7 during the plan gate.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.9.md`).
+- **Documentation:** docs/reference/2.2.9-use-is-space.md
+- **Commit:** refactor(utils): use is_space in trim_slice [2.2.9]
+
+## 2026-10-27 — Subtask 2.2.10: Is digit
+- **Layer:** core
+- **Plan:** docs/plan/phase-02-argument-parsing/2.2.10-is-digit.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/utils/is_digit.c`, `coders/main.h`, and `coders/Makefile` add the generic decimal digit predicate; unit and acceptance coverage exercise its contract.
+- **Acceptance:** `tests/acceptance/test_2.2.10.c` — AC1–AC4 covered and green in the supplied check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.10.md`).
+- **Documentation:** docs/reference/2.2.10-is-digit.md
+- **Commit:** feat(utils): add decimal digit predicate [2.2.10]
+
+## 2026-10-27 — Subtask 2.2.11: Use is digit
+- **Layer:** core
+- **Plan:** docs/plan/phase-02-argument-parsing/2.2.11-use-is-digit.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/parsing/parse_number.c` now uses the shared `is_digit` predicate while preserving trimming, overflow checks, and output-on-success behavior.
+- **Acceptance:** `tests/acceptance/test_2.2.11.c` — AC1–AC3 covered and green in the supplied check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.11.md`).
+- **Documentation:** docs/reference/2.2.11-use-is-digit.md
+- **Commit:** refactor(parsing): use is_digit in number parser [2.2.11]

@@ -3,8 +3,8 @@
 **Verdict:** ROADMAP_APPROVED
 
 ## Analysis
-- **Coverage:** The ten phase goals cover the mandatory Codexion build, input validation, FIFO/EDF scheduling with cooldown, coder and monitor threads, lifecycle, verification, and README. They introduce no out-of-scope feature. The revised Phase 02 goal trims only numeric arguments; the scheduler remains exactly `fifo` or `edf`, as required by `docs/codexion-rules.md`.
-- **Order and dependencies:** Build and parsing precede runtime components; time/logging, heap, and state precede arbitration; arbitration precedes coder and monitor threads; lifecycle precedes full-binary verification. No phase goal needs a later phase.
-- **Size:** Each phase is a coherent increment. Phase 10 combines final system verification and documentation after the executable is integrated.
-- **Architecture:** Pure parsing and heap logic remain separate from platform adapters and thread orchestration. The overview names the allowed-function constraint, ownership, synchronization, timing, and Norm risks.
-- **Harness:** The supplied `make check` exited 2 because the changed roadmap lacks a current approval and seal. Its build and tests passed; this verdict reviews the changed roadmap for re-approval.
+- **Coverage:** The ten phase goals deliver the mandatory subject: build and validation, time and logs, a priority heap, simulation state, cooldown and FIFO/EDF dongle arbitration, coder and monitor threads, lifecycle, full-binary verification, and the required README. Nothing in the phase goals exceeds the stated scope.
+- **Order and dependencies:** Foundations and core logic precede state and thread coordination; arbitration precedes the coder and monitor routines; lifecycle precedes integrated hardening. No phase goal requires work assigned to a later phase.
+- **Size:** Each phase has a coherent, independently verifiable goal. The final phase validates the integrated program and finishes its documentation.
+- **Architecture:** The overview keeps pure parsing, heap, and policy logic in core; time, logging, and resource lifecycle at the platform edge; and CLI in the interface. It names the concurrency protocol, ownership, timing precision, and Norm risks.
+- **Gate:** The supplied external `./scripts/regate_check.sh roadmap` exited 0. Its check found only plan approval and seal failures excused for this re-review; compilation and tests passed. Phase 02's changed seal still requires its own phase gate.

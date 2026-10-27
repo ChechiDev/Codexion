@@ -6,12 +6,18 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/10/26 18:50:17 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/10/27 18:40:45 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MAIN_H
 # define MAIN_H
+
+/* ---- Macros ---- */
+
+# define EXIT_USAGE 1
+
+/* ---- Types ---- */
 
 typedef enum e_mode
 {
@@ -31,16 +37,24 @@ typedef struct s_config
 	t_mode	mode;
 }	t_config;
 
-typedef struct s_span
+typedef struct s_slice
 {
 	const char	*start;
 	int			len;
-}	t_span;
+}	t_slice;
 
-# define EXIT_USAGE 1
+/* ---- Utils ---- */
+
+int		is_digit(char c);
+int		is_space(char c);
+t_slice	trim_slice(const char *str);
+
+/* ---- Parsing ---- */
+
+int		parse_number(const char *str, int *out);
+
+/* ---- CLI ---- */
 
 void	print_usage(void);
-t_span	trim_span(const char *str);
-int		parse_number(const char *str, int *out);
 
 #endif

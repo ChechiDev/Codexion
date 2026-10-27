@@ -38,7 +38,8 @@
       "tasks": [
         "2.1",
         "2.2",
-        "2.3"
+        "2.3",
+        "2.4"
       ]
     },
     {
@@ -409,6 +410,389 @@
     },
     {
       "id": "2.2",
+      "title": "Apply project conventions",
+      "phase": "02",
+      "layer": "core",
+      "goal": "bring the delivered code in line with `docs/conventions.md` (branch `style/project-conventions`): user-facing messages in `cli/`, `main.h` split into titled sections, `t_span` renamed to `t_slice`, and generic helpers (`is_space`, `is_digit`, `trim_slice`) in `src/utils/` reused by the parser, with no behaviour change",
+      "status": "done",
+      "subtasks": [
+        {
+          "id": "2.2.1",
+          "title": "Move print usage",
+          "status": "done",
+          "layer": "interfaces",
+          "depends": [
+            "2.1.2"
+          ],
+          "files": [
+            "coders/src/cli/print_usage.c",
+            "coders/main.c",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "with any argument count other than 8, `codexion` writes exactly the same usage text as before to stderr, nothing to stdout, and exits with status 1 (behaviour of 1.2.3 unchanged)",
+              "test": "tests/acceptance/test_2.2.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "a test linked against the `coders/` objects **without** `main.c` can call `print_usage()` and gets the usage text on stderr",
+              "test": "tests/acceptance/test_2.2.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "`make -C coders` builds `codexion` with the new source, a second `make` does not relink, and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_2.2.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-02-argument-parsing/2.2.1-move-print-usage.md"
+        },
+        {
+          "id": "2.2.2",
+          "title": "Move trim span",
+          "status": "done",
+          "layer": "core",
+          "depends": [
+            "2.2.1"
+          ],
+          "files": [
+            "coders/src/utils/trim_span.c",
+            "coders/src/parsing/trim_span.c",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "trimming still works after the move, observed through `parse_number`: `parse_number(\"  42  \", &n)` and `parse_number(\" \\t\\n\\v\\f\\r 7 \\r\\f\\v\\n\\t \", &n)` return 0 and set 42 and 7; `parse_number(\"4 2\", &n)` returns -1",
+              "test": "tests/acceptance/test_2.2.2.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "`make -C coders` builds `codexion`, a second `make` does not relink, and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_2.2.2.c"
+            }
+          ],
+          "spec": "docs/plan/phase-02-argument-parsing/2.2.2-move-trim-span.md"
+        },
+        {
+          "id": "2.2.3",
+          "title": "Header sections",
+          "status": "done",
+          "layer": "core",
+          "depends": [
+            "2.2.2"
+          ],
+          "files": [
+            "coders/main.h"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "`coders/main.h` contains the lines `/* ---- Macros ---- */`, `/* ---- Types ---- */`, `/* ---- Utils ---- */`, `/* ---- Parsing ---- */`, `/* ---- CLI ---- */`, each exactly once, in this relative order, all inside the include guard (later phases may add sections in between)",
+              "test": "tests/acceptance/test_2.2.3.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "`# define EXIT_USAGE` is under Macros; the `t_mode` and `t_config` typedefs are under Types; the Utils section holds at least one prototype; the `parse_number` prototype is under Parsing; the `print_usage` prototype is under CLI",
+              "test": "tests/acceptance/test_2.2.3.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "the stable public API keeps its exact declarations: `EXIT_USAGE` is 1, `t_mode` has `MODE_FIFO` and `MODE_EDF`, `t_config` has its eight fields with their types, and `parse_number` and `print_usage` keep their signatures (a test using them compiles and runs)",
+              "test": "tests/acceptance/test_2.2.3.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "`main.h` includes no system header; `make -C coders` builds `codexion` and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_2.2.3.c"
+            }
+          ],
+          "spec": "docs/plan/phase-02-argument-parsing/2.2.3-header-sections.md"
+        },
+        {
+          "id": "2.2.4",
+          "title": "Trim slice",
+          "status": "done",
+          "layer": "core",
+          "depends": [
+            "2.2.3"
+          ],
+          "files": [
+            "coders/src/utils/trim_slice.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "a test that includes `\"main.h\"` can declare a `t_slice` and read its fields `start` (`const char *`) and `len` (`int`)",
+              "test": "tests/acceptance/test_2.2.4.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "`trim_slice(\"     0007     \")` gives `start` on the first `'0'` and `len` 4; `trim_slice(\"fifo\")` gives `start == str` and `len` 4",
+              "test": "tests/acceptance/test_2.2.4.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "`trim_slice(\" \\t\\n\\v\\f\\r edf \\r\\f\\v\\n\\t \")` gives `start` on `'e'` and `len` 3; inner whitespace is kept: `trim_slice(\"  fi fo  \")` gives `len` 5 starting at `'f'`",
+              "test": "tests/acceptance/test_2.2.4.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "`trim_slice(\"\")` and `trim_slice(\"   \")` give `len` 0; `trim_slice(NULL)` gives `{NULL, 0}`; the input string is byte-for-byte unchanged after every call",
+              "test": "tests/acceptance/test_2.2.4.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "the `trim_slice` prototype is in the `/* ---- Utils ---- */` section of `coders/main.h`",
+              "test": "tests/acceptance/test_2.2.4.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "`make -C coders` builds `codexion` with the new source, a second `make` does not relink, and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_2.2.4.c"
+            }
+          ],
+          "spec": "docs/plan/phase-02-argument-parsing/2.2.4-trim-slice.md"
+        },
+        {
+          "id": "2.2.5",
+          "title": "Use trim slice",
+          "status": "done",
+          "layer": "core",
+          "depends": [
+            "2.2.4"
+          ],
+          "files": [
+            "coders/src/parsing/parse_number.c"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "`parse_number` keeps the exact behaviour of 2.1.2 (the 2.1.2 oracle still passes): surrounding whitespace trimmed, digits only, leading zeros allowed, `INT_MAX` accepted, `INT_MAX + 1` rejected, signs / inner spaces / letters / empty input rejected, `*out` untouched on failure",
+              "test": "tests/acceptance/test_2.2.5.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "`parse_number` still trims all six whitespace characters: `parse_number(\" \\t\\n\\v\\f\\r 42 \\r\\f\\v\\n\\t \", &n)` returns 0 and sets 42",
+              "test": "tests/acceptance/test_2.2.5.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "`make -C coders` builds `codexion` and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_2.2.5.c"
+            }
+          ],
+          "spec": "docs/plan/phase-02-argument-parsing/2.2.5-use-trim-slice.md"
+        },
+        {
+          "id": "2.2.6",
+          "title": "Move trim logic",
+          "status": "done",
+          "layer": "core",
+          "depends": [
+            "2.2.5"
+          ],
+          "files": [
+            "coders/src/utils/trim_slice.c",
+            "coders/src/utils/trim_span.c"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "`trim_slice` keeps the behaviour of 2.2.4 (the 2.2.4 oracle still passes): six whitespace characters trimmed on both sides, inner whitespace kept, `\"\"`/`\"   \"` give `len` 0, `NULL` gives `{NULL, 0}`, input unchanged",
+              "test": "tests/acceptance/test_2.2.6.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "`parse_number` behaves as before: `parse_number(\"  42  \", &n)` returns 0 and sets 42; `parse_number(\"4 2\", &n)` and `parse_number(\"   \", &n)` return -1 and leave `n` unchanged",
+              "test": "tests/acceptance/test_2.2.6.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "characters that are not whitespace are never trimmed: `trim_slice(\"\\x01\" \"ab\" \"\\x7f\")` gives `len` 4 starting at `'\\x01'`; `trim_slice(\"_x_\")` gives `len` 3",
+              "test": "tests/acceptance/test_2.2.6.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "`make -C coders` builds `codexion` and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_2.2.6.c"
+            }
+          ],
+          "spec": "docs/plan/phase-02-argument-parsing/2.2.6-move-trim-logic.md"
+        },
+        {
+          "id": "2.2.7",
+          "title": "Remove trim span",
+          "status": "done",
+          "layer": "core",
+          "depends": [
+            "2.2.6"
+          ],
+          "files": [
+            "coders/src/utils/trim_span.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "the old names no longer exist: a translation unit that includes `\"main.h\"` and uses `t_span`, `s_span` or `trim_span` fails to compile",
+              "test": "tests/acceptance/test_2.2.7.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "`trim_slice` and `parse_number` behave as before: `trim_slice(\"  fi fo  \")` gives `len` 5 starting at `'f'`, `trim_slice(NULL)` gives `{NULL, 0}`, `parse_number(\"  42  \", &n)` returns 0 and sets 42",
+              "test": "tests/acceptance/test_2.2.7.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "`make -C coders` builds `codexion`, a second `make` does not relink, and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_2.2.7.c"
+            }
+          ],
+          "spec": "docs/plan/phase-02-argument-parsing/2.2.7-remove-trim-span.md"
+        },
+        {
+          "id": "2.2.8",
+          "title": "Is space",
+          "status": "done",
+          "layer": "core",
+          "depends": [
+            "2.2.7"
+          ],
+          "files": [
+            "coders/src/utils/is_space.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "`is_space(c)` returns 1 for each of `' '`, `'\\t'`, `'\\n'`, `'\\v'`, `'\\f'`, `'\\r'`",
+              "test": "tests/acceptance/test_2.2.8.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "`is_space(c)` returns 0 for `'\\0'`, `'a'`, `'0'`, `'_'`, `(char)127` and a negative `char` value (`(char)-1`)",
+              "test": "tests/acceptance/test_2.2.8.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "the `is_space` prototype is in the `/* ---- Utils ---- */` section of `coders/main.h`, before `trim_slice`",
+              "test": "tests/acceptance/test_2.2.8.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "`make -C coders` builds `codexion` with the new source, a second `make` does not relink, and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_2.2.8.c"
+            }
+          ],
+          "spec": "docs/plan/phase-02-argument-parsing/2.2.8-is-space.md"
+        },
+        {
+          "id": "2.2.9",
+          "title": "Use is space",
+          "status": "done",
+          "layer": "core",
+          "depends": [
+            "2.2.8"
+          ],
+          "files": [
+            "coders/src/utils/trim_slice.c"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "`trim_slice` keeps the exact behaviour of 2.2.6 (the 2.2.4 and 2.2.6 oracles still pass): all six whitespace characters trimmed on both sides, inner whitespace kept, `\"\"`/`\"   \"` give `len` 0, `NULL` gives `{NULL, 0}`, input unchanged",
+              "test": "tests/acceptance/test_2.2.9.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "characters that are not whitespace are never trimmed: `trim_slice(\"\\x01\" \"ab\" \"\\x7f\")` gives `len` 4 starting at `'\\x01'`; `trim_slice(\"_x_\")` gives `len` 3",
+              "test": "tests/acceptance/test_2.2.9.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "`make -C coders` builds `codexion` and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_2.2.9.c"
+            }
+          ],
+          "spec": "docs/plan/phase-02-argument-parsing/2.2.9-use-is-space.md"
+        },
+        {
+          "id": "2.2.10",
+          "title": "Is digit",
+          "status": "done",
+          "layer": "core",
+          "depends": [
+            "2.2.9"
+          ],
+          "files": [
+            "coders/src/utils/is_digit.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "`is_digit(c)` returns 1 for every character from `'0'` to `'9'`",
+              "test": "tests/acceptance/test_2.2.10.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "`is_digit(c)` returns 0 for `'/'` and `':'` (the neighbours of `'0'` and `'9'` in ASCII), `'\\0'`, `' '`, `'+'`, `'-'`, `'a'` and a negative `char` value (`(char)-1`)",
+              "test": "tests/acceptance/test_2.2.10.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "the `is_digit` prototype is in the `/* ---- Utils ---- */` section of `coders/main.h`",
+              "test": "tests/acceptance/test_2.2.10.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "`make -C coders` builds `codexion` with the new source, a second `make` does not relink, and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_2.2.10.c"
+            }
+          ],
+          "spec": "docs/plan/phase-02-argument-parsing/2.2.10-is-digit.md"
+        },
+        {
+          "id": "2.2.11",
+          "title": "Use is digit",
+          "status": "done",
+          "layer": "core",
+          "depends": [
+            "2.2.10"
+          ],
+          "files": [
+            "coders/src/parsing/parse_number.c"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "`parse_number` keeps the exact behaviour of 2.1.2 (the 2.1.2 and 2.2.5 oracles still pass): digits only after trimming, leading zeros allowed, `INT_MAX` accepted, `INT_MAX + 1` rejected, signs / inner spaces / letters / empty input rejected, `*out` untouched on failure",
+              "test": "tests/acceptance/test_2.2.11.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "the digit boundaries hold: `\"/\"`, `\":\"`, `\"0/\"` and `\"9:\"` are rejected; `\"0\"` and `\"9\"` are accepted with values 0 and 9",
+              "test": "tests/acceptance/test_2.2.11.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "`make -C coders` builds `codexion` and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_2.2.11.c"
+            }
+          ],
+          "spec": "docs/plan/phase-02-argument-parsing/2.2.11-use-is-digit.md"
+        }
+      ]
+    },
+    {
+      "id": "2.3",
       "title": "Config parser",
       "phase": "02",
       "layer": "core",
@@ -416,49 +800,49 @@
       "status": "pending",
       "subtasks": [
         {
-          "id": "2.2.1",
-          "title": "Arg minimum",
+          "id": "2.3.1",
+          "title": "Get arg minimum",
           "status": "pending",
           "layer": "core",
           "depends": [
-            "2.1.2"
+            "2.2.11"
           ],
           "files": [
-            "coders/src/parsing/arg_minimum.c",
+            "coders/src/parsing/get_arg_minimum.c",
             "coders/main.h",
             "coders/Makefile"
           ],
           "acceptance": [
             {
               "id": "AC1",
-              "criterion": "`arg_minimum(1)` (`number_of_coders`) and `arg_minimum(2)` (`time_to_burnout`) return 1",
-              "test": "tests/acceptance/test_2.2.1.c"
+              "criterion": "`get_arg_minimum(1)` (`number_of_coders`) and `get_arg_minimum(2)` (`time_to_burnout`) return 1",
+              "test": "tests/acceptance/test_2.3.1.c"
             },
             {
               "id": "AC2",
-              "criterion": "`arg_minimum(3)` to `arg_minimum(7)` (`time_to_compile`, `time_to_debug`, `time_to_refactor`, `number_of_compiles_required`, `dongle_cooldown`) return 0",
-              "test": "tests/acceptance/test_2.2.1.c"
+              "criterion": "`get_arg_minimum(3)` to `get_arg_minimum(7)` (`time_to_compile`, `time_to_debug`, `time_to_refactor`, `number_of_compiles_required`, `dongle_cooldown`) return 0",
+              "test": "tests/acceptance/test_2.3.1.c"
             },
             {
               "id": "AC3",
-              "criterion": "`arg_minimum(8)` (scheduler, not numeric) and out-of-range positions `0`, `9`, `-1` return -1",
-              "test": "tests/acceptance/test_2.2.1.c"
+              "criterion": "`get_arg_minimum(8)` (scheduler, not numeric) and out-of-range positions `0`, `9`, `-1` return -1",
+              "test": "tests/acceptance/test_2.3.1.c"
             },
             {
               "id": "AC4",
               "criterion": "`make -C coders` builds `codexion` with the new source and `norminette coders/` reports no error",
-              "test": "tests/acceptance/test_2.2.1.c"
+              "test": "tests/acceptance/test_2.3.1.c"
             }
           ],
-          "spec": "docs/plan/phase-02-argument-parsing/2.2.1-arg-minimum.md"
+          "spec": "docs/plan/phase-02-argument-parsing/2.3.1-get-arg-minimum.md"
         },
         {
-          "id": "2.2.2",
+          "id": "2.3.2",
           "title": "Parse mode",
           "status": "pending",
           "layer": "core",
           "depends": [
-            "2.2.1"
+            "2.3.1"
           ],
           "files": [
             "coders/src/parsing/parse_mode.c",
@@ -469,35 +853,35 @@
             {
               "id": "AC1",
               "criterion": "`parse_mode(\"fifo\", &m)` returns 0 and sets `MODE_FIFO`; `parse_mode(\"edf\", &m)` returns 0 and sets `MODE_EDF`",
-              "test": "tests/acceptance/test_2.2.2.c"
+              "test": "tests/acceptance/test_2.3.2.c"
             },
             {
               "id": "AC2",
               "criterion": "it returns -1 and leaves `*out` unchanged for upper/mixed case `\"FIFO\"`, `\"Edf\"`, `\"FiFo\"`; surrounding whitespace `\"fifo \"`, `\" edf\"`, `\"edf\\n\"`, `\"\\tfifo\"`; prefixes/suffixes `\"fif\"`, `\"edff\"`, `\"fifoedf\"`; and `\"\"`, `\"rr\"`, `\"0\"`",
-              "test": "tests/acceptance/test_2.2.2.c"
+              "test": "tests/acceptance/test_2.3.2.c"
             },
             {
               "id": "AC3",
               "criterion": "`str == NULL` or `out == NULL` returns -1 without crashing",
-              "test": "tests/acceptance/test_2.2.2.c"
+              "test": "tests/acceptance/test_2.3.2.c"
             },
             {
               "id": "AC4",
               "criterion": "`make -C coders` builds `codexion` with the new source and `norminette coders/` reports no error",
-              "test": "tests/acceptance/test_2.2.2.c"
+              "test": "tests/acceptance/test_2.3.2.c"
             }
           ],
-          "spec": "docs/plan/phase-02-argument-parsing/2.2.2-parse-mode.md"
+          "spec": "docs/plan/phase-02-argument-parsing/2.3.2-parse-mode.md"
         },
         {
-          "id": "2.2.3",
+          "id": "2.3.3",
           "title": "Parse config",
           "status": "pending",
           "layer": "core",
           "depends": [
             "2.1.2",
-            "2.2.1",
-            "2.2.2"
+            "2.3.1",
+            "2.3.2"
           ],
           "files": [
             "coders/src/parsing/parse_config.c",
@@ -508,55 +892,55 @@
             {
               "id": "AC1",
               "criterion": "`parse_config` on `{\"codexion\",\"4\",\"800\",\"200\",\"200\",\"200\",\"3\",\"50\",\"edf\",NULL}` returns 0 and fills the eight `t_config` fields with 4, 800, 200, 200, 200, 3, 50 and `MODE_EDF`",
-              "test": "tests/acceptance/test_2.2.3.c"
+              "test": "tests/acceptance/test_2.3.3.c"
             },
             {
               "id": "AC2",
               "criterion": "the lowest accepted values `\"1\" \"1\" \"0\" \"0\" \"0\" \"0\" \"0\" \"fifo\"` return 0 with those values and `MODE_FIFO`",
-              "test": "tests/acceptance/test_2.2.3.c"
+              "test": "tests/acceptance/test_2.3.3.c"
             },
             {
               "id": "AC3",
               "criterion": "the shared trim is reused: `\"  0007  \"` as `number_of_coders` returns 0 and stores 7",
-              "test": "tests/acceptance/test_2.2.3.c"
+              "test": "tests/acceptance/test_2.3.3.c"
             },
             {
               "id": "AC4",
               "criterion": "`number_of_coders = \"0\"` returns exactly `1 << 1` and `time_to_burnout = \"0\"` returns exactly `1 << 2`",
-              "test": "tests/acceptance/test_2.2.3.c"
+              "test": "tests/acceptance/test_2.3.3.c"
             },
             {
               "id": "AC5",
               "criterion": "an invalid value (`\"-1\"`, `\"abc\"`, `\"\"`, `\"2147483648\"`) at each numeric position `pos` in 1..7, all other arguments valid, returns exactly `1 << pos`",
-              "test": "tests/acceptance/test_2.2.3.c"
+              "test": "tests/acceptance/test_2.3.3.c"
             },
             {
               "id": "AC6",
               "criterion": "an invalid scheduler (`\"FIFO\"`, `\" edf\"`, `\"rr\"`), all other arguments valid, returns exactly `1 << 8`",
-              "test": "tests/acceptance/test_2.2.3.c"
+              "test": "tests/acceptance/test_2.3.3.c"
             },
             {
               "id": "AC7",
               "criterion": "every invalid argument is reported: invalid 2, 3 and 8 returns the mask with exactly bits 2, 3 and 8 set (`0x10C`, 268); all eight invalid returns exactly bits 1..8 set (`0x1FE`, 510), so bit 0 is never set",
-              "test": "tests/acceptance/test_2.2.3.c"
+              "test": "tests/acceptance/test_2.3.3.c"
             },
             {
               "id": "AC8",
               "criterion": "every `argv` string is byte-for-byte unchanged after the call",
-              "test": "tests/acceptance/test_2.2.3.c"
+              "test": "tests/acceptance/test_2.3.3.c"
             },
             {
               "id": "AC9",
               "criterion": "`make -C coders` builds `codexion` with the new source and `norminette coders/` reports no error",
-              "test": "tests/acceptance/test_2.2.3.c"
+              "test": "tests/acceptance/test_2.3.3.c"
             }
           ],
-          "spec": "docs/plan/phase-02-argument-parsing/2.2.3-parse-config.md"
+          "spec": "docs/plan/phase-02-argument-parsing/2.3.3-parse-config.md"
         }
       ]
     },
     {
-      "id": "2.3",
+      "id": "2.4",
       "title": "Entry point validation",
       "phase": "02",
       "layer": "interfaces",
@@ -564,13 +948,13 @@
       "status": "pending",
       "subtasks": [
         {
-          "id": "2.3.1",
+          "id": "2.4.1",
           "title": "Print argument error",
           "status": "pending",
           "layer": "interfaces",
           "depends": [
-            "2.2.1",
-            "2.2.3"
+            "2.3.1",
+            "2.3.3"
           ],
           "files": [
             "coders/src/cli/print_arg_error.c",
@@ -581,44 +965,44 @@
             {
               "id": "AC1",
               "criterion": "`print_arg_error(1)` writes exactly `Error: number_of_coders must be an integer from 1 to 2147483647\\n` to stderr and nothing to stdout; `print_arg_error(2)` does the same for `time_to_burnout`",
-              "test": "tests/acceptance/test_2.3.1.c"
+              "test": "tests/acceptance/test_2.4.1.c"
             },
             {
               "id": "AC2",
               "criterion": "positions 3..7 write exactly `Error: <name> must be an integer from 0 to 2147483647\\n` with `time_to_compile`, `time_to_debug`, `time_to_refactor`, `number_of_compiles_required`, `dongle_cooldown` in that order",
-              "test": "tests/acceptance/test_2.3.1.c"
+              "test": "tests/acceptance/test_2.4.1.c"
             },
             {
               "id": "AC3",
               "criterion": "position 8 writes exactly `Error: scheduler must be fifo or edf\\n`",
-              "test": "tests/acceptance/test_2.3.1.c"
+              "test": "tests/acceptance/test_2.4.1.c"
             },
             {
               "id": "AC4",
               "criterion": "positions `0`, `9` and `-1` write nothing to stderr or stdout",
-              "test": "tests/acceptance/test_2.3.1.c"
+              "test": "tests/acceptance/test_2.4.1.c"
             },
             {
               "id": "AC5",
-              "criterion": "for every position 1..7 the `from` number in the message equals `arg_minimum(position)` (2.2.1)",
-              "test": "tests/acceptance/test_2.3.1.c"
+              "criterion": "for every position 1..7 the `from` number in the message equals `get_arg_minimum(position)` (2.3.1)",
+              "test": "tests/acceptance/test_2.4.1.c"
             },
             {
               "id": "AC6",
               "criterion": "`make -C coders` builds `codexion` with the new source and `norminette coders/` reports no error",
-              "test": "tests/acceptance/test_2.3.1.c"
+              "test": "tests/acceptance/test_2.4.1.c"
             }
           ],
-          "spec": "docs/plan/phase-02-argument-parsing/2.3.1-print-arg-error.md"
+          "spec": "docs/plan/phase-02-argument-parsing/2.4.1-print-arg-error.md"
         },
         {
-          "id": "2.3.2",
+          "id": "2.4.2",
           "title": "Validate arguments in main",
           "status": "pending",
           "layer": "interfaces",
           "depends": [
-            "2.2.3",
-            "2.3.1"
+            "2.3.3",
+            "2.4.1"
           ],
           "files": [
             "coders/main.c",
@@ -628,45 +1012,40 @@
             {
               "id": "AC1",
               "criterion": "`./codexion 4 -5 200 200 200 3 50 edf` writes `Error: time_to_burnout must be an integer from 1 to 2147483647` followed by the usage text to stderr, nothing to stdout, and exits with status 1",
-              "test": "tests/acceptance/test_2.3.2.c"
+              "test": "tests/acceptance/test_2.4.2.c"
             },
             {
               "id": "AC2",
               "criterion": "each of these runs is rejected the same way (its own error line, then the usage, empty stdout, status 1): `0` coders, `abc` compile time, `+3` debug time, `\"\"` refactor time, `2147483648` compiles required, `1.5` cooldown, scheduler `FIFO`, scheduler `\" edf\"`",
-              "test": "tests/acceptance/test_2.3.2.c"
+              "test": "tests/acceptance/test_2.4.2.c"
             },
             {
               "id": "AC3",
               "criterion": "`./codexion 4 -5 abc 200 200 3 50 rr` writes the three error lines for positions 2, 3 and 8 in that order, then the usage exactly once, nothing to stdout, and exits with status 1",
-              "test": "tests/acceptance/test_2.3.2.c"
+              "test": "tests/acceptance/test_2.4.2.c"
             },
             {
               "id": "AC4",
               "criterion": "`./codexion 4 800 200 200 200 3 50 edf`, `./codexion 1 1 0 0 0 0 0 fifo` and `./codexion \"  4  \" \" 0800\" 200 200 200 3 50 edf` exit with status 0 and write nothing to stderr",
-              "test": "tests/acceptance/test_2.3.2.c"
+              "test": "tests/acceptance/test_2.4.2.c"
             },
             {
               "id": "AC5",
               "criterion": "a wrong argument count still prints only the usage (no `Error:` line) and exits 1, as in 1.2.3",
-              "test": "tests/acceptance/test_2.3.2.c"
+              "test": "tests/acceptance/test_2.4.2.c"
             },
             {
               "id": "AC6",
               "criterion": "an invalid run under valgrind reports no leak and no error",
-              "test": "tests/acceptance/test_2.3.2.c"
+              "test": "tests/acceptance/test_2.4.2.c"
             },
             {
               "id": "AC7",
-              "criterion": "`README.md` explains in plain words the validation rules (digits only up to 2147483647, surrounding whitespace trimmed for numbers, each field's minimum, scheduler exactly `fifo`/`edf`, every invalid argument is reported) and shows the real output of one multi-error run",
-              "test": "tests/acceptance/test_2.3.2.c"
-            },
-            {
-              "id": "AC8",
               "criterion": "`norminette coders/` reports no error",
-              "test": "tests/acceptance/test_2.3.2.c"
+              "test": "tests/acceptance/test_2.4.2.c"
             }
           ],
-          "spec": "docs/plan/phase-02-argument-parsing/2.3.2-validate-arguments.md"
+          "spec": "docs/plan/phase-02-argument-parsing/2.4.2-validate-arguments.md"
         }
       ]
     }

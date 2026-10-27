@@ -1,40 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   trim_span.c                                        :+:      :+:    :+:   */
+/*   print_usage.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/27 10:00:00 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/10/27 10:00:00 by sperez-l         ###   ########.fr       */
+/*   Created: 2026/10/27 17:05:14 by sperez-l          #+#    #+#             */
+/*   Updated: 2026/10/27 17:05:14 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stddef.h>
+#include <stdio.h>
 #include "main.h"
 
-static int	is_space(char c)
+void	print_usage(void)
 {
-	return (c == ' ' || (c >= '\t' && c <= '\r'));
-}
-
-t_span	trim_span(const char *str)
-{
-	t_span	span;
-	int		end;
-
-	span.start = NULL;
-	span.len = 0;
-	if (str == NULL)
-		return (span);
-	while (is_space(*str))
-		str++;
-	span.start = str;
-	end = 0;
-	while (str[end] != '\0')
-		end++;
-	while (end > 0 && is_space(str[end - 1]))
-		end--;
-	span.len = end;
-	return (span);
+	fprintf(stderr, "Usage: ./codexion number_of_coders time_to_burnout "
+		"time_to_compile time_to_debug time_to_refactor "
+		"number_of_compiles_required dongle_cooldown scheduler\n"
+		"  scheduler is either fifo or edf\n");
 }
