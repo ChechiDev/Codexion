@@ -311,7 +311,7 @@
       "phase": "02",
       "layer": "core",
       "goal": "reusable building blocks for the numeric arguments: a whitespace trim that returns a span without copying, and a digits-only, overflow-safe string to `int` conversion that reports failure instead of guessing",
-      "status": "in_progress",
+      "status": "done",
       "subtasks": [
         {
           "id": "2.1.1",
@@ -361,7 +361,7 @@
         {
           "id": "2.1.2",
           "title": "Parse number",
-          "status": "pending",
+          "status": "done",
           "layer": "core",
           "depends": [
             "2.1.1"

@@ -60,3 +60,12 @@ Entry template (filled in at close):
 - **Verification:** supplied `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.1.1.md`).
 - **Documentation:** docs/reference/2.1.1-trim-span.md
 - **Commit:** feat(core): add whitespace span trimming [2.1.1]
+
+## 2026-10-27 — Subtask 2.1.2: Parse number
+- **Layer:** core
+- **Plan:** docs/plan/phase-02-argument-parsing/2.1.2-parse-number.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/parsing/parse_number.c`, `coders/main.h`, and `coders/Makefile` add a shared trimmed, digits-only conversion bounded by `INT_MAX`; unit and acceptance coverage exercise valid values, invalid input, and overflow.
+- **Acceptance:** `tests/acceptance/test_2.1.2.c` — AC1–AC6 covered and green in the supplied check.
+- **Verification:** supplied `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.1.2.md`).
+- **Documentation:** docs/reference/2.1.2-parse-number.md
+- **Commit:** feat(core): parse numbers safely [2.1.2]

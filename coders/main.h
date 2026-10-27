@@ -41,5 +41,6 @@ typedef struct s_span
 
 void	print_usage(void);
 t_span	trim_span(const char *str);
+int		parse_number(const char *str, int *out);
 
 #endif

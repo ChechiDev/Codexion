@@ -48,6 +48,12 @@ The single per-subtask commit is made by **Codex at close**, after `APPROVED` +
 `make check` green. Authorized exception to the global "do not commit" rule, only
 inside the harness close step, with **no agent attribution**.
 
+When that close finishes the last subtask of a task, the harness also pushes the
+task branch and opens **one PR for the task** (`gh`, narrative written by Codex,
+no agent attribution). Authorized exception to the global "do not push" rule,
+only inside that harness step; retry with `./harness/review_with_codex.sh pr <N.M>`.
+Merging the PR is always the user's call.
+
 ### Startup protocol
 
 1. Read `AGENTS.md`, `docs/codexion-rules.md`, `docs/plan/PLAN.md`, `progress/current.md`.
