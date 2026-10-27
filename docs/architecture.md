@@ -9,27 +9,31 @@
 ## Layers (dependencies point inward)
 
 - **core** — pure logic and data structures. No I/O, no syscalls, no globals.
-  Deterministic, trivially testable. (`src/core/`, public API in `include/<name>/`.)
-- **adapters** — I/O, files, sockets, OS, third-party libraries. They depend on
-  core, never the other way round. (`src/io/`, `src/platform/`…)
-- **interfaces** — the entry points: CLI `main`, a library's public API, a daemon.
+  Deterministic, trivially testable.
+- **adapters** — I/O, time, threads and mutexes. They depend on core, never the
+  other way round.
+- **interfaces** — the entry point: `main` and what it prints to the user.
 
-Rule: core does not `#include` adapter headers. Dependencies are injected by
-passing **opaque structs + function pointers** (the C way to define a "port").
+The project has a single header (`coders/main.h`), so the layers are kept by
+discipline, not by includes: a core function never calls `write`, `printf`,
+`gettimeofday` or a `pthread_*` function.
 
-## Modules
+## Modules (`coders/src/`)
 
-- One responsibility per module = one `.c` (+ private header) and, if public, one
-  header under `include/<name>/`. No circular includes.
-- Opaque types: expose `typedef struct foo foo_t;` in the header, keep the struct
-  definition in the `.c`. Callers hold a pointer and use the module's functions.
+| Folder | Layer | Owns | Depends on |
+|---|---|---|---|
+| `utils/` | core | generic helpers with no domain knowledge (`is_space`, `is_digit`, `trim_slice`) | nothing |
+| `parsing/` | core | turning `argv` text into a validated `t_config` | `utils/` |
+| `cli/` | interfaces | every user-facing message: the usage text (`print_usage`) and the argument errors | `parsing/` (minimums) |
+| `main.c` | interfaces | the entry point only: wires the modules together | every module |
+
+Later phases add their own folders (time and log, queue, simulation, ...) and
+this table grows with them. Rules for each folder, `main.h` sections and names
+are in `docs/conventions.md`.
 
 ## Memory & ownership
 
 - Every allocation has a documented owner and a single free path.
-- Prefer caller-allocates / callee-fills for hot paths; document the contract in
-  the header.
-
-## ‹Bounded contexts / modules of this project ›
-
-- ‹module: what it owns, its public header, its dependencies›
+- Prefer views over copies: `t_slice` points into a string it does not own, so
+  it needs no allocation and never modifies its source (`argv`).
+- Prefer caller-allocates / callee-fills; document the contract in the spec.

@@ -3,16 +3,27 @@
 **Verdict:** PHASE_APPROVED
 
 ## Analysis
-- **Coverage and scope:** Tasks 2.1–2.3 cover numeric parsing, field and scheduler validation, and CLI error reporting required by the phase goal and subject. Each of the seven pending subtasks has one focused function or entry-point integration and declares 1–3 production files, including the affected living files. Phase 03 onward remains unbroken.
-- **Dependencies:** The graph is acyclic and progresses from core primitives to configuration parsing to the CLI. Shared `coders/main.h` and `coders/Makefile` edits are ordered through explicit dependencies, including 2.3.1 depending on 2.2.3.
-- **Acceptance:** Every criterion has an observable result or tooling outcome and names its subtask's single `tests/acceptance/test_<id>.c` path. The supplied session-start `make check` exited 0; tests were not run in this sandbox.
+- Coverage: tasks 2.1–2.4 cover the phase goal, from numeric primitives and project conventions through config parsing and entry point validation. Later phases retain only titles and goals.
+- Scope: each pending subtask has one focused change and declares one to three files. Shared-file edits are ordered by explicit dependencies; the dependency graph is acyclic and follows utils → parsing → CLI/main.
+- Acceptance: every subtask has observable criteria and one `tests/acceptance/test_<N.M.K>.c` path. The revised 2.2.3 AC3 checks stable declarations, so it remains valid after the span-to-slice rename. The 2.2.2 and 2.2.7 plan-gate steps specify migration and re-sealing of the older 2.1.1 oracle before the corresponding implementation.
+- Baseline: 2.1.1 and 2.1.2 are delivered work with existing code and acceptance tests. The supplied `scripts/regate_check.sh phase 02` result exited 0; no tests were run in this sandbox.
 
 ## Per subtask
-- 2.1.1: ok; one pure span-trimming primitive, with boundary and immutability criteria.
-- 2.1.2: ok; one digits-only parser with overflow and failure-output criteria. Its description correctly assigns minimum checks to 2.2.3.
-- 2.2.1: ok; one numeric minimum lookup used by parsing and error output.
-- 2.2.2: ok; one exact scheduler parser, ordered after prior shared-file edits.
-- 2.2.3: ok; one config parser with per-field and aggregate error-mask criteria.
-- 2.3.1: ok; one diagnostic function, now ordered after all prior shared-file edits.
-- 2.3.2: ok; entry-point behavior and README update are covered by binary and documentation criteria.
-
+- 2.1.1: delivered `trim_span` implementation, header/Makefile entries, and six acceptance checks exist; later API migration is specified.
+- 2.1.2: delivered `parse_number` implementation, header/Makefile entries, and six acceptance checks exist.
+- 2.2.1: ok; moves one CLI function without changing its output.
+- 2.2.2: ok; moves one helper and migrates the older Makefile-path check at the plan gate.
+- 2.2.3: ok; section layout is testable, and AC3 covers only stable declarations.
+- 2.2.4: ok; adds the new slice API while preserving the old one temporarily.
+- 2.2.5: ok; switches the parser to the new API.
+- 2.2.6: ok; transfers the single trim implementation while retaining old behavior.
+- 2.2.7: ok; removes the old API after migrating and re-sealing its oracle.
+- 2.2.8: ok; defines one generic whitespace predicate.
+- 2.2.9: ok; reuses that predicate in trimming.
+- 2.2.10: ok; defines one generic digit predicate.
+- 2.2.11: ok; reuses that predicate in number parsing.
+- 2.3.1: ok; centralizes numeric field minimums.
+- 2.3.2: ok; accepts only the two exact scheduler names.
+- 2.3.3: ok; composes the parsers and reports all invalid positions.
+- 2.4.1: ok; maps each invalid position to its required error line.
+- 2.4.2: ok; validates before simulation work and assigns the README update to close.

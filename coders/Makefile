@@ -6,7 +6,7 @@
 #    By: sperez-l@student.42barcelona.com           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/10/26 16:47:34 by sperez-l          #+#    #+#              #
-#    Updated: 2026/10/26 18:02:34 by sperez-l         ###   ########.fr        #
+#    Updated: 2026/10/27 17:06:02 by sperez-l         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,6 +15,7 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror -pthread -I.
 
 SRC = main.c \
+	src/cli/print_usage.c \
 	src/parsing/parse_number.c \
 	src/parsing/trim_span.c
 

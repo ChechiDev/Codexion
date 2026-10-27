@@ -69,3 +69,12 @@ Entry template (filled in at close):
 - **Verification:** supplied `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.1.2.md`).
 - **Documentation:** docs/reference/2.1.2-parse-number.md
 - **Commit:** feat(core): parse numbers safely [2.1.2]
+
+## 2026-10-27 — Subtask 2.2.1: Move print usage
+- **Layer:** interfaces
+- **Plan:** docs/plan/phase-02-argument-parsing/2.2.1-move-print-usage.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/cli/print_usage.c`, `coders/main.c`, and `coders/Makefile` place usage output in the CLI layer while preserving the entry point behavior.
+- **Acceptance:** `tests/acceptance/test_2.2.1.c` — AC1–AC3 covered and green in the supplied check.
+- **Verification:** supplied `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.1.md`).
+- **Documentation:** docs/reference/2.2.1-move-print-usage.md
+- **Commit:** feat(interfaces): move usage output to CLI [2.2.1]
