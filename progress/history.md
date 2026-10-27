@@ -141,3 +141,12 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.8.md`).
 - **Documentation:** docs/reference/2.2.8-is-space.md
 - **Commit:** feat(utils): add whitespace predicate [2.2.8]
+
+## 2026-10-27 — Subtask 2.2.9: Use is space
+- **Layer:** core
+- **Plan:** docs/plan/phase-02-argument-parsing/2.2.9-use-is-space.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/utils/trim_slice.c` now uses the shared `is_space` predicate in both boundary scans, preserving the established trimming behavior.
+- **Acceptance:** `tests/acceptance/test_2.2.9.c` — AC1–AC3 covered and green in the supplied check; the leading offset oracle was corrected from 6 to 7 during the plan gate.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.9.md`).
+- **Documentation:** docs/reference/2.2.9-use-is-space.md
+- **Commit:** refactor(utils): use is_space in trim_slice [2.2.9]

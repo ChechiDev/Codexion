@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/27 18:00:00 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/10/27 18:08:19 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/10/27 18:31:45 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,11 @@ t_slice	trim_slice(const char *str)
 	slice.len = 0;
 	if (str == NULL)
 		return (slice);
-	while (*str == ' ' || (*str >= '\t' && *str <= '\r'))
+	while (is_space(*str))
 		str++;
 	slice.start = str;
 	end = (int)strlen(str);
-	while (end > 0 && (str[end - 1] == ' '
-			|| (str[end - 1] >= '\t' && str[end - 1] <= '\r')))
+	while (end > 0 && is_space(str[end - 1]))
 		end--;
 	slice.len = end;
 	return (slice);

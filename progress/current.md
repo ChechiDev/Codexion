@@ -1,33 +1,35 @@
 # Current session
 
-- **Current subtask:** 2.2.8 Is space (branch `style/project-conventions`)
+- **Current subtask:** 2.2.9 Use is space (branch `style/project-conventions`)
 - **Layer:** core
 - **Start:** 2026-10-27
 - **Engine/role:** leader → plan gate (Codex) → implementer → code review → documenter & close
-- **Note:** eighth subtask of task 2.2 "Apply project conventions": first
-  generic predicate in `coders/src/utils/` (`is_space`). No caller yet; 2.2.9
-  switches `trim_slice` to it.
+- **Note:** ninth subtask of task 2.2 "Apply project conventions". Structural
+  refactor (`AGENTS.md` §1): `trim_slice` replaces its inline whitespace test
+  with `is_space` (2.2.8). One file, no behaviour change.
 
 ## Plan and execution
 
-- [x] Plan approved: `progress/plan_review_2.2.8.md` = `PLAN_APPROVED`.
-- [x] Acceptance tests: `tests/acceptance/test_2.2.8.c` (AC1–AC4), sealed.
-- [x] Implementation and unit tests: `progress/impl_2.2.8.md`.
-- [x] Code review: `progress/review_2.2.8.md` = `APPROVED`.
-- [x] Close.
+- [x] Plan approved: `progress/plan_review_2.2.9.md` = `PLAN_APPROVED`.
+- [x] Acceptance tests: `tests/acceptance/test_2.2.9.c` (AC1–AC3), sealed.
+- [x] Implementation and unit tests: `progress/impl_2.2.9.md`.
+- [x] Code review: `progress/review_2.2.9.md` = `APPROVED`.
+- [x] Close: reference note, plan sync, history, commit message.
 
 ## Gate status
 
 - [x] **Plan approved** → `PLAN_APPROVED`
-- [x] **Acceptance tests written** → `tests/acceptance/test_2.2.8.c`
-- [x] **Implementation** → `progress/impl_2.2.8.md`
-- [x] **Code approved** → `progress/review_2.2.8.md` = `APPROVED`
+- [x] **Acceptance tests written** → `tests/acceptance/test_2.2.9.c`
+- [x] **Implementation** → `progress/impl_2.2.9.md`
+- [x] **Code approved** → `progress/review_2.2.9.md` = `APPROVED`
 - [x] **Close** → reference note, plan sync, history, commit message
 
 ## Next step
 
-Next subtask: 2.2.9.
+**Close prepared.** The acceptance oracle offset was corrected to account for
+all seven leading whitespace characters and resealed during the plan gate.
+Code review is approved, the supplied pre-session `make check` is green, and
+the close documentation and commit message are ready for the harness.
 
-Note: agents cannot delete files under `coders/` (the guard blocks shell `rm`
-and there is no delete tool). Deletions declared by a spec and stale build
-objects of moved sources are done by the user by hand.
+**Next step:** harness runs `make check` outside the sandbox and creates the
+single close commit.

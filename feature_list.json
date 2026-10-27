@@ -695,7 +695,7 @@
         {
           "id": "2.2.9",
           "title": "Use is space",
-          "status": "pending",
+          "status": "done",
           "layer": "core",
           "depends": [
             "2.2.8"
