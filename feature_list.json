@@ -590,7 +590,7 @@
         {
           "id": "2.2.6",
           "title": "Move trim logic",
-          "status": "pending",
+          "status": "done",
           "layer": "core",
           "depends": [
             "2.2.5"

@@ -6,19 +6,30 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/27 18:00:00 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/10/27 18:00:00 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/10/27 18:08:19 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stddef.h>
+#include <string.h>
 #include "main.h"
 
 t_slice	trim_slice(const char *str)
 {
-	t_span	span;
 	t_slice	slice;
+	int		end;
 
-	span = trim_span(str);
-	slice.start = span.start;
-	slice.len = span.len;
+	slice.start = NULL;
+	slice.len = 0;
+	if (str == NULL)
+		return (slice);
+	while (*str == ' ' || (*str >= '\t' && *str <= '\r'))
+		str++;
+	slice.start = str;
+	end = (int)strlen(str);
+	while (end > 0 && (str[end - 1] == ' '
+			|| (str[end - 1] >= '\t' && str[end - 1] <= '\r')))
+		end--;
+	slice.len = end;
 	return (slice);
 }

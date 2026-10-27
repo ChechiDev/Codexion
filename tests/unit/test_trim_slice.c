@@ -53,8 +53,18 @@ static void	test_input_unchanged(void)
 	assert(memcmp(buf, copy, sizeof(buf)) == 0);
 }
 
+static void	test_control_chars_kept(void)
+{
+	const char	*s = "\x01 a \x7f";
+	t_slice		slice;
+
+	slice = trim_slice(s);
+	assert(slice.start == s && slice.len == 5);
+}
+
 int	main(void)
 {
+	test_control_chars_kept();
 	test_both_sides();
 	test_inner_whitespace_kept();
 	test_blank_inputs();

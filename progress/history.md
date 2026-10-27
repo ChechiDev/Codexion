@@ -114,3 +114,12 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.5.md`).
 - **Documentation:** docs/reference/2.2.5-use-trim-slice.md
 - **Commit:** refactor(parsing): use trim slice in number parser [2.2.5]
+
+## 2026-10-27 — Subtask 2.2.6: Move trim logic
+- **Layer:** core
+- **Plan:** docs/plan/phase-02-argument-parsing/2.2.6-move-trim-logic.md (plan_review: PLAN_APPROVED)
+- **Changes:** `trim_slice.c` now owns the single trimming algorithm; `trim_span.c` delegates and maps the result into the legacy span type.
+- **Acceptance:** `tests/acceptance/test_2.2.6.c` — AC1–AC4 covered and green in the supplied check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.6.md`).
+- **Documentation:** docs/reference/2.2.6-move-trim-logic.md
+- **Commit:** refactor(utils): move trim algorithm to slice [2.2.6]
