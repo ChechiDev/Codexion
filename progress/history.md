@@ -87,3 +87,12 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.2.md`).
 - **Documentation:** docs/reference/2.2.2-move-trim-span.md
 - **Commit:** refactor(utils): move trim_span into utils [2.2.2]
+
+## 2026-10-27 — Subtask 2.2.3: Header sections
+- **Layer:** core
+- **Plan:** docs/plan/phase-02-argument-parsing/2.2.3-header-sections.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/main.h` groups the existing declarations under the Macros, Types, Utils, Parsing and CLI section titles without changing the public API.
+- **Acceptance:** `tests/acceptance/test_2.2.3.c` — AC1–AC4 covered and green in the supplied check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.3.md`).
+- **Documentation:** docs/reference/2.2.3-header-sections.md
+- **Commit:** feat(core): organize header declarations [2.2.3]
