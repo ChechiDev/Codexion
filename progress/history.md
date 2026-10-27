@@ -150,3 +150,12 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.9.md`).
 - **Documentation:** docs/reference/2.2.9-use-is-space.md
 - **Commit:** refactor(utils): use is_space in trim_slice [2.2.9]
+
+## 2026-10-27 — Subtask 2.2.10: Is digit
+- **Layer:** core
+- **Plan:** docs/plan/phase-02-argument-parsing/2.2.10-is-digit.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/utils/is_digit.c`, `coders/main.h`, and `coders/Makefile` add the generic decimal digit predicate; unit and acceptance coverage exercise its contract.
+- **Acceptance:** `tests/acceptance/test_2.2.10.c` — AC1–AC4 covered and green in the supplied check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.10.md`).
+- **Documentation:** docs/reference/2.2.10-is-digit.md
+- **Commit:** feat(utils): add decimal digit predicate [2.2.10]
