@@ -105,3 +105,12 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.4.md`).
 - **Documentation:** docs/reference/2.2.4-trim-slice.md
 - **Commit:** feat(utils): add trimmed slice view [2.2.4]
+
+## 2026-10-27 — Subtask 2.2.5: Use trim slice
+- **Layer:** core
+- **Plan:** docs/plan/phase-02-argument-parsing/2.2.5-use-trim-slice.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/parsing/parse_number.c` now consumes the non-owning `t_slice` returned by `trim_slice`; parsing behavior is unchanged.
+- **Acceptance:** `tests/acceptance/test_2.2.5.c` — AC1–AC3 covered and green in the supplied check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.5.md`).
+- **Documentation:** docs/reference/2.2.5-use-trim-slice.md
+- **Commit:** refactor(parsing): use trim slice in number parser [2.2.5]

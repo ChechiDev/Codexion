@@ -290,3 +290,106 @@ See `progress/phase_review_02.md` (current verdict, unchanged since).
 - 2.3.3: ok; composes the parsers and reports all invalid positions.
 - 2.4.1: ok; maps each invalid position to its required error line.
 - 2.4.2: ok; validates before simulation work and assigns the README update to close.
+
+## Round 11: phase gate, CHANGES_REQUESTED (2026-10-27 17:56)
+
+### Phase review — phase 02
+
+**Verdict:** CHANGES_REQUESTED
+
+#### Analysis
+- Coverage: tasks 2.1–2.4 cover numeric parsing, the convention refactor, config validation, and CLI errors. Later phases remain unbroken.
+- Scope and dependencies: the subtasks are focused, declare one to three files, and order shared-file edits without a cycle. The behavior-preserving 2.2.5, 2.2.6, 2.2.9, and 2.2.11 specs now state the structural-refactor exception and give a source-inspection check for the code gate.
+- Acceptance: each subtask names one acceptance-test path. The 2.2.7 removal step overlooks a sealed oracle that still requires the old source, so its proposed gate migration is incomplete.
+- Supplied pre-session re-gate exited 0; no tests were run in this sandbox.
+
+#### Per subtask
+- 2.1.1: delivered implementation and acceptance oracle exist; its later migration is specified in 2.2.7.
+- 2.1.2: delivered implementation and acceptance oracle exist.
+- 2.2.1: ok; moves `print_usage` to CLI.
+- 2.2.2: its sealed AC2 still asserts `src/utils/trim_span.c` is in `coders/Makefile`; 2.2.7 must name and migrate this oracle before removing that source.
+- 2.2.3: ok; its header check accepts either trim prototype.
+- 2.2.4: ok; adds the slice API.
+- 2.2.5: ok; structural refactor with regression criteria and a code review check.
+- 2.2.6: ok; structural refactor with regression criteria and a code review check.
+- 2.2.7: incomplete older-oracle migration; see requested change.
+- 2.2.8: ok; adds one whitespace predicate.
+- 2.2.9: ok; structural refactor with regression criteria and a code review check.
+- 2.2.10: ok; adds one digit predicate.
+- 2.2.11: ok; structural refactor with regression criteria and a code review check.
+- 2.3.1: ok; centralizes numeric minimums.
+- 2.3.2: ok; parses the two exact modes.
+- 2.3.3: ok; composes validation and returns all invalid positions.
+- 2.4.1: ok; maps positions to specific errors.
+- 2.4.2: ok; validates in `main` and specifies the README close update.
+
+#### Requested changes
+1. In `docs/plan/phase-02-argument-parsing/2.2.7-remove-trim-span.md`, correct the claim that only `test_2.1.1.c` references the old API/source. Explicitly migrate `tests/acceptance/test_2.2.2.c` AC2's Makefile assertion from `src/utils/trim_span.c` to the surviving `src/utils/trim_slice.c`, preserve its build/no-relink/Norm checks, and re-seal that oracle at the 2.2.7 plan gate. Its current assertion is at `tests/acceptance/test_2.2.2.c:57`.
+
+## Round 12: phase gate, CHANGES_REQUESTED (2026-10-27 17:58)
+
+### Phase review — phase 02
+
+**Verdict:** CHANGES_REQUESTED
+
+#### Analysis
+- Coverage: tasks 2.1–2.4 cover numeric parsing, the convention refactor, config validation, and CLI errors. Later phases remain unbroken.
+- Scope and dependencies: the subtasks are focused, declare one to three files, and order shared-file edits without a cycle. The behavior-preserving 2.2.5, 2.2.6, 2.2.9, and 2.2.11 specs now state the structural-refactor exception and give a source-inspection check for the code gate.
+- Acceptance: each subtask names one acceptance-test path. The 2.2.7 removal step now covers both sealed oracles affected by deleting the old source.
+- Baseline: 2.1.1 and 2.1.2 have their declared implementation and acceptance files. The supplied harness log reports the build, Norm, and existing tests passing; no tests were run in this sandbox.
+- Gate: the supplied re-gate exited 2. Its check failed because phase 02 is not approved for six done subtasks and the active subtask, and because four pending specs changed after the previous phase approval. The reviewer hard rule forbids approval with this red harness result.
+
+#### Per subtask
+- 2.1.1: delivered implementation and acceptance oracle exist; its later migration is specified in 2.2.7.
+- 2.1.2: delivered implementation and acceptance oracle exist.
+- 2.2.1: ok; moves `print_usage` to CLI.
+- 2.2.2: ok; its later oracle migration is specified in 2.2.7.
+- 2.2.3: ok; its header check accepts either trim prototype.
+- 2.2.4: ok; adds the slice API.
+- 2.2.5: ok; structural refactor with regression criteria and a code review check.
+- 2.2.6: ok; structural refactor with regression criteria and a code review check.
+- 2.2.7: ok; specifies migration and re-sealing of both affected older oracles.
+- 2.2.8: ok; adds one whitespace predicate.
+- 2.2.9: ok; structural refactor with regression criteria and a code review check.
+- 2.2.10: ok; adds one digit predicate.
+- 2.2.11: ok; structural refactor with regression criteria and a code review check.
+- 2.3.1: ok; centralizes numeric minimums.
+- 2.3.2: ok; parses the two exact modes.
+- 2.3.3: ok; composes validation and returns all invalid positions.
+- 2.4.1: ok; maps positions to specific errors.
+- 2.4.2: ok; validates in `main` and specifies the README close update.
+
+#### Requested changes
+1. Resolve the red supplied harness gate before approval. `/tmp/harness-check-phase.QFA6Eb` reports the missing phase approval for 2.1.1–2.2.5 and invalidated seals for `2.2.6-move-trim-logic.md`, `2.2.7-remove-trim-span.md`, `2.2.9-use-is-space.md`, and `2.2.11-use-is-digit.md`. The plan content needs no further change from this review; the gate is self-referential because phase approval is needed to clear these failures.
+
+## Round 13: phase gate, PHASE_APPROVED (2026-10-27 18:00)
+
+### Phase review — phase 02
+
+**Verdict:** PHASE_APPROVED
+
+#### Analysis
+- Coverage: tasks 2.1–2.4 deliver numeric primitives, the convention migration, config validation, and CLI errors. Every task has implementing subtasks. Later phases remain unbroken.
+- Scope and dependencies: each subtask is focused, declares one to three files, and orders shared-file edits without a cycle. Core parsing precedes interface validation.
+- Acceptance: each subtask names one acceptance-test path. The behavior-preserving 2.2.5, 2.2.6, 2.2.9, and 2.2.11 specs use the structural-refactor exception: regression oracles cover behavior and a `Code review check:` covers the structural change. The 2.2.7 removal step specifies migration of both sealed oracles affected by deleting the old source.
+- Existing work: 2.1.1 and 2.1.2 have their declared implementation and acceptance files. The supplied `/tmp/harness-check-phase.fW2wZd` re-gate exited 0. Its build, Norm, and existing tests passed; its only excused `make check` failures are the phase approval and plan seals renewed by this gate. No tests were run in this sandbox.
+
+#### Per subtask
+- 2.1.1: delivered implementation and acceptance oracle exist; its later migration is specified in 2.2.7.
+- 2.1.2: delivered implementation and acceptance oracle exist.
+- 2.2.1: ok; moves `print_usage` to CLI.
+- 2.2.2: ok; its later oracle migration is specified in 2.2.7.
+- 2.2.3: ok; its header check accepts either trim prototype.
+- 2.2.4: ok; adds the slice API.
+- 2.2.5: ok; structural refactor with regression criteria and a code review check.
+- 2.2.6: ok; structural refactor with regression criteria and a code review check.
+- 2.2.7: ok; specifies migration and re-sealing of both affected older oracles.
+- 2.2.8: ok; adds one whitespace predicate.
+- 2.2.9: ok; structural refactor with regression criteria and a code review check.
+- 2.2.10: ok; adds one digit predicate.
+- 2.2.11: ok; structural refactor with regression criteria and a code review check.
+- 2.3.1: ok; centralizes numeric minimums.
+- 2.3.2: ok; parses the two exact modes.
+- 2.3.3: ok; composes validation and returns all invalid positions.
+- 2.4.1: ok; maps positions to specific errors.
+- 2.4.2: ok; validates in `main` and specifies the README close update.

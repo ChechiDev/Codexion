@@ -21,7 +21,7 @@ case "$target" in
     ;;
   phase)
     [[ "$phase" =~ ^[0-9]{2}$ ]] || { echo "usage: $0 roadmap | phase <NN>" >&2; exit 2; }
-    expected_re="(changed|added|removed) after phase $phase was approved|is done but phase $phase is not PHASE_APPROVED"
+    expected_re="(changed|added|removed) after phase $phase was approved|is (done|in_progress) but phase $phase is not PHASE_APPROVED"
     ;;
   *)
     echo "usage: $0 roadmap | phase <NN>" >&2

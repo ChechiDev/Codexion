@@ -13,6 +13,15 @@
    subtask, they are intentionally **red**, so `make verify`/`make check` are
    expected to fail on *those* tests. That is the correct state at the plan phase,
    not a harness failure. Green is required at session start, the code gate, and close.
+   Exception — **structural refactor**: a subtask whose spec declares
+   `Structural refactor (no behaviour change)` only changes *how* existing
+   behaviour is implemented. Its acceptance tests are **regression** oracles on
+   the public API or the binary: they may already be green at the plan gate and
+   must stay green through the code gate and close. The structural change itself
+   is verified at the code gate through the spec's `Code review check:` line
+   (read-only source inspection by Codex), never by a source-text acceptance
+   test. Only a subtask with no observable behaviour change may be marked this
+   way; the phase gate reviews that claim.
 2. Read `progress/current.md` (where the last session left off).
 3. Run `make status`: the whole plan, every gate verdict and the **next step**.
 
