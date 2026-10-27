@@ -123,3 +123,12 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.6.md`).
 - **Documentation:** docs/reference/2.2.6-move-trim-logic.md
 - **Commit:** refactor(utils): move trim algorithm to slice [2.2.6]
+
+## 2026-10-27 — Subtask 2.2.7: Remove trim span
+- **Layer:** core
+- **Plan:** docs/plan/phase-02-argument-parsing/2.2.7-remove-trim-span.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/main.h` and `coders/Makefile` retire the span API and its build entry; the delegate and obsolete unit test were removed, with edge cases retained against `trim_slice`.
+- **Acceptance:** `tests/acceptance/test_2.2.7.c` — AC1–AC3 covered and green in the supplied check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.7.md`).
+- **Documentation:** docs/reference/2.2.7-remove-trim-span.md
+- **Commit:** chore(utils): remove trim span API [2.2.7]

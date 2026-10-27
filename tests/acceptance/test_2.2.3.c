@@ -89,10 +89,7 @@ static void test_ac2_declarations_in_sections(void)
 	assert_between(macros, types, "# define EXIT_USAGE");
 	assert_between(types, utils, "typedef enum e_mode");
 	assert_between(types, utils, "typedef struct s_config");
-	assert((strstr(utils, "trim_span(") != NULL
-		&& strstr(utils, "trim_span(") < parsing)
-		|| (strstr(utils, "trim_slice(") != NULL
-			&& strstr(utils, "trim_slice(") < parsing));
+	assert_between(utils, parsing, "trim_slice(");
 	assert_between(parsing, cli, "parse_number(");
 	assert(end != NULL);
 	assert_between(cli, end, "print_usage(");

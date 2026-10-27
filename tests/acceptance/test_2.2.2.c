@@ -54,7 +54,7 @@ static void test_ac2_build_no_relink_and_norm(void)
 	assert(used < OUTPUT_CAP - 1 || fgetc(makefile) == EOF);
 	output[used] = '\0';
 	assert(fclose(makefile) == 0);
-	assert(strstr(output, "src/utils/trim_span.c") != NULL);
+	assert(strstr(output, "src/utils/trim_slice.c") != NULL);
 	assert(strstr(output, "src/parsing/trim_span.c") == NULL);
 	run_command("make -C coders 2>&1", output);
 	assert(stat("coders/codexion", &info) == 0 && S_ISREG(info.st_mode));
