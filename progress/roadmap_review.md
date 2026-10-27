@@ -3,7 +3,8 @@
 **Verdict:** ROADMAP_APPROVED
 
 ## Analysis
-- **Coverage:** The ten phase goals cover the mandatory Codexion behavior, strict input validation, FIFO/EDF arbitration with cooldown, thread lifecycle, verification, and the subject's README requirements. No phase introduces an out-of-scope feature.
-- **Order and dependencies:** Build, parsing, time/logging, heap, and state precede arbitration; coder and monitor threads precede the executable lifecycle. Phase 06 uses arbiter-level tests, while the full-binary viability cases occur in Phase 10 after Phases 07–09. No phase requires a later phase to deliver its goal.
-- **Size:** Each phase has a coherent deliverable and can be broken into subtasks without containing the whole project. Phase 10 is a verification and documentation increment after the executable works.
-- **Architecture:** Pure parsing and heap logic are separated from platform adapters, thread orchestration, and the CLI. The deliverable layout, allowed-function constraint, mutex/condition-variable design, EDF key, cooldown, ownership risks, Norm, and CI checks are stated. The EDF progress argument is distinct from finite test evidence.
+- **Coverage:** The ten phase goals cover the mandatory Codexion build, input validation, FIFO/EDF scheduling with cooldown, coder and monitor threads, lifecycle, verification, and README. They introduce no out-of-scope feature. The revised Phase 02 goal trims only numeric arguments; the scheduler remains exactly `fifo` or `edf`, as required by `docs/codexion-rules.md`.
+- **Order and dependencies:** Build and parsing precede runtime components; time/logging, heap, and state precede arbitration; arbitration precedes coder and monitor threads; lifecycle precedes full-binary verification. No phase goal needs a later phase.
+- **Size:** Each phase is a coherent increment. Phase 10 combines final system verification and documentation after the executable is integrated.
+- **Architecture:** Pure parsing and heap logic remain separate from platform adapters and thread orchestration. The overview names the allowed-function constraint, ownership, synchronization, timing, and Norm risks.
+- **Harness:** The supplied `make check` exited 2 because the changed roadmap lacks a current approval and seal. Its build and tests passed; this verdict reviews the changed roadmap for re-approval.

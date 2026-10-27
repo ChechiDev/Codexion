@@ -31,8 +31,15 @@ typedef struct s_config
 	t_mode	mode;
 }	t_config;
 
+typedef struct s_span
+{
+	const char	*start;
+	int			len;
+}	t_span;
+
 # define EXIT_USAGE 1
 
 void	print_usage(void);
+t_span	trim_span(const char *str);
 
 #endif

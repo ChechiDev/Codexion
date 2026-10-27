@@ -14,7 +14,8 @@ NAME = codexion
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -pthread -I.
 
-SRC = main.c
+SRC = main.c \
+	src/parsing/trim_span.c
 
 OBJ = $(SRC:.c=.o)
 
