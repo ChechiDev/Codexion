@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/27 11:00:00 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/10/27 18:01:46 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/10/27 19:00:51 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	parse_number(const char *str, int *out)
 	i = 0;
 	while (i < slice.len)
 	{
-		if (slice.start[i] < '0' || slice.start[i] > '9')
+		if (!is_digit(slice.start[i]))
 			return (-1);
 		digit = slice.start[i] - '0';
 		if (value > (INT_MAX - digit) / 10)

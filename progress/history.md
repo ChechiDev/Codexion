@@ -159,3 +159,12 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.10.md`).
 - **Documentation:** docs/reference/2.2.10-is-digit.md
 - **Commit:** feat(utils): add decimal digit predicate [2.2.10]
+
+## 2026-10-27 — Subtask 2.2.11: Use is digit
+- **Layer:** core
+- **Plan:** docs/plan/phase-02-argument-parsing/2.2.11-use-is-digit.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/parsing/parse_number.c` now uses the shared `is_digit` predicate while preserving trimming, overflow checks, and output-on-success behavior.
+- **Acceptance:** `tests/acceptance/test_2.2.11.c` — AC1–AC3 covered and green in the supplied check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.11.md`).
+- **Documentation:** docs/reference/2.2.11-use-is-digit.md
+- **Commit:** refactor(parsing): use is_digit in number parser [2.2.11]

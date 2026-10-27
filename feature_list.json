@@ -414,7 +414,7 @@
       "phase": "02",
       "layer": "core",
       "goal": "bring the delivered code in line with `docs/conventions.md` (branch `style/project-conventions`): user-facing messages in `cli/`, `main.h` split into titled sections, `t_span` renamed to `t_slice`, and generic helpers (`is_space`, `is_digit`, `trim_slice`) in `src/utils/` reused by the parser, with no behaviour change",
-      "status": "in_progress",
+      "status": "done",
       "subtasks": [
         {
           "id": "2.2.1",
@@ -762,7 +762,7 @@
         {
           "id": "2.2.11",
           "title": "Use is digit",
-          "status": "pending",
+          "status": "done",
           "layer": "core",
           "depends": [
             "2.2.10"
