@@ -96,3 +96,12 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.3.md`).
 - **Documentation:** docs/reference/2.2.3-header-sections.md
 - **Commit:** feat(core): organize header declarations [2.2.3]
+
+## 2026-10-27 — Subtask 2.2.4: Trim slice
+- **Layer:** core
+- **Plan:** docs/plan/phase-02-argument-parsing/2.2.4-trim-slice.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/utils/trim_slice.c`, `coders/main.h`, and `coders/Makefile` add a public non-owning slice view as a thin delegate to `trim_span`; unit coverage checks edge cases and source preservation.
+- **Acceptance:** `tests/acceptance/test_2.2.4.c` — AC1–AC6 covered and green in the supplied check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.4.md`).
+- **Documentation:** docs/reference/2.2.4-trim-slice.md
+- **Commit:** feat(utils): add trimmed slice view [2.2.4]

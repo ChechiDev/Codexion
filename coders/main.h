@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/10/27 17:31:16 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/10/27 18:00:00 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,16 @@ typedef struct s_span
 	int			len;
 }	t_span;
 
+typedef struct s_slice
+{
+	const char	*start;
+	int			len;
+}	t_slice;
+
 /* ---- Utils ---- */
 
 t_span	trim_span(const char *str);
+t_slice	trim_slice(const char *str);
 
 /* ---- Parsing ---- */
 
