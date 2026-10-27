@@ -78,3 +78,12 @@ Entry template (filled in at close):
 - **Verification:** supplied `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.1.md`).
 - **Documentation:** docs/reference/2.2.1-move-print-usage.md
 - **Commit:** feat(interfaces): move usage output to CLI [2.2.1]
+
+## 2026-10-27 — Subtask 2.2.2: Move trim span
+- **Layer:** core
+- **Plan:** docs/plan/phase-02-argument-parsing/2.2.2-move-trim-span.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/utils/trim_span.c` and `coders/Makefile` move the generic whitespace span helper into utils; the former parsing source is removed. The 2.1.1 acceptance path check was migrated and resealed.
+- **Acceptance:** `tests/acceptance/test_2.2.2.c` — AC1–AC2 covered and green in the supplied check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.2.md`).
+- **Documentation:** docs/reference/2.2.2-move-trim-span.md
+- **Commit:** refactor(utils): move trim_span into utils [2.2.2]

@@ -451,7 +451,7 @@
         {
           "id": "2.2.2",
           "title": "Move trim span",
-          "status": "pending",
+          "status": "done",
           "layer": "core",
           "depends": [
             "2.2.1"

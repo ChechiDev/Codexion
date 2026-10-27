@@ -89,7 +89,7 @@ static void test_ac6_build_and_norm(void)
 	assert(used < sizeof(makefile) - 1 || fgetc(file) == EOF);
 	makefile[used] = '\0';
 	assert(fclose(file) == 0);
-	assert(strstr(makefile, "src/parsing/trim_span.c") != NULL);
+	assert(strstr(makefile, "src/utils/trim_span.c") != NULL);
 	pipe = popen("make -C coders 2>&1", "r");
 	assert(pipe != NULL);
 	while (fread(output, 1, sizeof(output), pipe) != 0)
