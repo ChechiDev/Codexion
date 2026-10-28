@@ -72,6 +72,14 @@ static int	call_main(void)
 	i = 0;
 	while (i < 16)
 		argv[i++] = "x";
+	argv[1] = "4";
+	argv[2] = "800";
+	argv[3] = "200";
+	argv[4] = "200";
+	argv[5] = "200";
+	argv[6] = "3";
+	argv[7] = "50";
+	argv[8] = "edf";
 	return (codexion_main(g_argc, argv));
 }
 

@@ -59,5 +59,6 @@ int		parse_config(char **argv, t_config *config);
 /* ---- CLI ---- */
 
 void	print_usage(void);
+void	print_arg_error(int position);
 
 #endif

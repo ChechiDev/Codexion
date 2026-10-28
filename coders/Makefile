@@ -15,6 +15,7 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror -pthread -I.
 
 SRC = main.c \
+	src/cli/print_arg_error.c \
 	src/cli/print_usage.c \
 	src/parsing/get_arg_minimum.c \
 	src/parsing/parse_config.c \

@@ -34,7 +34,7 @@
       "title": "Argument parsing and validation",
       "goal": "parse and validate the 8 arguments into a config with reusable primitives (one shared trim of surrounding whitespace for numbers, digits only, overflow-safe up to INT_MAX, per-field minimums, scheduler exactly fifo/edf); any invalid input prints a specific error and the usage to stderr and exits non-zero before allocating or starting threads",
       "file": "docs/plan/phase-02-argument-parsing.md",
-      "status": "in_progress",
+      "status": "done",
       "tasks": [
         "2.1",
         "2.2",
@@ -945,12 +945,12 @@
       "phase": "02",
       "layer": "interfaces",
       "goal": "`main` rejects any invalid argument with a specific error line plus the usage on stderr and exit status 1, before allocating or starting anything",
-      "status": "pending",
+      "status": "done",
       "subtasks": [
         {
           "id": "2.4.1",
           "title": "Print argument error",
-          "status": "pending",
+          "status": "done",
           "layer": "interfaces",
           "depends": [
             "2.3.1",
@@ -998,7 +998,7 @@
         {
           "id": "2.4.2",
           "title": "Validate arguments in main",
-          "status": "pending",
+          "status": "done",
           "layer": "interfaces",
           "depends": [
             "2.3.3",
