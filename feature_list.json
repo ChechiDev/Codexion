@@ -47,8 +47,13 @@
       "title": "Time and serialized logging",
       "goal": "millisecond clock relative to the simulation start (gettimeofday), a stop-aware sliced sleep, and a mutex-serialized logger that prints the five subject state lines and nothing after the stop except the burnout line",
       "file": "docs/plan/phase-03-time-and-log.md",
-      "status": "pending",
-      "tasks": []
+      "status": "in_progress",
+      "tasks": [
+        "3.1",
+        "3.2",
+        "3.3",
+        "3.4"
+      ]
     },
     {
       "id": "04",
@@ -1046,6 +1051,502 @@
             }
           ],
           "spec": "docs/plan/phase-02-argument-parsing/2.4.2-validate-arguments.md"
+        }
+      ]
+    },
+    {
+      "id": "3.1",
+      "title": "Clock",
+      "phase": "03",
+      "layer": "adapters",
+      "goal": "millisecond time from `gettimeofday`, absolute and relative to the simulation start",
+      "status": "done",
+      "subtasks": [
+        {
+          "id": "3.1.1",
+          "title": "Get time ms",
+          "status": "done",
+          "layer": "adapters",
+          "depends": [],
+          "files": [
+            "coders/src/time/get_time_ms.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "the value lies between `tv_sec * 1000 + tv_usec / 1000` of a `gettimeofday` taken right before the call and of one taken right after it",
+              "test": "tests/acceptance/test_3.1.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "1000 consecutive calls never decrease",
+              "test": "tests/acceptance/test_3.1.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "two calls around `usleep(50000)` differ by at least 50 and at most `80 + S` ms",
+              "test": "tests/acceptance/test_3.1.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "`make -C coders` builds `codexion` with the new source and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_3.1.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-03-time-and-log/3.1.1-get-time-ms.md"
+        },
+        {
+          "id": "3.1.2",
+          "title": "Get elapsed ms",
+          "status": "done",
+          "layer": "adapters",
+          "depends": [
+            "3.1.1"
+          ],
+          "files": [
+            "coders/src/time/get_elapsed_ms.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "with `start = get_time_ms()`, the test reads `before = get_time_ms()`, calls, reads `after = get_time_ms()`; the result satisfies `before - start <= result <= after - start`",
+              "test": "tests/acceptance/test_3.1.2.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "the same bracketing with `start = get_time_ms() - 100`: `before - start <= result <= after - start` (so at least 100)",
+              "test": "tests/acceptance/test_3.1.2.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "with `start = get_time_ms()` and then `usleep(30000)` it returns at least 30 and at most `60 + S`",
+              "test": "tests/acceptance/test_3.1.2.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "a start far in the future (`LONG_MAX`) returns 0, never a negative value",
+              "test": "tests/acceptance/test_3.1.2.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "`make -C coders` builds `codexion` with the new source and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_3.1.2.c"
+            }
+          ],
+          "spec": "docs/plan/phase-03-time-and-log/3.1.2-get-elapsed-ms.md"
+        }
+      ]
+    },
+    {
+      "id": "3.2",
+      "title": "Stop state",
+      "phase": "03",
+      "layer": "adapters",
+      "goal": "a first minimal `t_sim` (start time, stop flag, stop and log mutexes) with the mutex-guarded stop flag reader and writer; phase 05 extends it and owns its init and teardown",
+      "status": "pending",
+      "subtasks": [
+        {
+          "id": "3.2.1",
+          "title": "Is stopped",
+          "status": "pending",
+          "layer": "adapters",
+          "depends": [
+            "3.1.2"
+          ],
+          "files": [
+            "coders/src/state/is_stopped.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "on a `t_sim` whose mutexes the test initialises, repeated calls return 0 while `stopped == 0` and 1 while `stopped == 1`",
+              "test": "tests/acceptance/test_3.2.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "with no concurrent writer, a call leaves `stopped` unchanged and `stop_mutex` unlocked (a test-only `pthread_mutex_trylock` succeeds right after; the test then unlocks it)",
+              "test": "tests/acceptance/test_3.2.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "lock failure: with `stop_mutex` initialised as `PTHREAD_MUTEX_ERRORCHECK` and already locked by the calling thread (so `pthread_mutex_lock` fails with `EDEADLK`), it returns 1, `stopped` (set to 0) is unchanged and the caller still owns the mutex (its `pthread_mutex_unlock` succeeds)",
+              "test": "tests/acceptance/test_3.2.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "it never takes `log_mutex`: with `log_mutex` locked by the calling thread, it returns the correct value for `stopped == 0` and `stopped == 1`",
+              "test": "tests/acceptance/test_3.2.1.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "`make -C coders` builds `codexion`, the binary defines `is_stopped` (`nm`), and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_3.2.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-03-time-and-log/3.2.1-is-stopped.md"
+        },
+        {
+          "id": "3.2.2",
+          "title": "Set stopped",
+          "status": "pending",
+          "layer": "adapters",
+          "depends": [
+            "3.2.1"
+          ],
+          "files": [
+            "coders/src/state/set_stopped.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "on a running `t_sim` (`stopped == 0`, mutexes initialised by the test) it returns 0 and `is_stopped` then returns 1",
+              "test": "tests/acceptance/test_3.2.2.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "idempotent: a second call returns 0 and `stopped` stays 1",
+              "test": "tests/acceptance/test_3.2.2.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "after a successful call both `log_mutex` and `stop_mutex` are unlocked (a test-only `pthread_mutex_trylock` succeeds on each; the test unlocks them)",
+              "test": "tests/acceptance/test_3.2.2.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "log lock failure postcondition: with `log_mutex` as `PTHREAD_MUTEX_ERRORCHECK` already locked by the calling thread, it returns -1, `stopped` stays 0, `stop_mutex` is unlocked and the caller still owns `log_mutex`",
+              "test": "tests/acceptance/test_3.2.2.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "stop lock failure postcondition: with `stop_mutex` as `PTHREAD_MUTEX_ERRORCHECK` already locked by the calling thread, it returns -1, `stopped` stays 0, `log_mutex` is unlocked again and the caller still owns `stop_mutex`",
+              "test": "tests/acceptance/test_3.2.2.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "it prints nothing: stdout and stderr captured around a successful call, a repeated call and each lock failure of AC4/AC5 are empty",
+              "test": "tests/acceptance/test_3.2.2.c"
+            },
+            {
+              "id": "AC7",
+              "criterion": "`make -C coders` builds `codexion`, the binary defines `set_stopped` (`nm`), and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_3.2.2.c"
+            }
+          ],
+          "spec": "docs/plan/phase-03-time-and-log/3.2.2-set-stopped.md"
+        }
+      ]
+    },
+    {
+      "id": "3.3",
+      "title": "Sliced sleep",
+      "phase": "03",
+      "layer": "adapters",
+      "goal": "sleep a duration in short slices that return early once the simulation stops",
+      "status": "pending",
+      "subtasks": [
+        {
+          "id": "3.3.1",
+          "title": "Sleep ms",
+          "status": "pending",
+          "layer": "adapters",
+          "depends": [
+            "3.2.2"
+          ],
+          "files": [
+            "coders/src/time/sleep_ms.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "`ms == 0` and `ms < 0` return 0 in under `2 + S` ms, on a running and on a stopped `t_sim`",
+              "test": "tests/acceptance/test_3.3.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "on a running `t_sim`, `sleep_ms(sim, 100)` returns 0; `get_time_ms()` read right before and right after the call differ by at least 100 and at most `110 + S` ms",
+              "test": "tests/acceptance/test_3.3.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "on an already stopped `t_sim`, `sleep_ms(sim, 1000)` returns -1 in under `2 + S` ms",
+              "test": "tests/acceptance/test_3.3.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "stop response: a worker thread signals it is ready and runs `sleep_ms(sim, 10000)`, a duration longer than the test's watchdog (e.g. 5 s), so the sleep cannot end on its own before the stop; about 50 ms later the main thread records `t = get_time_ms()` and calls `set_stopped`; the worker's call returns -1, and its return time is at most `t + 10 + S` ms",
+              "test": "tests/acceptance/test_3.3.1.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "`make -C coders` builds `codexion`, the binary defines `sleep_ms` (`nm`), and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_3.3.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-03-time-and-log/3.3.1-sleep-ms.md"
+        }
+      ]
+    },
+    {
+      "id": "3.4",
+      "title": "Serialized logger",
+      "phase": "03",
+      "layer": "adapters",
+      "goal": "build each subject log line in a local buffer and send it with one unbuffered `write` under one log mutex; nothing after the stop, and the single burnout line only when the burnout makes the first stop",
+      "status": "pending",
+      "subtasks": [
+        {
+          "id": "3.4.1",
+          "title": "Build number text",
+          "status": "pending",
+          "layer": "core",
+          "depends": [
+            "3.3.1"
+          ],
+          "files": [
+            "coders/src/utils/build_number_text.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "canonical digits, no leading zeros, return value = digit count: `0` → `\"0\"`/1, `7` → `\"7\"`/1, `9` → `\"9\"`/1, `10` → `\"10\"`/2, `42` → `\"42\"`/2, `99` → `\"99\"`/2, `100` → `\"100\"`/3, `999999` → 6 digits, `1000000` → 7 digits; and successive conversions in one buffer (large, then small) give the correct result each time",
+              "test": "tests/acceptance/test_3.4.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "`LONG_MAX` writes `\"9223372036854775807\"` and returns 19; `LONG_MAX - 1` writes `\"9223372036854775806\"` and returns 19",
+              "test": "tests/acceptance/test_3.4.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "`NUMBER_TEXT_MAX` equals 20",
+              "test": "tests/acceptance/test_3.4.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "bounds: the 20-byte destination sits between guard bytes before and after it; for `0` and for `LONG_MAX` only the bytes `[0, returned length)` change, every other byte (guards, the spare byte, the rest of the 20) is unchanged, and no `'\\0'` is added",
+              "test": "tests/acceptance/test_3.4.1.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "a negative value (`-1`, `LONG_MIN`) returns -1 and leaves the whole guarded buffer unchanged",
+              "test": "tests/acceptance/test_3.4.1.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "`buf == NULL` returns -1 without crashing",
+              "test": "tests/acceptance/test_3.4.1.c"
+            },
+            {
+              "id": "AC7",
+              "criterion": "`make -C coders` builds `codexion`, the binary defines `build_number_text` (`nm`), and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_3.4.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-03-time-and-log/3.4.1-build-number-text.md"
+        },
+        {
+          "id": "3.4.2",
+          "title": "Build log line",
+          "status": "pending",
+          "layer": "core",
+          "depends": [
+            "3.4.1"
+          ],
+          "files": [
+            "coders/src/log/build_log_line.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "`build_log_line(line, 0, 1, \"is compiling\")` writes exactly `\"0 1 is compiling\\n\"` and returns 17; compared byte by byte, only `[0, 17)` of the 64-byte destination changes and the rest of it and the guard bytes before and after it are unchanged (no `'\\0'` added)",
+              "test": "tests/acceptance/test_3.4.2.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "with `ts = 1204` and `coder = 3`, each subject text (`has taken a dongle`, `is compiling`, `is debugging`, `is refactoring`, `burned out`) gives exactly `\"1204 3 <text>\\n\"` and returns its length; only `[0, length)` changes, as in AC1",
+              "test": "tests/acceptance/test_3.4.2.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "largest line: `ts = LONG_MAX`, `coder = INT_MAX` and a 32-character text give exactly `\"<19 digits> <10 digits> <text>\\n\"` and return 64 (`LOG_LINE_MAX`); the guard bytes after it are unchanged and no `'\\0'` is added",
+              "test": "tests/acceptance/test_3.4.2.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "invalid input returns -1 and, when a destination exists, leaves the whole guarded buffer unchanged: `line == NULL`, `text == NULL`, both NULL (no crash); `ts` of `-1` and `LONG_MIN`; `coder` of `0` and `-5`; a 33-character text; an empty text; a text containing `'\\n'`; a text containing `'\\r'`",
+              "test": "tests/acceptance/test_3.4.2.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "`LOG_TEXT_MAX` equals 32 and `LOG_LINE_MAX` equals 64",
+              "test": "tests/acceptance/test_3.4.2.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "`make -C coders` builds `codexion`, the binary defines `build_log_line` (`nm`), and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_3.4.2.c"
+            }
+          ],
+          "spec": "docs/plan/phase-03-time-and-log/3.4.2-build-log-line.md"
+        },
+        {
+          "id": "3.4.3",
+          "title": "Print state",
+          "status": "pending",
+          "layer": "adapters",
+          "depends": [
+            "3.4.2"
+          ],
+          "files": [
+            "coders/src/log/print_state.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "on a running `t_sim`, each of `STATE_TAKEN_DONGLE`, `STATE_COMPILING`, `STATE_DEBUGGING`, `STATE_REFACTORING` writes exactly one line `<ts> <coder> has taken a dongle` / `is compiling` / `is debugging` / `is refactoring` + `\\n` to stdout (fd 1), nothing to stderr, and returns 0; `<coder>` is printed as given (e.g. 1 and 42); afterwards both mutexes are unlocked and `stopped` is still 0",
+              "test": "tests/acceptance/test_3.4.3.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "unbuffered: stdout is redirected to a fresh, empty pipe (blocking write end, non-blocking read end, the calling thread is the only reader); right after the call returns 0, with no sleep, flush, other logger call or exit, the calling thread reads the complete line from the pipe (handling `EINTR` and short reads); `EAGAIN` before the whole line was read is a failure",
+              "test": "tests/acceptance/test_3.4.3.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "timestamp: the test records `before = get_time_ms()`, sets `start_ms = before - 100`, calls, records `after = get_time_ms()`; assuming no backward wall-clock adjustment, the printed `<ts>` satisfies `100 <= ts <= after - start_ms`",
+              "test": "tests/acceptance/test_3.4.3.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "on a stopped `t_sim` it writes nothing and returns -1 for every state; afterwards both mutexes are unlocked",
+              "test": "tests/acceptance/test_3.4.3.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "rejected input on a running `t_sim` writes nothing and returns -1, afterwards both mutexes unlocked: an invalid state (`-1`, `4`) with a valid coder, and a coder below 1 (`0`, `-3`) with a valid state; `stopped` is still 0",
+              "test": "tests/acceptance/test_3.4.3.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "serialized: 8 threads × 500 calls each (distinct coder ids, mixed states) produce exactly 4000 lines, each matching one of the four formats exactly (no mixed or partial line), exactly 500 per coder with that coder's expected state counts, and, assuming no backward wall-clock adjustment during the run, timestamps non-decreasing in output order",
+              "test": "tests/acceptance/test_3.4.3.c"
+            },
+            {
+              "id": "AC7",
+              "criterion": "stop under load: 4 threads each complete one successful `print_state` call, and the main thread waits for all four; then the threads call `print_state` in a loop, counting their 0 returns (preliminary call included); the main thread calls `set_stopped` (must return 0), then releases a post-stop batch in which every call of every thread must return -1; after joining, the line count equals the sum of the 0 returns",
+              "test": "tests/acceptance/test_3.4.3.c"
+            },
+            {
+              "id": "AC8",
+              "criterion": "lock failures: with `log_mutex` as `PTHREAD_MUTEX_ERRORCHECK` already held by the caller it returns -1, writes nothing to stdout or stderr, `stopped` is unchanged and the caller still owns `log_mutex`; with `stop_mutex` held that way it returns -1, writes nothing, `stopped` is unchanged, `log_mutex` is unlocked again and the caller still owns `stop_mutex`",
+              "test": "tests/acceptance/test_3.4.3.c"
+            },
+            {
+              "id": "AC9",
+              "criterion": "write error: in a child process whose stdout is redirected to `/dev/full`, a call on a running `t_sim` returns -1, both mutexes are unlocked afterwards and `stopped` is still 0",
+              "test": "tests/acceptance/test_3.4.3.c"
+            },
+            {
+              "id": "AC10",
+              "criterion": "`make -C coders` builds `codexion`, the binary defines `print_state` (`nm`), and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_3.4.3.c"
+            }
+          ],
+          "spec": "docs/plan/phase-03-time-and-log/3.4.3-print-state.md"
+        },
+        {
+          "id": "3.4.4",
+          "title": "Print burnout",
+          "status": "pending",
+          "layer": "adapters",
+          "depends": [
+            "3.4.3"
+          ],
+          "files": [
+            "coders/src/log/print_burnout.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "on a running `t_sim` it writes exactly one line `<ts> <coder> burned out\\n` to stdout (fd 1), nothing to stderr, returns 0, `stopped` becomes 1 and both mutexes are unlocked afterwards",
+              "test": "tests/acceptance/test_3.4.4.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "unbuffered: same setup as 3.4.3 AC2 (fresh pipe, non-blocking read end, calling thread is the only reader); right after the call returns 0, with no sleep, flush, other call or exit, the complete `burned out` line is read from the pipe; `EAGAIN` before the whole line was read is a failure",
+              "test": "tests/acceptance/test_3.4.4.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "timestamp: `before = get_time_ms()`, `start_ms = before - 100`, call, `after = get_time_ms()`; assuming no backward wall-clock adjustment, the printed `<ts>` satisfies `100 <= ts <= after - start_ms`",
+              "test": "tests/acceptance/test_3.4.4.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "already stopped (by a previous `print_burnout` or by `set_stopped`): it writes nothing, returns -1, `stopped` stays 1, both mutexes unlocked",
+              "test": "tests/acceptance/test_3.4.4.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "reverse protocol: after a successful `print_burnout`, `set_stopped` returns 0 and writes nothing, and a further `print_burnout` returns -1 and writes nothing",
+              "test": "tests/acceptance/test_3.4.4.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "nothing after: once it returned 0, `print_state` returns -1 and writes nothing for every state",
+              "test": "tests/acceptance/test_3.4.4.c"
+            },
+            {
+              "id": "AC7",
+              "criterion": "single burnout: 8 ready-synchronised threads call it with distinct coders; exactly one call returns 0 and the other seven return -1, exactly one `burned out` line is written and its coder is the one whose call returned 0 (which coder wins is unspecified); afterwards `stopped == 1`, stderr is empty and both mutexes are unlocked",
+              "test": "tests/acceptance/test_3.4.4.c"
+            },
+            {
+              "id": "AC8",
+              "criterion": "against state loggers: 4 threads each complete one successful `print_state` call; the main thread waits for all four, then the threads loop on `print_state` (per-thread counters of 0 returns, preliminary call included) while the main thread calls `print_burnout` (returns 0); only after it returned, the main thread releases a post-burnout batch in which every `print_state` call returns -1; after joining and fully draining the output, it holds exactly one `burned out` line, it is the last line, every line before it is a well-formed state line, and the line count equals the sum of the per-thread 0 returns plus 1",
+              "test": "tests/acceptance/test_3.4.4.c"
+            },
+            {
+              "id": "AC9",
+              "criterion": "rejected coder: on a fresh running `t_sim` for each of `coder = 0` and `coder = -3`, it returns -1, writes nothing, `stopped` is 1 (the stop is committed before the line is built) and both mutexes are unlocked",
+              "test": "tests/acceptance/test_3.4.4.c"
+            },
+            {
+              "id": "AC10",
+              "criterion": "lock failures: with `log_mutex` as `PTHREAD_MUTEX_ERRORCHECK` already held by the caller it returns -1, writes nothing, `stopped` stays 0 and the caller still owns `log_mutex`; with `stop_mutex` held that way it returns -1, writes nothing, `stopped` stays 0, `log_mutex` is unlocked again and the caller still owns `stop_mutex`",
+              "test": "tests/acceptance/test_3.4.4.c"
+            },
+            {
+              "id": "AC11",
+              "criterion": "write error: in a child process whose stdout is redirected to `/dev/full`, a call on a running `t_sim` returns -1, `stopped` is 1 (the stop is committed) and both mutexes are unlocked",
+              "test": "tests/acceptance/test_3.4.4.c"
+            },
+            {
+              "id": "AC12",
+              "criterion": "`make -C coders` builds `codexion`, the binary defines `print_burnout` (`nm`), and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_3.4.4.c"
+            }
+          ],
+          "spec": "docs/plan/phase-03-time-and-log/3.4.4-print-burnout.md"
         }
       ]
     }

@@ -1,12 +1,28 @@
 # Current session
 
-- **Current subtask:** 2.4.2 Validate arguments in main (task 2.4 "Entry point
-  validation"), last of task 2.4 and of phase 02, closed on branch
-  `feat/2.4-entry-point-validation`. Plan gate: `PLAN_APPROVED`; code gate:
-  `APPROVED`; close documentation and tracking are prepared.
-- **Previous:** 2.4.1 Print argument error closed (commit `0268e32`).
+- **Current subtask:** 3.1.2 Get elapsed ms (task 3.1 "Clock", last of the
+  task), `done` on branch `feat/3.1-clock`. Task 3.1 is complete; the harness
+  will close the task PR after the close commit.
+- **Previous:** 3.1.1 Get time ms closed (commit `07b5b6c`, which also carries
+  the phase 03 plan). Phase 02 done and merged (PR #7, merge commit `d76d218`).
+  Phase 03 broken down (4 tasks, 9 subtasks, each spec validated by the user
+  after a read-only Codex advisory review) and `PHASE_APPROVED`.
 - **Start:** 2026-10-28
-- **Engine/role:** leader → plan gate (Codex) → implementer → code review → documenter & close
+- **Engine/role:** leader → phase gate (Codex) → user OK → per-subtask cycle
+
+## Decisions taken during the phase 03 breakdown (2026-10-28)
+
+- PR #8 (`style/threading-conventions`, merged `4d569c5`): `main.h` may include
+  `<pthread.h>`; new verbs `sleep_`, `wait_`, `take_`/`release_`,
+  `push_`/`pop_`, `sift_`, `start_`/`join_`, `run_`.
+- Logger: one unbuffered `write` per line instead of `printf` (`PLAN.md` "Log";
+  roadmap re-gated `ROADMAP_APPROVED`), so the burnout line is visible at once
+  on a pipe. Numbers formatted by `build_number_text` (3.4.1).
+- Justified exceptions to the 0/-1 + out-parameter convention: `get_time_ms`,
+  `get_elapsed_ms` (value or -1), `is_stopped` (lock failure → 1),
+  `build_number_text` and `build_log_line` (length or -1).
+- 3.2.1 migrates the sealed oracle `tests/acceptance/test_2.2.3.c` AC4 (it
+  forbade any system include in `main.h`) at its plan gate, as 2.2.7 did.
 
 ## Harness change (global, already pushed)
 
@@ -17,10 +33,8 @@ section points to the task's spec folder. Applies from the task 2.3 PR on.
 
 ## Next step
 
-The harness runs `make check` and commits this close using
-`progress/close_2.4.2.msg`, then pushes the branch and opens the task 2.4 PR
-using `progress/pr_2.4.md`. Afterward, phase 02 is done and phase 03 can be
-broken down.
+Task 3.1 is complete. Review the task PR when the harness opens it; task 3.2
+can begin after that review.
 
 Note: agents cannot delete files under `coders/` (the guard blocks shell `rm`
 and there is no delete tool). Deletions declared by a spec and stale build

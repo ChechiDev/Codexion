@@ -21,6 +21,8 @@ SRC = main.c \
 	src/parsing/parse_config.c \
 	src/parsing/parse_mode.c \
 	src/parsing/parse_number.c \
+	src/time/get_elapsed_ms.c \
+	src/time/get_time_ms.c \
 	src/utils/is_digit.c \
 	src/utils/is_space.c \
 	src/utils/trim_slice.c
