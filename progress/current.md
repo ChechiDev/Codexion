@@ -1,9 +1,10 @@
 # Current session
 
-- **Current subtask:** 3.1.1 Get time ms (task 3.1 "Clock"), closed on
-  branch `feat/3.1-clock`. Phase: close complete (`PLAN_APPROVED`; code review
-  `APPROVED`; supplied `make check` green).
-- **Previous:** phase 02 done and merged (PR #7, merge commit `d76d218`).
+- **Current subtask:** 3.1.2 Get elapsed ms (task 3.1 "Clock", last of the
+  task), `done` on branch `feat/3.1-clock`. Task 3.1 is complete; the harness
+  will close the task PR after the close commit.
+- **Previous:** 3.1.1 Get time ms closed (commit `07b5b6c`, which also carries
+  the phase 03 plan). Phase 02 done and merged (PR #7, merge commit `d76d218`).
   Phase 03 broken down (4 tasks, 9 subtasks, each spec validated by the user
   after a read-only Codex advisory review) and `PHASE_APPROVED`.
 - **Start:** 2026-10-28
@@ -32,10 +33,8 @@ section points to the task's spec folder. Applies from the task 2.3 PR on.
 
 ## Next step
 
-The harness will run `make check` and commit this close. Afterward, run
-`make status` and obtain user OK before starting subtask 3.1.2. The uncommitted
-phase 03 plan files (breakdown, roadmap re-gate, phase seal) travel with this
-first close commit.
+Task 3.1 is complete. Review the task PR when the harness opens it; task 3.2
+can begin after that review.
 
 Note: agents cannot delete files under `coders/` (the guard blocks shell `rm`
 and there is no delete tool). Deletions declared by a spec and stale build

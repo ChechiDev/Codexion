@@ -1060,7 +1060,7 @@
       "phase": "03",
       "layer": "adapters",
       "goal": "millisecond time from `gettimeofday`, absolute and relative to the simulation start",
-      "status": "in_progress",
+      "status": "done",
       "subtasks": [
         {
           "id": "3.1.1",
@@ -1100,7 +1100,7 @@
         {
           "id": "3.1.2",
           "title": "Get elapsed ms",
-          "status": "pending",
+          "status": "done",
           "layer": "adapters",
           "depends": [
             "3.1.1"

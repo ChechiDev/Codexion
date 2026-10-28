@@ -59,6 +59,7 @@ int		parse_config(char **argv, t_config *config);
 /* ---- Time ---- */
 
 long	get_time_ms(void);
+long	get_elapsed_ms(long start_ms);
 
 /* ---- CLI ---- */
 
