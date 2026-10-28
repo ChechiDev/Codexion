@@ -135,12 +135,14 @@ the check as green only when every failure is a plan seal under re-review
 (roadmap first, then each changed phase):
 
 ```bash
-HARNESS_CHECK_CMD="./scripts/regate_check.sh roadmap" ./harness/review_with_codex.sh roadmap
-HARNESS_CHECK_CMD="./scripts/regate_check.sh phase 02" ./harness/review_with_codex.sh phase 02
+HARNESS_CHECK_CMD="./.claude/scripts/regate_check.sh roadmap" ./harness/review_with_codex.sh roadmap
+HARNESS_CHECK_CMD="./.claude/scripts/regate_check.sh phase 02" ./harness/review_with_codex.sh phase 02
 ```
 
 `harness/` and `.claude/{agents,codex,skills}` are symlinks to the shared global
-harness: never edit through them; project-level fixes go in `scripts/` or `docs/`.
+harness: never edit through them. Project-level harness tooling goes in
+`.claude/scripts/` (a real folder, kept out of the PR file list); rules go in
+`docs/`.
 
 ## Project additions
 

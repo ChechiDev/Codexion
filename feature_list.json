@@ -797,12 +797,12 @@
       "phase": "02",
       "layer": "core",
       "goal": "turn `argv[1..8]` into a `t_config`, applying each field's minimum and the exact `fifo`/`edf` rule, and report every invalid argument as a bit mask of positions 1..8",
-      "status": "pending",
+      "status": "in_progress",
       "subtasks": [
         {
           "id": "2.3.1",
           "title": "Get arg minimum",
-          "status": "pending",
+          "status": "done",
           "layer": "core",
           "depends": [
             "2.2.11"

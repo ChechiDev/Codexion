@@ -168,3 +168,12 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.2.11.md`).
 - **Documentation:** docs/reference/2.2.11-use-is-digit.md
 - **Commit:** refactor(parsing): use is_digit in number parser [2.2.11]
+
+## 2026-10-28 — Subtask 2.3.1: Get arg minimum
+- **Layer:** core
+- **Plan:** docs/plan/phase-02-argument-parsing/2.3.1-get-arg-minimum.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/parsing/get_arg_minimum.c`, `coders/main.h`, and `coders/Makefile` provide a shared positional lookup for numeric argument minima.
+- **Acceptance:** `tests/acceptance/test_2.3.1.c` — AC1–AC4 covered and green in the supplied check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.3.1.md`).
+- **Documentation:** docs/reference/2.3.1-get-arg-minimum.md
+- **Commit:** feat(parsing): add argument minimum lookup [2.3.1]

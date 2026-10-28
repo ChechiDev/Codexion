@@ -2,8 +2,8 @@
 # Project-level check wrapper for re-gating an already approved plan.
 #
 # Usage (manual, only for plan re-gates):
-#   HARNESS_CHECK_CMD="./scripts/regate_check.sh roadmap" ./harness/review_with_codex.sh roadmap
-#   HARNESS_CHECK_CMD="./scripts/regate_check.sh phase 02" ./harness/review_with_codex.sh phase 02
+#   HARNESS_CHECK_CMD="./.claude/scripts/regate_check.sh roadmap" ./harness/review_with_codex.sh roadmap
+#   HARNESS_CHECK_CMD="./.claude/scripts/regate_check.sh phase 02" ./harness/review_with_codex.sh phase 02
 #
 # Why: changing an approved plan breaks its seal, `make check` goes red, and the
 # reviewer never approves with a red check, yet only its approval re-seals the
@@ -39,7 +39,7 @@ other="$(grep '^\[FAIL\]' <<<"$output" | grep -vE "$expected_re" | grep -v 'NOT 
 if [ -n "$expected" ] && [ -z "$other" ]; then
   cat <<EOF
 
-── Re-gate (scripts/regate_check.sh $target${phase:+ $phase}) ──
+── Re-gate (.claude/scripts/regate_check.sh $target${phase:+ $phase}) ──
 [OK]    make check exited $rc, but every failure above is a plan seal/approval
         under re-review: this gate's approval re-seals its target, and any other
         phase still needs its own gate. Nothing else failed, so for this gate the
