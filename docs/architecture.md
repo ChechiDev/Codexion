@@ -25,6 +25,7 @@ discipline, not by includes: a core function never calls `write`, `printf`,
 | `utils/` | core | generic helpers with no domain knowledge (`is_space`, `is_digit`, `trim_slice`) | nothing |
 | `parsing/` | core | turning `argv` text into a validated `t_config` | `utils/` |
 | `cli/` | interfaces | every user-facing message: the usage text (`print_usage`) and the argument errors | `parsing/` (minimums) |
+| `state/` | adapters | shared simulation state guarded by its mutexes | nothing |
 | `main.c` | interfaces | the entry point only: wires the modules together | every module |
 
 Later phases add their own folders (time and log, queue, simulation, ...) and
