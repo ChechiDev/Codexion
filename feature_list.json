@@ -839,7 +839,7 @@
         {
           "id": "2.3.2",
           "title": "Parse mode",
-          "status": "pending",
+          "status": "done",
           "layer": "core",
           "depends": [
             "2.3.1"

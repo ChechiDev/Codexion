@@ -177,3 +177,12 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.3.1.md`).
 - **Documentation:** docs/reference/2.3.1-get-arg-minimum.md
 - **Commit:** feat(parsing): add argument minimum lookup [2.3.1]
+
+## 2026-10-28 — Subtask 2.3.2: Parse mode
+- **Layer:** core
+- **Plan:** docs/plan/phase-02-argument-parsing/2.3.2-parse-mode.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/parsing/parse_mode.c`, `coders/main.h`, and `coders/Makefile` add exact `fifo`/`edf` parsing with output unchanged on failure.
+- **Acceptance:** `tests/acceptance/test_2.3.2.c` — AC1–AC4 covered and green in the supplied check.
+- **Verification:** supplied pre-session check reported a missing `date` frontmatter key in the reference note; the indentation was corrected for the harness rerun. Acceptance checks and build passed in the supplied log. Code review: APPROVED (`progress/review_2.3.2.md`).
+- **Documentation:** docs/reference/2.3.2-parse-mode.md
+- **Commit:** feat(parsing): parse scheduler mode [2.3.2]
