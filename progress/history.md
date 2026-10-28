@@ -186,3 +186,12 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session check reported a missing `date` frontmatter key in the reference note; the indentation was corrected for the harness rerun. Acceptance checks and build passed in the supplied log. Code review: APPROVED (`progress/review_2.3.2.md`).
 - **Documentation:** docs/reference/2.3.2-parse-mode.md
 - **Commit:** feat(parsing): parse scheduler mode [2.3.2]
+
+## 2026-10-28 — Subtask 2.3.3: Parse config
+- **Layer:** core
+- **Plan:** docs/plan/phase-02-argument-parsing/2.3.3-parse-config.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/parsing/parse_config.c`, `coders/main.h`, and `coders/Makefile` compose numeric and scheduler parsing and return a bit mask for every invalid argument position.
+- **Acceptance:** `tests/acceptance/test_2.3.3.c` — AC1–AC9 covered and green in the supplied pre-session check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.3.3.md`).
+- **Documentation:** docs/reference/2.3.3-parse-config.md
+- **Commit:** feat(parsing): parse configuration arguments [2.3.3]

@@ -54,6 +54,7 @@ t_slice	trim_slice(const char *str);
 int		get_arg_minimum(int position);
 int		parse_number(const char *str, int *out);
 int		parse_mode(const char *str, t_mode *out);
+int		parse_config(char **argv, t_config *config);
 
 /* ---- CLI ---- */
 
