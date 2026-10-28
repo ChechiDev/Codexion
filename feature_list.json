@@ -1251,12 +1251,12 @@
       "phase": "03",
       "layer": "adapters",
       "goal": "sleep a duration in short slices that return early once the simulation stops",
-      "status": "pending",
+      "status": "done",
       "subtasks": [
         {
           "id": "3.3.1",
           "title": "Sleep ms",
-          "status": "pending",
+          "status": "done",
           "layer": "adapters",
           "depends": [
             "3.2.2"
