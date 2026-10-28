@@ -56,6 +56,10 @@ int		parse_number(const char *str, int *out);
 int		parse_mode(const char *str, t_mode *out);
 int		parse_config(char **argv, t_config *config);
 
+/* ---- Time ---- */
+
+long	get_time_ms(void);
+
 /* ---- CLI ---- */
 
 void	print_usage(void);
