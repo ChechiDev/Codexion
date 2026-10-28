@@ -204,3 +204,12 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.4.1.md`).
 - **Documentation:** docs/reference/2.4.1-print-arg-error.md
 - **Commit:** feat(interfaces): print argument errors [2.4.1]
+
+## 2026-10-28 — Subtask 2.4.2: Validate arguments in main
+- **Layer:** interfaces
+- **Plan:** docs/plan/phase-02-argument-parsing/2.4.2-validate-arguments.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/main.c` validates all eight arguments through `parse_config`, reports each invalid field in argument order, prints usage once, and exits 1; `README.md` documents the rules and a multi-error run.
+- **Acceptance:** `tests/acceptance/test_2.4.2.c` — AC1–AC7 covered and green in the supplied pre-session check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_2.4.2.md`).
+- **Documentation:** docs/reference/2.4.2-validate-arguments.md
+- **Commit:** feat(interfaces): validate arguments in main [2.4.2]

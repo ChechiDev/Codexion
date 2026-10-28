@@ -116,3 +116,19 @@ dongle cooldown problems once the simulation exists.
 This section will describe which mutexes and condition variables protect the
 shared data, how data races are avoided, and how the coders and the monitor
 communicate in a thread-safe way. It is filled in as those pieces are built.
+
+Argument values are validated before the program does any simulation work.
+Numeric arguments must contain decimal digits only, fit in the range up to
+2147483647, and may have surrounding whitespace; the number of coders and time
+to burnout must be at least 1, while the other numeric values may be 0. The
+scheduler must be exactly `fifo` or `edf`. Every invalid value gets its own
+error line, followed by the usage reminder. For example:
+
+```
+$ ./coders/codexion 4 -5 abc 200 200 3 50 rr
+Error: time_to_burnout must be an integer from 1 to 2147483647
+Error: time_to_compile must be an integer from 0 to 2147483647
+Error: scheduler must be fifo or edf
+Usage: ./coders/codexion number_of_coders time_to_burnout time_to_compile time_to_debug time_to_refactor number_of_compiles_required dongle_cooldown scheduler
+  scheduler is either fifo or edf
+```

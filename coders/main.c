@@ -13,11 +13,33 @@
 #include <stdlib.h>
 #include "main.h"
 
+static void	print_arg_errors(int mask)
+{
+	int	position;
+
+	position = 1;
+	while (position <= 8)
+	{
+		if (mask & (1 << position))
+			print_arg_error(position);
+		position++;
+	}
+}
+
 int	main(int argc, char **argv)
 {
-	(void)argv;
+	t_config	config;
+	int			mask;
+
 	if (argc != 9)
 	{
+		print_usage();
+		return (EXIT_USAGE);
+	}
+	mask = parse_config(argv, &config);
+	if (mask)
+	{
+		print_arg_errors(mask);
 		print_usage();
 		return (EXIT_USAGE);
 	}
