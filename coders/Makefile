@@ -25,6 +25,7 @@ SRC = main.c \
 	src/state/set_stopped.c \
 	src/time/get_elapsed_ms.c \
 	src/time/get_time_ms.c \
+	src/time/sleep_ms.c \
 	src/utils/is_digit.c \
 	src/utils/is_space.c \
 	src/utils/trim_slice.c

@@ -18,6 +18,7 @@
 /* ---- Macros ---- */
 
 # define EXIT_USAGE 1
+# define SLEEP_SLICE_US 500
 
 /* ---- Types ---- */
 
@@ -70,6 +71,7 @@ int		parse_config(char **argv, t_config *config);
 
 long	get_time_ms(void);
 long	get_elapsed_ms(long start_ms);
+int		sleep_ms(t_sim *sim, long ms);
 
 /* ---- State ---- */
 
