@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/10/27 18:40:45 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/10/28 18:45:22 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 
 # define EXIT_USAGE 1
 # define SLEEP_SLICE_US 500
+# define NUMBER_TEXT_MAX 20
 
 /* ---- Types ---- */
 
@@ -59,6 +60,7 @@ typedef struct s_sim
 int		is_digit(char c);
 int		is_space(char c);
 t_slice	trim_slice(const char *str);
+int		build_number_text(long n, char *buf);
 
 /* ---- Parsing ---- */
 

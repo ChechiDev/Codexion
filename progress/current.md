@@ -1,10 +1,11 @@
 # Current session
 
-- **Current subtask:** 3.3.1 Sleep ms (task 3.3 "Sliced sleep", only subtask
-  of the task), closed on branch `feat/3.3-sliced-sleep`. Code review:
-  `APPROVED`; close artifacts prepared for the harness commit.
-- **Previous:** task 3.2 done and merged (PR #10, merge commit `343f76b`).
-  Task 3.1 merged (PR #9). Phase 03 is `PHASE_APPROVED`.
+- **Current subtask:** 3.4.2 Build log line (task 3.4 "Serialized logger",
+  last task of phase 03), `pending` on branch `feat/3.4-serialized-logger`.
+  Phase: implementation. Subtask 3.4.1 is closed (`APPROVED`; supplied
+  `make check` green, exit code 0).
+- **Previous:** task 3.3 done and merged (PR #11, merge commit `f065027`).
+  Tasks 3.1 and 3.2 merged (PRs #9, #10). Phase 03 is `PHASE_APPROVED`.
 - **Start:** 2026-10-28
 - **Engine/role:** leader → phase gate (Codex) → user OK → per-subtask cycle
 
@@ -31,9 +32,15 @@ section points to the task's spec folder. Applies from the task 2.3 PR on.
 
 ## Next step
 
-The harness runs the close check and commits task 3.3, then pushes the branch
-and opens its pull request. Review that PR; after it is merged, start subtask
-3.4.1 (`Build number text`), the next step reported by `make status`.
+1. Implement 3.4.2 after its plan gate; every subtask that edits
+   `coders/Makefile` or `coders/main.h` must refresh the 42 header `Updated:`
+   lines with Stdheader.
+2. Then complete 3.4.3 and 3.4.4. Closing 3.4.4 opens the task 3.4 PR and
+   completes phase 03.
+
+Note: avoid running two `make` processes at once; acceptance tests call
+`make -C coders` themselves and a concurrent build can make them fail
+spuriously (seen once during 3.3.1).
 
 Note: agents cannot delete files under `coders/` (the guard blocks shell `rm`
 and there is no delete tool). Deletions declared by a spec and stale build

@@ -1303,12 +1303,12 @@
       "phase": "03",
       "layer": "adapters",
       "goal": "build each subject log line in a local buffer and send it with one unbuffered `write` under one log mutex; nothing after the stop, and the single burnout line only when the burnout makes the first stop",
-      "status": "pending",
+      "status": "in_progress",
       "subtasks": [
         {
           "id": "3.4.1",
           "title": "Build number text",
-          "status": "pending",
+          "status": "done",
           "layer": "core",
           "depends": [
             "3.3.1"

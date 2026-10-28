@@ -258,3 +258,12 @@ Entry template (filled in at close):
 - **Verification:** supplied `make check` green (exit code 0). Code review: APPROVED (`progress/review_3.3.1.md`); the backward-clock signed-overflow finding was fixed before approval.
 - **Documentation:** docs/reference/3.3.1-sleep-ms.md; task narrative: progress/pr_3.3.md
 - **Commit:** feat(time): add stop-aware sliced sleep [3.3.1]
+
+## 2026-10-28 — Subtask 3.4.1: Build number text
+- **Layer:** core
+- **Plan:** docs/plan/phase-03-time-and-log/3.4.1-build-number-text.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/utils/build_number_text.c`, `coders/main.h`, and `coders/Makefile` add bounded, allocation-free decimal digit formatting for caller-owned buffers.
+- **Acceptance:** `tests/acceptance/test_3.4.1.c` — AC1–AC7 covered and green in the supplied pre-session check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_3.4.1.md`).
+- **Documentation:** docs/reference/3.4.1-build-number-text.md
+- **Commit:** feat(utils): add decimal number text builder [3.4.1]
