@@ -945,12 +945,12 @@
       "phase": "02",
       "layer": "interfaces",
       "goal": "`main` rejects any invalid argument with a specific error line plus the usage on stderr and exit status 1, before allocating or starting anything",
-      "status": "pending",
+      "status": "in_progress",
       "subtasks": [
         {
           "id": "2.4.1",
           "title": "Print argument error",
-          "status": "pending",
+          "status": "done",
           "layer": "interfaces",
           "depends": [
             "2.3.1",
