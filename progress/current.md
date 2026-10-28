@@ -1,13 +1,11 @@
 # Current session
 
-- **Current subtask:** 3.2.1 Is stopped (task 3.2 "Stop state"), closed;
-  documentation and close message prepared on branch `feat/3.2-stop-state`.
-  Plan gate `PLAN_APPROVED`; code gate `APPROVED`. The supplied pre-session
-  `make check` exited 0.
-- **Previous:** task 3.1 done and merged (PR #9, merge commit `ab2f615`).
-  Phase 02 done and merged (PR #7, merge commit `d76d218`).
-  Phase 03 broken down (4 tasks, 9 subtasks, each spec validated by the user
-  after a read-only Codex advisory review) and `PHASE_APPROVED`.
+- **Current subtask:** 3.2.2 Set stopped, closed on branch `feat/3.2-stop-state`.
+  The supplied pre-session `make check` exited 0 and the code review is
+  `APPROVED`. The close message is ready for the harness.
+- **Previous:** 3.2.1 Is stopped closed (commit `fe6a574`). Task 3.1 done and
+  merged (PR #9, merge commit `ab2f615`). Phase 02 done and merged (PR #7,
+  merge commit `d76d218`). Phase 03 remains `PHASE_APPROVED`.
 - **Start:** 2026-10-28
 - **Engine/role:** leader → phase gate (Codex) → user OK → per-subtask cycle
 
@@ -34,8 +32,10 @@ section points to the task's spec folder. Applies from the task 2.3 PR on.
 
 ## Next step
 
-1. Harness close check and commit for 3.2.1 using `progress/close_3.2.1.msg`.
-2. Then begin subtask 3.2.2, Set stopped.
+The harness runs the close check and commits the completed task 3.2, then pushes
+the branch and opens its pull request. Merge remains the user's decision. Task
+3.3.1 (`Sleep ms`) is next after the PR is reviewed and the task close is
+accepted.
 
 Note: agents cannot delete files under `coders/` (the guard blocks shell `rm`
 and there is no delete tool). Deletions declared by a spec and stale build

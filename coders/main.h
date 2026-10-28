@@ -74,6 +74,7 @@ long	get_elapsed_ms(long start_ms);
 /* ---- State ---- */
 
 int		is_stopped(t_sim *sim);
+int		set_stopped(t_sim *sim);
 
 /* ---- CLI ---- */
 

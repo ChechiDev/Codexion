@@ -22,6 +22,7 @@ SRC = main.c \
 	src/parsing/parse_mode.c \
 	src/parsing/parse_number.c \
 	src/state/is_stopped.c \
+	src/state/set_stopped.c \
 	src/time/get_elapsed_ms.c \
 	src/time/get_time_ms.c \
 	src/utils/is_digit.c \

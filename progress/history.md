@@ -240,3 +240,12 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_3.2.1.md`).
 - **Documentation:** docs/reference/3.2.1-is-stopped.md
 - **Commit:** feat(state): add stopped-state reader [3.2.1]
+
+## 2026-10-28 — Subtask 3.2.2: Set stopped
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-03-time-and-log/3.2.2-set-stopped.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/state/set_stopped.c`, `coders/main.h`, and `coders/Makefile` add the mutex-coordinated stop writer using `log_mutex → stop_mutex` and reverse unlock attempts.
+- **Acceptance:** `tests/acceptance/test_3.2.2.c` — AC1–AC7 covered and green in the supplied pre-session check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_3.2.2.md`).
+- **Documentation:** docs/reference/3.2.2-set-stopped.md; task narrative: progress/pr_3.2.md
+- **Commit:** feat(state): add synchronized stop transition [3.2.2]
