@@ -51,7 +51,10 @@ Ordered sections, each opened by a one-line title comment in this exact format:
   `CLI` stays upper case. Prototypes of `main.c` itself, if any, go last under
   `/* ---- Main ---- */`.
 - A new `src/` folder adds its section; an empty section is not written.
-- `main.h` includes no system header (each `.c` includes what it uses).
+- `main.h` includes only the system headers its own types need: `<pthread.h>`
+  (for `pthread_mutex_t`, `pthread_cond_t`, `pthread_t` inside the structs).
+  Everything a function uses (`<stdio.h>`, `<sys/time.h>`, `<unistd.h>`, ...)
+  is included in its `.c`, not in `main.h`.
 
 ## Utils
 
@@ -87,6 +90,13 @@ Rules:
   | `parse_` | turns text into a validated value | `parse_number` |
   | `print_` | writes to an output | `print_usage` |
   | `trim_` | trims text | `trim_slice` |
+  | `sleep_` | waits for a duration | `sleep_ms` |
+  | `wait_` | blocks until a condition holds | `wait_for_dongles` |
+  | `take_` / `release_` | acquires / gives back a shared resource | `take_dongles`, `release_dongles` |
+  | `push_` / `pop_` | adds to / removes from a queue | `push_request`, `pop_request` |
+  | `sift_` | restores the heap order after a change | `sift_up` |
+  | `start_` / `join_` | launches / waits for threads | `start_threads`, `join_threads` |
+  | `run_` | body of a thread routine | `run_coder`, `run_monitor` |
 
   A new verb is added to this table first (in a `style/` branch), then used.
 - **Exception — names fixed by the subject keep their exact spelling**: `main`,
