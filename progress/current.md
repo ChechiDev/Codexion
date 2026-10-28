@@ -1,35 +1,21 @@
 # Current session
 
-- **Current subtask:** 2.2.11 Use is digit (branch `style/project-conventions`)
-- **Layer:** core
-- **Start:** 2026-10-27
-- **Engine/role:** leader → plan gate (Codex) → implementer → code review → documenter & close
-- **Note:** last subtask of task 2.2 "Apply project conventions". Structural
-  refactor (`AGENTS.md` §1): `parse_number` replaces its hand-written digit
-  range check with `is_digit` (2.2.10). One file, no behaviour change. Its close
-  also writes `progress/pr_2.2.md`, and the harness pushes
-  `style/project-conventions` and opens the task 2.2 PR.
+- **Current subtask:** 2.3.3 Parse config (task 2.3 "Config parser"), last of task 2.3,
+  closed on branch `feat/2.3-config-parser`; awaiting the harness close check and commit.
+- **Previous:** 2.3.2 Parse mode closed (commit `907cdce`).
+- **Start:** 2026-10-28
+- **Engine/role:** leader → plan gate → implementer → code review → documenter & close
 
-## Plan and execution
+## Harness change (global, already pushed)
 
-- [x] Plan approved: `progress/plan_review_2.2.11.md` = `PLAN_APPROVED`.
-- [x] Acceptance tests: `tests/acceptance/test_2.2.11.c` (AC1–AC3), sealed.
-- [x] Implementation and unit tests: `progress/impl_2.2.11.md`.
-- [x] Code review: `progress/review_2.2.11.md` = `APPROVED`.
-- [x] Close (+ task PR narrative `progress/pr_2.2.md`).
-
-## Gate status
-
-- [x] **Plan approved** → `PLAN_APPROVED`
-- [x] **Acceptance tests written** → `tests/acceptance/test_2.2.11.c`
-- [x] **Implementation** → `progress/impl_2.2.11.md`
-- [x] **Code approved** → `progress/review_2.2.11.md` = `APPROVED`
-- [x] **Close** → reference note, plan sync, history, commit message, task PR narrative
+`~/.claude-codex-harness` commit `54ca858` (user-granted exception for
+`lib/_pr.py` and `lib/pr_template.md` only): the task PR "Files" table now lists
+only code, tests, CI, build files and README.md, and a new "Documentation"
+section points to the task's spec folder. Applies from the task 2.3 PR on.
 
 ## Next step
 
-Task 2.2 is ready for the harness close commit and PR creation.
-
-Note: agents cannot delete files under `coders/` (the guard blocks shell `rm`
-and there is no delete tool). Deletions declared by a spec and stale build
-objects of moved sources are done by the user by hand.
+The approved code review and close artifacts for 2.3.3 are complete. The harness
+will run the close check and commit; because this is the last subtask of task
+2.3, it will then push the branch and open the task PR. Task 2.4.1 is next after
+the task PR handoff.

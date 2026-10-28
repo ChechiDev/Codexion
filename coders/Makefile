@@ -16,6 +16,9 @@ CFLAGS = -Wall -Wextra -Werror -pthread -I.
 
 SRC = main.c \
 	src/cli/print_usage.c \
+	src/parsing/get_arg_minimum.c \
+	src/parsing/parse_config.c \
+	src/parsing/parse_mode.c \
 	src/parsing/parse_number.c \
 	src/utils/is_digit.c \
 	src/utils/is_space.c \
