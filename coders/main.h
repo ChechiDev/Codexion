@@ -13,6 +13,8 @@
 #ifndef MAIN_H
 # define MAIN_H
 
+# include <pthread.h>
+
 /* ---- Macros ---- */
 
 # define EXIT_USAGE 1
@@ -43,6 +45,14 @@ typedef struct s_slice
 	int			len;
 }	t_slice;
 
+typedef struct s_sim
+{
+	long			start_ms;
+	int				stopped;
+	pthread_mutex_t	stop_mutex;
+	pthread_mutex_t	log_mutex;
+}	t_sim;
+
 /* ---- Utils ---- */
 
 int		is_digit(char c);
@@ -60,6 +70,10 @@ int		parse_config(char **argv, t_config *config);
 
 long	get_time_ms(void);
 long	get_elapsed_ms(long start_ms);
+
+/* ---- State ---- */
+
+int		is_stopped(t_sim *sim);
 
 /* ---- CLI ---- */
 

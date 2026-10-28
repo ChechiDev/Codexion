@@ -151,25 +151,32 @@ static void run_command(const char *command)
 	assert(strstr(output, "Error") == NULL);
 }
 
-/* AC4: the header has no system includes; the deliverable builds and passes Norm. */
+/* AC4: pthread.h is the sole permitted system include; build and Norm pass. */
 static void test_ac4_header_build_and_norm(void)
 {
 	char		text[HEADER_CAP];
 	const char	*line;
+	int		pthread_includes;
 
 	read_header(text);
 	line = text;
+	pthread_includes = 0;
 	while (*line != '\0')
 	{
 		while (*line == ' ' || *line == '\t')
 			line++;
-		assert(strncmp(line, "#include <", 10) != 0);
-		assert(strncmp(line, "# include <", 11) != 0);
+		if (strncmp(line, "#include <", 10) == 0
+			|| strncmp(line, "# include <", 11) == 0)
+		{
+			assert(strncmp(line, "# include <pthread.h>\n", 22) == 0);
+			pthread_includes++;
+		}
 		line = strchr(line, '\n');
 		if (line == NULL)
 			break ;
 		line++;
 	}
+	assert(pthread_includes <= 1);
 	run_command("make -C coders 2>&1");
 	run_command("norminette coders/ 2>&1");
 }

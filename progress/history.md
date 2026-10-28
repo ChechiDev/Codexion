@@ -231,3 +231,12 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_3.1.2.md`).
 - **Documentation:** docs/reference/3.1.2-get-elapsed-ms.md
 - **Commit:** feat(time): add elapsed millisecond clock [3.1.2]
+
+## 2026-10-28 — Subtask 3.2.1: Is stopped
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-03-time-and-log/3.2.1-is-stopped.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/state/is_stopped.c`, `coders/main.h`, and `coders/Makefile` add the mutex-protected stop-state reader; `docs/architecture.md` maps the state adapter.
+- **Acceptance:** `tests/acceptance/test_3.2.1.c` — AC1–AC5 covered and green in the supplied check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_3.2.1.md`).
+- **Documentation:** docs/reference/3.2.1-is-stopped.md
+- **Commit:** feat(state): add stopped-state reader [3.2.1]

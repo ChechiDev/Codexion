@@ -1,10 +1,11 @@
 # Current session
 
-- **Current subtask:** 3.1.2 Get elapsed ms (task 3.1 "Clock", last of the
-  task), `done` on branch `feat/3.1-clock`. Task 3.1 is complete; the harness
-  will close the task PR after the close commit.
-- **Previous:** 3.1.1 Get time ms closed (commit `07b5b6c`, which also carries
-  the phase 03 plan). Phase 02 done and merged (PR #7, merge commit `d76d218`).
+- **Current subtask:** 3.2.1 Is stopped (task 3.2 "Stop state"), closed;
+  documentation and close message prepared on branch `feat/3.2-stop-state`.
+  Plan gate `PLAN_APPROVED`; code gate `APPROVED`. The supplied pre-session
+  `make check` exited 0.
+- **Previous:** task 3.1 done and merged (PR #9, merge commit `ab2f615`).
+  Phase 02 done and merged (PR #7, merge commit `d76d218`).
   Phase 03 broken down (4 tasks, 9 subtasks, each spec validated by the user
   after a read-only Codex advisory review) and `PHASE_APPROVED`.
 - **Start:** 2026-10-28
@@ -33,8 +34,8 @@ section points to the task's spec folder. Applies from the task 2.3 PR on.
 
 ## Next step
 
-Task 3.1 is complete. Review the task PR when the harness opens it; task 3.2
-can begin after that review.
+1. Harness close check and commit for 3.2.1 using `progress/close_3.2.1.msg`.
+2. Then begin subtask 3.2.2, Set stopped.
 
 Note: agents cannot delete files under `coders/` (the guard blocks shell `rm`
 and there is no delete tool). Deletions declared by a spec and stale build
