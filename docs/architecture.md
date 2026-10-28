@@ -26,6 +26,7 @@ discipline, not by includes: a core function never calls `write`, `printf`,
 | `parsing/` | core | turning `argv` text into a validated `t_config` | `utils/` |
 | `cli/` | interfaces | every user-facing message: the usage text (`print_usage`) and the argument errors | `parsing/` (minimums) |
 | `state/` | adapters | shared simulation state guarded by its mutexes | nothing |
+| `log/` | core | pure construction of serialized log-line bytes (`build_log_line`) | `utils/` |
 | `main.c` | interfaces | the entry point only: wires the modules together | every module |
 
 Later phases add their own folders (time and log, queue, simulation, ...) and

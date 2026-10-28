@@ -267,3 +267,12 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_3.4.1.md`).
 - **Documentation:** docs/reference/3.4.1-build-number-text.md
 - **Commit:** feat(utils): add decimal number text builder [3.4.1]
+
+## 2026-10-28 — Subtask 3.4.2: Build log line
+- **Layer:** core
+- **Plan:** docs/plan/phase-03-time-and-log/3.4.2-build-log-line.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/log/build_log_line.c`, `coders/main.h`, and `coders/Makefile` add a pure formatter for one bounded serialized log line; `docs/architecture.md` maps the core `log/` module.
+- **Acceptance:** `tests/acceptance/test_3.4.2.c` — AC1–AC6 covered and green in the supplied pre-session check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_3.4.2.md`).
+- **Documentation:** docs/reference/3.4.2-build-log-line.md
+- **Commit:** feat(core): build serialized log line [3.4.2]

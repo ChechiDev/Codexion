@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/10/28 18:45:22 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/10/28 18:58:49 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 # define EXIT_USAGE 1
 # define SLEEP_SLICE_US 500
 # define NUMBER_TEXT_MAX 20
+# define LOG_TEXT_MAX 32
+# define LOG_LINE_MAX 64
 
 /* ---- Types ---- */
 
@@ -79,6 +81,10 @@ int		sleep_ms(t_sim *sim, long ms);
 
 int		is_stopped(t_sim *sim);
 int		set_stopped(t_sim *sim);
+
+/* ---- Log ---- */
+
+int		build_log_line(char *line, long ts, int coder, const char *text);
 
 /* ---- CLI ---- */
 
