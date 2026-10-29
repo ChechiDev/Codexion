@@ -1,11 +1,11 @@
 # Current session
 
-- **Current subtask:** 3.4.6 Extract print log line, closed on branch
-  `feat/3.4-serialized-logger`. Code review: `APPROVED`; supplied close check
-  green (exit code 0). 3.4.5 closed (`1e49f64`).
-- **Next:** 3.4.4 Print burnout, with plan gate, implementation, code review
-  and close. Closing 3.4.4 pushes the branch,
-  opens the task 3.4 PR and completes phase 03; then break down phase 04.
+- **Current subtask:** 3.4.4 Print burnout (replanned; last subtask of task
+  3.4 and of phase 03), `done` on branch `feat/3.4-serialized-logger`.
+  Phase: closed (`APPROVED`; close documentation and tracking prepared). 3.4.5
+  (`1e49f64`) and 3.4.6 (`c3058f9`) closed.
+- **Next:** harness runs the close check and commits task 3.4; then break down
+  phase 04.
 - **Parked work:** the first 3.4.4 implementation (`print_burnout.c`, its
   `main.h`/`Makefile` edits, `test_3.4.4.c`, `test_print_burnout.c`,
   `progress/acceptance_3.4.4.sha256`) is in `git stash` as `wip-3.4.4`; the
@@ -39,10 +39,8 @@ section points to the task's spec folder. Applies from the task 2.3 PR on.
 
 ## Next step
 
-Run `./harness/review_with_codex.sh plan 3.4.4`, then continue its
-implementation, code review, and close. Closing 3.4.4 pushes the branch, opens
-the task 3.4 PR and completes phase 03; the next step is the phase 04
-breakdown. Every subtask that edits `coders/Makefile` or `coders/main.h` must
+The 3.4.4 close is prepared. The harness runs the close check, commits the task
+branch, and opens the task 3.4 PR; then break down phase 04. Every subtask that edits `coders/Makefile` or `coders/main.h` must
 refresh the 42 header `Updated:` lines with Stdheader.
 
 Note: isolated, non-reproducible test failures (3.3.1 run, `test_3.1.2.c`

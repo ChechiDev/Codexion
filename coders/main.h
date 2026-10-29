@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/10/29 12:07:43 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/10/29 12:44:39 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ int		set_stopped(t_sim *sim);
 
 int		build_log_line(char *line, long ts, int coder, const char *text);
 int		print_state(t_sim *sim, int coder, t_state state);
+int		print_burnout(t_sim *sim, int coder);
 
 /*
 ** Caller holds log_mutex. Reads the timestamp, builds the line with

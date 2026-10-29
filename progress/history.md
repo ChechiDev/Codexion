@@ -303,3 +303,12 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_3.4.6.md`).
 - **Documentation:** docs/reference/3.4.6-extract-print-log-line.md
 - **Commit:** refactor(log): extract shared log line writer [3.4.6]
+
+## 2026-10-29 — Subtask 3.4.4: Print burnout
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-03-time-and-log/3.4.4-print-burnout.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/log/print_burnout.c`, `coders/main.h`, and `coders/Makefile` add the serialized terminal log operation, which claims the first stop and delegates the line to `print_log_line`.
+- **Acceptance:** `tests/acceptance/test_3.4.4.c` — AC1–AC12 cover output, stop ordering, concurrency, failure behavior, build integration, and Norm.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_3.4.4.md`).
+- **Documentation:** docs/reference/3.4.4-print-burnout.md; task narrative: progress/pr_3.4.md
+- **Commit:** feat(log): print terminal burnout line [3.4.4]

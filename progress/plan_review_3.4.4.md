@@ -3,9 +3,9 @@
 **Verdict:** PLAN_APPROVED
 
 ## Plan analysis
-- Layers: `print_burnout` belongs in the log adapter; it uses the existing clock, line builder, stop state, mutexes and stdout API. The core formatter stays free of platform calls. The plan respects the subject's exact `burned out` line and serialized output requirement.
-- Scope: one public function and three declared production files (`coders/src/log/print_burnout.c`, `coders/main.h`, `coders/Makefile`). Dependency 3.4.3 is closed and phase 03 is approved. The terminal stop protocol is specific to this function; monitor detection and the end-to-end 10 ms deadline remain assigned to later phases.
-- Test strategy: `tests/acceptance/test_3.4.4.c` contains one public-API test per criterion. It exercises output, stop state, timestamp, ordering, lock and write errors, concurrent callers, build integration and Norm. The tests are intentionally red until the new symbol is implemented. The supplied harness check exited 0 before the oracle was written. Tests were not run in this sandbox.
+- Layers: `print_burnout` owns the terminal stop protocol in the log adapter. It delegates timestamp formatting and the single unbuffered write to the already closed `print_log_line` (3.4.6), leaving the core formatter free of I/O and avoiding the duplication found at the first code review.
+- Scope: one public function and three declared production files (`coders/src/log/print_burnout.c`, `coders/main.h`, `coders/Makefile`). Dependency 3.4.6 is done. The monitor's detection timing remains in phase 08.
+- Test strategy: the replacement `tests/acceptance/test_3.4.4.c` has one black-box public-API test per criterion. It covers the line and stop protocol, immediate pipe visibility, ordering against state loggers, concurrent first-stop claims, rejection and error paths, build integration, and Norm. AC8 drains the pipe concurrently and uses a watchdog. The new symbol is absent at this plan gate, so the oracle is intentionally red. The supplied pre-session harness check exited 0; no test or verification command was run in this sandbox.
 
 ## Acceptance tests (traceability)
 - AC1 → `test_ac1_line_stop_and_unlocks` (red)
