@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/10/29 10:59:48 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/10/29 12:07:43 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,14 @@ int		set_stopped(t_sim *sim);
 
 int		build_log_line(char *line, long ts, int coder, const char *text);
 int		print_state(t_sim *sim, int coder, t_state state);
+
+/*
+** Caller holds log_mutex. Reads the timestamp, builds the line with
+** build_log_line and sends it with exactly one write, no retry.
+** Returns 0 only if write returned len; -1 on clock, build or write
+** failure. Never locks/unlocks a mutex, never reads or changes stopped.
+*/
+int		print_log_line(t_sim *sim, int coder, const char *text);
 
 /* ---- CLI ---- */
 

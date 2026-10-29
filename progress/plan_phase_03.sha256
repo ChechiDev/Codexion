@@ -7,4 +7,6 @@ db20f40a29d792018ebc5f5ba11ecc2816de514eba72a2e247eb9b07c56a4fb7  docs/plan/phas
 c2d368189ad2b8804a285ec76c3ecd712117a8374e2b8d645961662c78802eca  docs/plan/phase-03-time-and-log/3.4.1-build-number-text.md
 b9a17a96d761718715e83ec4ff95ca81cf1cd350ec04f768cff886f0251e5490  docs/plan/phase-03-time-and-log/3.4.2-build-log-line.md
 1927e9008b0ba5e508b3a790e5f6382f75a5d1b4af82b73434a2e05697963f8e  docs/plan/phase-03-time-and-log/3.4.3-print-state.md
-6d2cb842e4b770a8b0243f9764c81b42f502d837e031cc6f11e214cfb81056a6  docs/plan/phase-03-time-and-log/3.4.4-print-burnout.md
+87b75d89bce5176904046ca03fec24ff82f8f3e86b62720cb816174b492b1fb9  docs/plan/phase-03-time-and-log/3.4.4-print-burnout.md
+3c3796a80ac36da469bed67f0f4f5be9166f643b67685ed732ffd5cb127cf3e8  docs/plan/phase-03-time-and-log/3.4.5-declare-print-log-line.md
+4998e38a1ceb341d5839f1c2f9194c7eb9f674d82b1eef64fc50b0e5edbbf61b  docs/plan/phase-03-time-and-log/3.4.6-extract-print-log-line.md

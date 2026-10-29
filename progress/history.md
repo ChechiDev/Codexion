@@ -285,3 +285,12 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_3.4.3.md`).
 - **Documentation:** docs/reference/3.4.3-print-state.md
 - **Commit:** feat(log): serialize state lines [3.4.3]
+
+## 2026-10-29 — Subtask 3.4.5: Declare print log line
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-03-time-and-log/3.4.5-declare-print-log-line.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/main.h` declares the shared `print_log_line` adapter contract; no runtime behavior changed.
+- **Acceptance:** `tests/acceptance/test_3.4.5.c` — AC1–AC2 cover the `print_state` regression and build/Norm requirements.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_3.4.5.md`).
+- **Documentation:** docs/reference/3.4.5-declare-print-log-line.md
+- **Commit:** feat(log): declare shared log writer [3.4.5]
