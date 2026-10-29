@@ -1,9 +1,9 @@
 # Current session
 
-- **Current subtask:** 3.4.2 Build log line (task 3.4 "Serialized logger",
-  last task of phase 03), closed on branch `feat/3.4-serialized-logger`.
-  Plan gate: `PLAN_APPROVED`; code gate: `APPROVED`; close verification supplied
-  by the harness (`make check` exit code 0). Subtasks 3.4.1 and 3.4.2 are closed.
+- **Current subtask:** 3.4.3 Print state (task 3.4 "Serialized logger", last
+  task of phase 03), `in_progress` on branch `feat/3.4-serialized-logger`.
+  Phase: close (`PLAN_APPROVED`, code review `APPROVED`; supplied `make check` green).
+  Subtasks 3.4.1 (`7635017`) and 3.4.2 (`8977acd`) closed.
 - **Previous:** task 3.3 done and merged (PR #11, merge commit `f065027`).
   Tasks 3.1 and 3.2 merged (PRs #9, #10). Phase 03 is `PHASE_APPROVED`.
 - **Start:** 2026-10-28
@@ -32,10 +32,11 @@ section points to the task's spec folder. Applies from the task 2.3 PR on.
 
 ## Next step
 
-Start subtask 3.4.3 (leader: mark `in_progress` and run `make plan`), then
-complete 3.4.3 and 3.4.4. Closing 3.4.4 opens the task 3.4 PR and completes
-phase 03. Every subtask that edits `coders/Makefile` or `coders/main.h` must
-refresh the 42 header `Updated:` lines with Stdheader.
+1. Close artifacts for 3.4.3 are prepared; the harness will run `make check`
+   and commit.
+2. Then implement and review 3.4.4. Closing 3.4.4 opens the task 3.4 PR and
+   completes phase 03. Every subtask that edits `coders/Makefile` or
+   `coders/main.h` must refresh the 42 header `Updated:` lines with Stdheader.
 
 Note: avoid running two `make` processes at once; acceptance tests call
 `make -C coders` themselves and a concurrent build can make them fail

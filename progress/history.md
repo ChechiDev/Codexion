@@ -276,3 +276,12 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_3.4.2.md`).
 - **Documentation:** docs/reference/3.4.2-build-log-line.md
 - **Commit:** feat(core): build serialized log line [3.4.2]
+
+## 2026-10-29 — Subtask 3.4.3: Print state
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-03-time-and-log/3.4.3-print-state.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/log/print_state.c`, `coders/main.h`, and `coders/Makefile` add the serialized state-line adapter; unit and acceptance coverage exercise its output, synchronization, and failure contracts.
+- **Acceptance:** `tests/acceptance/test_3.4.3.c` — AC1–AC10 covered and green in the supplied check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_3.4.3.md`).
+- **Documentation:** docs/reference/3.4.3-print-state.md
+- **Commit:** feat(log): serialize state lines [3.4.3]

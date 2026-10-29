@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/10/28 18:58:49 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/10/29 10:59:48 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,14 @@
 # define LOG_LINE_MAX 64
 
 /* ---- Types ---- */
+
+typedef enum e_state
+{
+	STATE_TAKEN_DONGLE,
+	STATE_COMPILING,
+	STATE_DEBUGGING,
+	STATE_REFACTORING
+}	t_state;
 
 typedef enum e_mode
 {
@@ -85,6 +93,7 @@ int		set_stopped(t_sim *sim);
 /* ---- Log ---- */
 
 int		build_log_line(char *line, long ts, int coder, const char *text);
+int		print_state(t_sim *sim, int coder, t_state state);
 
 /* ---- CLI ---- */
 

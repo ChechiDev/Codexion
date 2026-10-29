@@ -1407,7 +1407,7 @@
         {
           "id": "3.4.3",
           "title": "Print state",
-          "status": "pending",
+          "status": "done",
           "layer": "adapters",
           "depends": [
             "3.4.2"
