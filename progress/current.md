@@ -1,11 +1,17 @@
 # Current session
 
-- **Current subtask:** 3.4.4 Print burnout (replanned; last subtask of task
-  3.4 and of phase 03), `done` on branch `feat/3.4-serialized-logger`.
-  Phase: closed (`APPROVED`; close documentation and tracking prepared). 3.4.5
-  (`1e49f64`) and 3.4.6 (`c3058f9`) closed.
-- **Next:** harness runs the close check and commits task 3.4; then break down
-  phase 04.
+- **Current subtask:** 4.1.2 Get request key, `done` on branch
+  `feat/4.1-request-order`. Plan gate: `PLAN_APPROVED`; code gate: `APPROVED`;
+  close documentation and tracking prepared. The supplied close-session
+  `make check` result is green (exit 0).
+- **Next:** 4.2.1 Init heap (plan: `PLAN_APPROVED`); implementer may start after
+  the harness completes this close and commit.
+- **Parked work:** the first 3.4.4 implementation (`print_burnout.c`, its
+  `main.h`/`Makefile` edits, `test_3.4.4.c`, `test_print_burnout.c`,
+  `progress/acceptance_3.4.4.sha256`) is in `git stash` as `wip-3.4.4`.
+
+- **Previous close:** 4.1.1 Is request before, committed as
+  `feat(policy): compare requests by priority [4.1.1]`.
 - **Parked work:** the first 3.4.4 implementation (`print_burnout.c`, its
   `main.h`/`Makefile` edits, `test_3.4.4.c`, `test_print_burnout.c`,
   `progress/acceptance_3.4.4.sha256`) is in `git stash` as `wip-3.4.4`; the
@@ -39,8 +45,8 @@ section points to the task's spec folder. Applies from the task 2.3 PR on.
 
 ## Next step
 
-The 3.4.4 close is prepared. The harness runs the close check, commits the task
-branch, and opens the task 3.4 PR; then break down phase 04. Every subtask that edits `coders/Makefile` or `coders/main.h` must
+4.1.1 close is prepared. The harness runs the close check and commits it; then
+start 4.1.2. Every subtask that edits `coders/Makefile` or `coders/main.h` must
 refresh the 42 header `Updated:` lines with Stdheader.
 
 Note: `make check` does not run ThreadSanitizer or valgrind; CI does. PR #12
@@ -50,6 +56,22 @@ failed CI on `make tsan` (lock-order inversion created by the unit test
 implementer (`progress/fix_3.4_tsan.md`), committed by the user. From now on,
 run `make tsan` and `make memcheck` (besides `make check`) before every code
 gate, and ask the implementer to run them too.
+
+Note: `make memcheck` and `make tsan` only run `tests/unit/`; acceptance
+binaries that allocate (phase 04 on) are run explicitly under valgrind at the
+code gate (`build/tests/acceptance/test_<id>.bin`).
+
+Phase 04 breakdown (2026-10-29, Codex advisory): tasks 4.1 Request order,
+4.2 Heap storage, 4.3 Heap operations; 7 subtasks 4.1.1-4.3.3, each approved
+by the user, phase gate `PHASE_APPROVED` (`progress/phase_review_04.md`).
+Next: branch `feat/4.1-request-order`, start 4.1.1. Invariants for phases 05-06: one
+simulation-wide strictly increasing ticket per logical request (synchronized,
+no overflow); the same `(key, ticket, coder)` pushed into both dongle heaps
+under both mutexes (lower index first), unchanged while queued; check both
+heads and availability and pop both in one critical section; check
+`get_request_key` -1 before enqueueing; edf time base = ms elapsed since the
+simulation start, `last_compile_start` 0 before the first compile; one coder
+= one dongle, no double lock or push.
 
 Note: isolated, non-reproducible test failures (3.3.1 run, `test_3.1.2.c`
 after the 3.4.5 plan gate, `test_1.1.1.c` "coders/codexion missing" during

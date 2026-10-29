@@ -27,6 +27,7 @@ discipline, not by includes: a core function never calls `write`, `printf`,
 | `cli/` | interfaces | every user-facing message: the usage text (`print_usage`) and the argument errors | `parsing/` (minimums) |
 | `state/` | adapters | shared simulation state guarded by its mutexes | nothing |
 | `log/` | core | pure construction of serialized log-line bytes (`build_log_line`) | `utils/` |
+| `policy/` | core | pure FIFO/EDF request-key calculation (`get_request_key`) and ordering (`is_request_before`) | nothing |
 | `main.c` | interfaces | the entry point only: wires the modules together | every module |
 
 Later phases add their own folders (time and log, queue, simulation, ...) and
