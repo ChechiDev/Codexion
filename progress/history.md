@@ -312,3 +312,12 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_3.4.4.md`).
 - **Documentation:** docs/reference/3.4.4-print-burnout.md; task narrative: progress/pr_3.4.md
 - **Commit:** feat(log): print terminal burnout line [3.4.4]
+
+## 2026-10-29 — Subtask 4.1.1: Is request before
+- **Layer:** core
+- **Plan:** docs/plan/phase-04-priority-queue/4.1.1-is-request-before.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/policy/is_request_before.c`, `coders/main.h`, and `coders/Makefile` define and build the strict `(key, ticket)` request comparator; the architecture map documents the pure `policy/` module.
+- **Acceptance:** `tests/acceptance/test_4.1.1.c` — AC1–AC9 cover ordering, edge cases, immutability, and build integration.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_4.1.1.md`).
+- **Documentation:** docs/reference/4.1.1-is-request-before.md
+- **Commit:** feat(policy): compare requests by priority [4.1.1]

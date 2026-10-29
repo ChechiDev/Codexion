@@ -60,8 +60,12 @@
       "title": "Priority queue",
       "goal": "a hand-written binary min-heap of dongle requests ordered by key then arrival ticket, supporting the fifo key (arrival ticket) and the edf key (last_compile_start + time_to_burnout)",
       "file": "docs/plan/phase-04-priority-queue.md",
-      "status": "pending",
-      "tasks": []
+      "status": "in_progress",
+      "tasks": [
+        "4.1",
+        "4.2",
+        "4.3"
+      ]
     },
     {
       "id": "05",
@@ -1629,6 +1633,413 @@
             }
           ],
           "spec": "docs/plan/phase-03-time-and-log/3.4.6-extract-print-log-line.md"
+        }
+      ]
+    },
+    {
+      "id": "4.1",
+      "title": "Request order",
+      "phase": "04",
+      "layer": "core",
+      "goal": "the dongle request type and its strict order (key, then arrival ticket), plus the fifo/edf key computation with no overflow",
+      "status": "in_progress",
+      "subtasks": [
+        {
+          "id": "4.1.1",
+          "title": "Is request before",
+          "status": "done",
+          "layer": "core",
+          "depends": [],
+          "files": [
+            "coders/src/policy/is_request_before.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "smaller key first: `{key 5, ticket 9}` before `{key 6, ticket 1}` returns 1 and the reverse call returns 0",
+              "test": "tests/acceptance/test_4.1.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "equal keys, ticket breaks the tie: `{key 7, ticket 2}` before `{key 7, ticket 3}` returns 1 and the reverse returns 0",
+              "test": "tests/acceptance/test_4.1.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "strict: a request compared with itself, or with a copy that has the same key and ticket, returns 0 (both orders)",
+              "test": "tests/acceptance/test_4.1.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "`coder` plays no part: two requests with the same key and ticket and different `coder` return 0 both ways, and swapping the `coder` values of AC1/AC2 pairs does not change their results",
+              "test": "tests/acceptance/test_4.1.1.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "extreme values, no subtraction overflow: `{LONG_MIN, 0}` before `{LONG_MAX, 0}` returns 1 and the reverse 0; `{0, LONG_MIN}` before `{0, LONG_MAX}` returns 1 and the reverse 0; `{-1, 5}` before `{0, 0}` returns 1",
+              "test": "tests/acceptance/test_4.1.1.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "total order on a sample: for every pair of distinct elements `a`, `b` of a fixed sample of at least 8 requests (distinct `(key, ticket)`, mixed signs, ties on key), the results are exactly 0 or 1 and match the lexicographic `(key, ticket)` order (exactly one of `before(a, b)` and `before(b, a)` is 1); for every triple, if `before(a, b) == 1` and `before(b, c) == 1` then `before(a, c) == 1`",
+              "test": "tests/acceptance/test_4.1.1.c"
+            },
+            {
+              "id": "AC7",
+              "criterion": "NULL: `a == NULL`, `b == NULL` or both return 0 with no crash",
+              "test": "tests/acceptance/test_4.1.1.c"
+            },
+            {
+              "id": "AC8",
+              "criterion": "the arguments are read only: both requests are byte-for-byte unchanged after every call",
+              "test": "tests/acceptance/test_4.1.1.c"
+            },
+            {
+              "id": "AC9",
+              "criterion": "`make -C coders` builds `codexion`, the binary defines `is_request_before` (`nm`), and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_4.1.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-04-priority-queue/4.1.1-is-request-before.md"
+        },
+        {
+          "id": "4.1.2",
+          "title": "Get request key",
+          "status": "pending",
+          "layer": "core",
+          "depends": [
+            "4.1.1"
+          ],
+          "files": [
+            "coders/src/policy/get_request_key.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "fifo: `get_request_key(MODE_FIFO, t, s, b)` returns `t` for `t` in `{0, 1, 42, LONG_MAX}`, whatever `s` and `b` are (including `s = -1`, `s = LONG_MAX`, `b = 0`, `b = -1`)",
+              "test": "tests/acceptance/test_4.1.2.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "edf: `get_request_key(MODE_EDF, 3, 1000, 410)` returns 1410; `(MODE_EDF, 0, 0, 1)` returns 1; the result does not depend on the ticket (`ticket` 0, 7 and `LONG_MAX` give the same key for the same `s`, `b`)",
+              "test": "tests/acceptance/test_4.1.2.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "edf upper bound: `s = LONG_MAX - INT_MAX`, `b = INT_MAX` returns `LONG_MAX`; `s = LONG_MAX - INT_MAX + 1`, `b = INT_MAX` returns -1; `s = LONG_MAX`, `b = 1` returns -1",
+              "test": "tests/acceptance/test_4.1.2.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "invalid input returns -1: `ticket` of -1 and `LONG_MIN` (both modes); edf with `s` of -1 or `LONG_MIN`; edf with `b` of 0, -1 or `INT_MIN`; a `mode` value that is neither `MODE_FIFO` nor `MODE_EDF` (e.g. `(t_mode)7`)",
+              "test": "tests/acceptance/test_4.1.2.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "every valid result is `>= 0`, so -1 never collides with a key: checked on all the valid calls of AC1-AC3",
+              "test": "tests/acceptance/test_4.1.2.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "`make -C coders` builds `codexion`, the binary defines `get_request_key` (`nm`), and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_4.1.2.c"
+            }
+          ],
+          "spec": "docs/plan/phase-04-priority-queue/4.1.2-get-request-key.md"
+        }
+      ]
+    },
+    {
+      "id": "4.2",
+      "title": "Heap storage",
+      "phase": "04",
+      "layer": "core",
+      "goal": "a fixed-capacity request heap whose array is allocated and freed explicitly, with overflow-checked sizing and a safe repeated free",
+      "status": "pending",
+      "subtasks": [
+        {
+          "id": "4.2.1",
+          "title": "Init heap",
+          "status": "pending",
+          "layer": "core",
+          "depends": [
+            "4.1.2"
+          ],
+          "files": [
+            "coders/src/heap/init_heap.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "`init_heap(&heap, 2)` on a zeroed `t_heap` returns 0, `heap.items != NULL`, `heap.size == 0`, `heap.capacity == 2`; the test then writes and reads back all 2 `t_request` slots and frees `heap.items` with `free`. Repeated with a non-live `t_heap` prefilled byte-wise with a sentinel pattern: same successful result",
+              "test": "tests/acceptance/test_4.2.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "capacity 1 and capacity 1000 behave as AC1 (every slot writable, `capacity` equals the argument, `size == 0`)",
+              "test": "tests/acceptance/test_4.2.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "invalid capacity: 0, -1 and `INT_MIN` return -1 and leave the whole `t_heap` byte-for-byte unchanged (the test fills it with a sentinel pattern first and compares the bytes, without evaluating the sentinel pointer)",
+              "test": "tests/acceptance/test_4.2.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "`init_heap(NULL, 2)` returns -1 with no crash",
+              "test": "tests/acceptance/test_4.2.1.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "two heaps of capacity 2 initialised one after the other and kept alive: every slot is filled with distinct field values, and modifying either array leaves the other's fields unchanged (fields compared, not padding); both arrays are then freed",
+              "test": "tests/acceptance/test_4.2.1.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "`make -C coders` builds `codexion`, the binary defines `init_heap` (`nm`), and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_4.2.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-04-priority-queue/4.2.1-init-heap.md"
+        },
+        {
+          "id": "4.2.2",
+          "title": "Free heap",
+          "status": "pending",
+          "layer": "core",
+          "depends": [
+            "4.2.1"
+          ],
+          "files": [
+            "coders/src/heap/free_heap.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "after `init_heap(&heap, 4)` returned 0, `free_heap(&heap)` leaves `heap.items == NULL`, `heap.size == 0`, `heap.capacity == 0`",
+              "test": "tests/acceptance/test_4.2.2.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "for each `n` in `{0, 2, 4}`: initialise a fresh heap of capacity 4, write `items[i] = (t_request){i, i, i + 1}` for `0 <= i < n`, then set `size = n`; `free_heap` leaves NULL/0/0 (no push/pop operation is required)",
+              "test": "tests/acceptance/test_4.2.2.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "idempotent: a second and a third `free_heap` on the same heap are no-ops (no crash, fields stay NULL/0/0)",
+              "test": "tests/acceptance/test_4.2.2.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "a zeroed `t_heap` (never initialised) and `free_heap(NULL)` are accepted with no crash; the zeroed heap stays NULL/0/0",
+              "test": "tests/acceptance/test_4.2.2.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "reuse: after `free_heap`, `init_heap(&heap, 2)` on the same struct returns 0 with `items != NULL`, `size == 0` and `capacity == 2`; both slots are writable and read back what was written; a final `free_heap` leaves NULL/0/0",
+              "test": "tests/acceptance/test_4.2.2.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "`make -C coders` builds `codexion`, the binary defines `free_heap` (`nm`), and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_4.2.2.c"
+            }
+          ],
+          "spec": "docs/plan/phase-04-priority-queue/4.2.2-free-heap.md"
+        }
+      ]
+    },
+    {
+      "id": "4.3",
+      "title": "Heap operations",
+      "phase": "04",
+      "layer": "core",
+      "goal": "push, peek and pop on the min-heap (sift up/down on the request order); a rejected operation (full, empty) leaves the heap and the output untouched",
+      "status": "pending",
+      "subtasks": [
+        {
+          "id": "4.3.1",
+          "title": "Push request",
+          "status": "pending",
+          "layer": "core",
+          "depends": [
+            "4.2.2"
+          ],
+          "files": [
+            "coders/src/heap/push_request.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "on an empty heap of capacity 4, pushing `{key 9, ticket 1, coder 2}` returns 0, `size == 1` and `items[0]` equals the pushed request field by field",
+              "test": "tests/acceptance/test_4.3.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "the head is the minimum: on a heap of capacity 8, after each push of the sequence `(key, ticket)` = `(5,1) (3,2) (8,3) (3,0) (1,4) (9,5) (1,9) (7,6)` (coder = position + 1), every push returns 0, `size` grows by 1 and `items[0]` is the smallest request pushed so far by `is_request_before` (4.1.1): the successive heads are `(5,1) (3,2) (3,2) (3,0) (1,4) (1,4) (1,4) (1,4)`, compared field by field with the corresponding input request",
+              "test": "tests/acceptance/test_4.3.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "heap property and content: after AC2's 8 pushes, for every `i` in `[1, size)` `is_request_before(&items[i], &items[(i - 1) / 2])` returns 0, and `items[0..size)` is a permutation of the 8 pushed requests (every field compared)",
+              "test": "tests/acceptance/test_4.3.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "fifo and edf ties: pushing keys all equal to 100 with tickets `4, 2, 3, 1` gives the ticket-1 request at the head; pushing fifo-style requests (`key == ticket`) with tickets `3, 1, 2` gives ticket 1 at the head",
+              "test": "tests/acceptance/test_4.3.1.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "full: on a heap of capacity 2 holding 2 requests, a third push returns -1 and the whole `t_heap` struct and both slots are unchanged (fields compared); on capacity 1 the same with 1 request",
+              "test": "tests/acceptance/test_4.3.1.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "invalid arguments: `push_request(NULL, &req)`, `push_request(&heap, NULL)` and both NULL return -1 with no crash; for the NULL-request case the oracle uses a non-full heap with live entries and fills every unused slot with sentinel field values before taking the snapshot: after the call all heap fields and every slot `[0, capacity)` are unchanged, compared field by field",
+              "test": "tests/acceptance/test_4.3.1.c"
+            },
+            {
+              "id": "AC7",
+              "criterion": "by value: after a successful push, changing the caller's `t_request` variable leaves the stored copy unchanged; the pushed argument itself is not modified by the call",
+              "test": "tests/acceptance/test_4.3.1.c"
+            },
+            {
+              "id": "AC8",
+              "criterion": "extremes and larger sizes: a heap of capacity 64 filled with 64 requests of pseudo-random keys (generator in the test notes, `LONG_MIN` and `LONG_MAX` included, unique tickets): every push returns 0, `size` increases by one, the occupied slots are a permutation of the input prefix, the AC3 heap property holds after every push and the minimum is at the head",
+              "test": "tests/acceptance/test_4.3.1.c"
+            },
+            {
+              "id": "AC9",
+              "criterion": "`make -C coders` builds `codexion`, the binary defines `push_request` (`nm`), and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_4.3.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-04-priority-queue/4.3.1-push-request.md"
+        },
+        {
+          "id": "4.3.2",
+          "title": "Get head request",
+          "status": "pending",
+          "layer": "core",
+          "depends": [
+            "4.3.1"
+          ],
+          "files": [
+            "coders/src/heap/get_head_request.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "after pushing `{key 9, ticket 1, coder 2}` into an empty heap of capacity 4, `get_head_request(&heap, &out)` returns 0 and `out` equals the pushed request field by field",
+              "test": "tests/acceptance/test_4.3.2.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "it copies the minimum: after each push of the 4.3.1 AC2 sequence (`(5,1) (3,2) (8,3) (3,0) (1,4) (9,5) (1,9) (7,6)`, coder = position + 1) into a heap of capacity 8, it returns 0 and `out` equals, field by field, the request with the successive heads `(5,1) (3,2) (3,2) (3,0) (1,4) (1,4) (1,4) (1,4)`",
+              "test": "tests/acceptance/test_4.3.2.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "read only: before each call the oracle snapshots the heap fields and every slot `[0, capacity)` (unused slots filled with sentinel field values); after the call they are unchanged, field by field; two calls in a row give the same `out`",
+              "test": "tests/acceptance/test_4.3.2.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "empty: on a freshly initialised heap, and separately after initialising a capacity-1 heap, successfully pushing `{key 9, ticket 1, coder 2}` and setting `heap.size = 0`, it returns -1; the sentinel-prefilled `out` and the heap remain unchanged, field by field",
+              "test": "tests/acceptance/test_4.3.2.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "invalid arguments: `get_head_request(NULL, &out)` returns -1 and leaves `out` unchanged; `get_head_request(&heap, NULL)` on a non-empty heap and both NULL return -1 with no crash, the heap unchanged as in AC3",
+              "test": "tests/acceptance/test_4.3.2.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "by value: after a successful call, changing `out` leaves the stored head unchanged (a second call returns the original values)",
+              "test": "tests/acceptance/test_4.3.2.c"
+            },
+            {
+              "id": "AC7",
+              "criterion": "`make -C coders` builds `codexion`, the binary defines `get_head_request` (`nm`), and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_4.3.2.c"
+            }
+          ],
+          "spec": "docs/plan/phase-04-priority-queue/4.3.2-get-head-request.md"
+        },
+        {
+          "id": "4.3.3",
+          "title": "Pop request",
+          "status": "pending",
+          "layer": "core",
+          "depends": [
+            "4.3.2"
+          ],
+          "files": [
+            "coders/src/heap/pop_request.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "after pushing `{key 9, ticket 1, coder 2}` into an empty heap of capacity 4, `pop_request(&heap, &out)` returns 0, `out` equals the pushed request field by field and `size == 0`",
+              "test": "tests/acceptance/test_4.3.3.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "sorted order: after pushing the 4.3.1 AC2 sequence (`(5,1) (3,2) (8,3) (3,0) (1,4) (9,5) (1,9) (7,6)`, coder = position + 1) into a heap of capacity 8, eight pops each return 0, `size` decreases by one each time, and `out` equals, field by field, the input requests in the order `(1,4) (1,9) (3,0) (3,2) (5,1) (7,6) (8,3) (9,5)`; a ninth pop returns -1",
+              "test": "tests/acceptance/test_4.3.3.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "heap property after each pop: in AC2 and AC5, after every successful pop, for every `i` in `[1, size)` `is_request_before(&items[i], &items[(i - 1) / 2])` returns 0, and `items[0..size)` is a permutation of the requests still queued (every field compared)",
+              "test": "tests/acceptance/test_4.3.3.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "empty: on a freshly initialised heap, and after AC1 emptied a heap, it returns -1; the sentinel-prefilled `out`, the heap fields and every slot `[0, capacity)` are unchanged, field by field",
+              "test": "tests/acceptance/test_4.3.3.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "larger sizes and extremes: 64 requests from the 4.3.1 AC8 generator (`LONG_MIN` and `LONG_MAX` included, unique tickets) pushed into a heap of capacity 64, then popped: 64 pops return 0 and give the requests in strictly increasing `(key, ticket)` order (each `out` is `is_request_before` the next), covering every input exactly once",
+              "test": "tests/acceptance/test_4.3.3.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "interleaved: on a heap of capacity 4, the fixed script `push(4,1) push(2,2) pop push(3,3) push(1,4) pop pop push(5,5) pop pop` (key, ticket; coder = ticket) returns 0 everywhere and the pops give the tickets `2, 4, 3, 1, 5` in that order; the heap ends empty",
+              "test": "tests/acceptance/test_4.3.3.c"
+            },
+            {
+              "id": "AC7",
+              "criterion": "dongle-sized heap: capacity 2: push `{7,1,1}`, push `{7,0,2}`, pop, pop all return 0 and the outputs equal the second and first requests respectively, field by field; capacity 1: push/pop `{9,1,1}`, then push/pop `{3,2,2}`, all return 0 and reproduce each request field by field",
+              "test": "tests/acceptance/test_4.3.3.c"
+            },
+            {
+              "id": "AC8",
+              "criterion": "invalid arguments: `pop_request(NULL, &out)` returns -1 with `out` unchanged; `pop_request(&heap, NULL)` on a non-empty heap returns -1 with the heap fields and every slot `[0, capacity)` unchanged; both NULL return -1 with no crash",
+              "test": "tests/acceptance/test_4.3.3.c"
+            },
+            {
+              "id": "AC9",
+              "criterion": "`make -C coders` builds `codexion`, the binary defines `pop_request` (`nm`), and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_4.3.3.c"
+            }
+          ],
+          "spec": "docs/plan/phase-04-priority-queue/4.3.3-pop-request.md"
         }
       ]
     }
