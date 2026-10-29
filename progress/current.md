@@ -1,11 +1,17 @@
 # Current session
 
-- **Current subtask:** 4.1.1 Is request before, `done` on branch
+- **Current subtask:** 4.1.2 Get request key, `done` on branch
   `feat/4.1-request-order`. Plan gate: `PLAN_APPROVED`; code gate: `APPROVED`;
   close documentation and tracking prepared. The supplied close-session
   `make check` result is green (exit 0).
-- **Next:** 4.1.2 Get request key (plan: `PLAN_APPROVED`); implementer may start
-  after the harness completes this close and commit.
+- **Next:** 4.2.1 Init heap (plan: `PLAN_APPROVED`); implementer may start after
+  the harness completes this close and commit.
+- **Parked work:** the first 3.4.4 implementation (`print_burnout.c`, its
+  `main.h`/`Makefile` edits, `test_3.4.4.c`, `test_print_burnout.c`,
+  `progress/acceptance_3.4.4.sha256`) is in `git stash` as `wip-3.4.4`.
+
+- **Previous close:** 4.1.1 Is request before, committed as
+  `feat(policy): compare requests by priority [4.1.1]`.
 - **Parked work:** the first 3.4.4 implementation (`print_burnout.c`, its
   `main.h`/`Makefile` edits, `test_3.4.4.c`, `test_print_burnout.c`,
   `progress/acceptance_3.4.4.sha256`) is in `git stash` as `wip-3.4.4`; the

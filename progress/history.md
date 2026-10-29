@@ -321,3 +321,12 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_4.1.1.md`).
 - **Documentation:** docs/reference/4.1.1-is-request-before.md
 - **Commit:** feat(policy): compare requests by priority [4.1.1]
+
+## 2026-10-29 — Subtask 4.1.2: Get request key
+- **Layer:** core
+- **Plan:** docs/plan/phase-04-priority-queue/4.1.2-get-request-key.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/policy/get_request_key.c`, `coders/main.h`, and `coders/Makefile` add pure FIFO ticket and EDF deadline key calculation with invalid-input and overflow handling; `docs/architecture.md` maps key calculation in `policy/`.
+- **Acceptance:** `tests/acceptance/test_4.1.2.c` — AC1–AC6 cover policy keys, validation, overflow boundaries, and build integration.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_4.1.2.md`).
+- **Documentation:** docs/reference/4.1.2-get-request-key.md; task narrative: progress/pr_4.1.md
+- **Commit:** feat(policy): compute FIFO and EDF request keys [4.1.2]

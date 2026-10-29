@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/10/29 18:19:00 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/10/29 18:37:25 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,8 @@ int		print_log_line(t_sim *sim, int coder, const char *text);
 /* ---- Policy ---- */
 
 int		is_request_before(const t_request *a, const t_request *b);
+long	get_request_key(t_mode mode, long ticket, long last_compile_start,
+			int time_to_burnout);
 
 /* ---- CLI ---- */
 

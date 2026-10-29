@@ -1642,7 +1642,7 @@
       "phase": "04",
       "layer": "core",
       "goal": "the dongle request type and its strict order (key, then arrival ticket), plus the fifo/edf key computation with no overflow",
-      "status": "in_progress",
+      "status": "done",
       "subtasks": [
         {
           "id": "4.1.1",
@@ -1707,7 +1707,7 @@
         {
           "id": "4.1.2",
           "title": "Get request key",
-          "status": "pending",
+          "status": "done",
           "layer": "core",
           "depends": [
             "4.1.1"
