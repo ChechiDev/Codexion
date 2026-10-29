@@ -1,0 +1,12 @@
+# Plan review — subtask 3.4.5
+
+**Verdict:** PLAN_APPROVED
+
+## Plan analysis
+- Layers: the header declares an adapter logger helper without adding core I/O or changing runtime behavior. The later extraction in 3.4.6 owns the implementation.
+- Scope: one declaration and its contract comment in the single declared production file, `coders/main.h`; this is an atomic structural step. The source inspection specified by the plan will check the declaration and that no source file changes.
+- Test strategy: the structural-refactor exception permits green regression tests at the plan gate. AC1 checks `print_state` through its public API and the sealed 3.4.3 oracle remains part of the suite. AC2 checks the deliverable build, no relink on a second build, and Norm. The supplied pre-session harness check exited 0; no suite was run in this sandbox.
+
+## Acceptance tests (traceability)
+- AC1 → `test_ac1_print_state_regression` (regression; may already be green)
+- AC2 → `test_ac2_build_no_relink_and_norm` (regression; may already be green)

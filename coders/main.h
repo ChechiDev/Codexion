@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/10/27 18:40:45 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/10/29 12:44:39 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,19 @@
 
 # define EXIT_USAGE 1
 # define SLEEP_SLICE_US 500
+# define NUMBER_TEXT_MAX 20
+# define LOG_TEXT_MAX 32
+# define LOG_LINE_MAX 64
 
 /* ---- Types ---- */
+
+typedef enum e_state
+{
+	STATE_TAKEN_DONGLE,
+	STATE_COMPILING,
+	STATE_DEBUGGING,
+	STATE_REFACTORING
+}	t_state;
 
 typedef enum e_mode
 {
@@ -59,6 +70,7 @@ typedef struct s_sim
 int		is_digit(char c);
 int		is_space(char c);
 t_slice	trim_slice(const char *str);
+int		build_number_text(long n, char *buf);
 
 /* ---- Parsing ---- */
 
@@ -77,6 +89,20 @@ int		sleep_ms(t_sim *sim, long ms);
 
 int		is_stopped(t_sim *sim);
 int		set_stopped(t_sim *sim);
+
+/* ---- Log ---- */
+
+int		build_log_line(char *line, long ts, int coder, const char *text);
+int		print_state(t_sim *sim, int coder, t_state state);
+int		print_burnout(t_sim *sim, int coder);
+
+/*
+** Caller holds log_mutex. Reads the timestamp, builds the line with
+** build_log_line and sends it with exactly one write, no retry.
+** Returns 0 only if write returned len; -1 on clock, build or write
+** failure. Never locks/unlocks a mutex, never reads or changes stopped.
+*/
+int		print_log_line(t_sim *sim, int coder, const char *text);
 
 /* ---- CLI ---- */
 

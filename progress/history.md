@@ -258,3 +258,57 @@ Entry template (filled in at close):
 - **Verification:** supplied `make check` green (exit code 0). Code review: APPROVED (`progress/review_3.3.1.md`); the backward-clock signed-overflow finding was fixed before approval.
 - **Documentation:** docs/reference/3.3.1-sleep-ms.md; task narrative: progress/pr_3.3.md
 - **Commit:** feat(time): add stop-aware sliced sleep [3.3.1]
+
+## 2026-10-28 — Subtask 3.4.1: Build number text
+- **Layer:** core
+- **Plan:** docs/plan/phase-03-time-and-log/3.4.1-build-number-text.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/utils/build_number_text.c`, `coders/main.h`, and `coders/Makefile` add bounded, allocation-free decimal digit formatting for caller-owned buffers.
+- **Acceptance:** `tests/acceptance/test_3.4.1.c` — AC1–AC7 covered and green in the supplied pre-session check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_3.4.1.md`).
+- **Documentation:** docs/reference/3.4.1-build-number-text.md
+- **Commit:** feat(utils): add decimal number text builder [3.4.1]
+
+## 2026-10-28 — Subtask 3.4.2: Build log line
+- **Layer:** core
+- **Plan:** docs/plan/phase-03-time-and-log/3.4.2-build-log-line.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/log/build_log_line.c`, `coders/main.h`, and `coders/Makefile` add a pure formatter for one bounded serialized log line; `docs/architecture.md` maps the core `log/` module.
+- **Acceptance:** `tests/acceptance/test_3.4.2.c` — AC1–AC6 covered and green in the supplied pre-session check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_3.4.2.md`).
+- **Documentation:** docs/reference/3.4.2-build-log-line.md
+- **Commit:** feat(core): build serialized log line [3.4.2]
+
+## 2026-10-29 — Subtask 3.4.3: Print state
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-03-time-and-log/3.4.3-print-state.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/log/print_state.c`, `coders/main.h`, and `coders/Makefile` add the serialized state-line adapter; unit and acceptance coverage exercise its output, synchronization, and failure contracts.
+- **Acceptance:** `tests/acceptance/test_3.4.3.c` — AC1–AC10 covered and green in the supplied check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_3.4.3.md`).
+- **Documentation:** docs/reference/3.4.3-print-state.md
+- **Commit:** feat(log): serialize state lines [3.4.3]
+
+## 2026-10-29 — Subtask 3.4.5: Declare print log line
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-03-time-and-log/3.4.5-declare-print-log-line.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/main.h` declares the shared `print_log_line` adapter contract; no runtime behavior changed.
+- **Acceptance:** `tests/acceptance/test_3.4.5.c` — AC1–AC2 cover the `print_state` regression and build/Norm requirements.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_3.4.5.md`).
+- **Documentation:** docs/reference/3.4.5-declare-print-log-line.md
+- **Commit:** feat(log): declare shared log writer [3.4.5]
+
+## 2026-10-29 — Subtask 3.4.6: Extract print log line
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-03-time-and-log/3.4.6-extract-print-log-line.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/log/print_log_line.c` centralizes timestamp, formatting and output; `print_state.c` delegates the write while retaining its stop and serialization policy; `coders/Makefile` registers the shared writer.
+- **Acceptance:** `tests/acceptance/test_3.4.6.c` — AC1–AC8 covered and green in the supplied close check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_3.4.6.md`).
+- **Documentation:** docs/reference/3.4.6-extract-print-log-line.md
+- **Commit:** refactor(log): extract shared log line writer [3.4.6]
+
+## 2026-10-29 — Subtask 3.4.4: Print burnout
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-03-time-and-log/3.4.4-print-burnout.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/log/print_burnout.c`, `coders/main.h`, and `coders/Makefile` add the serialized terminal log operation, which claims the first stop and delegates the line to `print_log_line`.
+- **Acceptance:** `tests/acceptance/test_3.4.4.c` — AC1–AC12 cover output, stop ordering, concurrency, failure behavior, build integration, and Norm.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_3.4.4.md`).
+- **Documentation:** docs/reference/3.4.4-print-burnout.md; task narrative: progress/pr_3.4.md
+- **Commit:** feat(log): print terminal burnout line [3.4.4]

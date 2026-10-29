@@ -47,7 +47,7 @@
       "title": "Time and serialized logging",
       "goal": "millisecond clock relative to the simulation start (gettimeofday), a stop-aware sliced sleep, and a mutex-serialized logger that prints the five subject state lines and nothing after the stop except the burnout line",
       "file": "docs/plan/phase-03-time-and-log.md",
-      "status": "in_progress",
+      "status": "done",
       "tasks": [
         "3.1",
         "3.2",
@@ -1303,12 +1303,12 @@
       "phase": "03",
       "layer": "adapters",
       "goal": "build each subject log line in a local buffer and send it with one unbuffered `write` under one log mutex; nothing after the stop, and the single burnout line only when the burnout makes the first stop",
-      "status": "pending",
+      "status": "done",
       "subtasks": [
         {
           "id": "3.4.1",
           "title": "Build number text",
-          "status": "pending",
+          "status": "done",
           "layer": "core",
           "depends": [
             "3.3.1"
@@ -1360,7 +1360,7 @@
         {
           "id": "3.4.2",
           "title": "Build log line",
-          "status": "pending",
+          "status": "done",
           "layer": "core",
           "depends": [
             "3.4.1"
@@ -1407,7 +1407,7 @@
         {
           "id": "3.4.3",
           "title": "Print state",
-          "status": "pending",
+          "status": "done",
           "layer": "adapters",
           "depends": [
             "3.4.2"
@@ -1474,10 +1474,10 @@
         {
           "id": "3.4.4",
           "title": "Print burnout",
-          "status": "pending",
+          "status": "done",
           "layer": "adapters",
           "depends": [
-            "3.4.3"
+            "3.4.6"
           ],
           "files": [
             "coders/src/log/print_burnout.c",
@@ -1547,6 +1547,88 @@
             }
           ],
           "spec": "docs/plan/phase-03-time-and-log/3.4.4-print-burnout.md"
+        },
+        {
+          "id": "3.4.5",
+          "title": "Declare print log line",
+          "status": "done",
+          "layer": "adapters",
+          "depends": [
+            "3.4.3"
+          ],
+          "files": [
+            "coders/main.h"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "regression: `print_state` (3.4.3) keeps its observable behaviour; the sealed `tests/acceptance/test_3.4.3.c` stays green, and a black-box check repeats its core cases (four exact state lines with return 0, nothing written and -1 when stopped)",
+              "test": "tests/acceptance/test_3.4.5.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "`make -C coders` builds `codexion` without relinking on a second run, and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_3.4.5.c"
+            }
+          ],
+          "spec": "docs/plan/phase-03-time-and-log/3.4.5-declare-print-log-line.md"
+        },
+        {
+          "id": "3.4.6",
+          "title": "Extract print log line",
+          "status": "done",
+          "layer": "adapters",
+          "depends": [
+            "3.4.5"
+          ],
+          "files": [
+            "coders/src/log/print_log_line.c",
+            "coders/src/log/print_state.c",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "with `log_mutex` locked by the calling thread on a running `t_sim`, `print_log_line(sim, 7, \"is compiling\")` writes exactly one line `<ts> 7 is compiling\\n` to stdout (fd 1), returns 0, and leaves `stopped` unchanged; the caller still owns `log_mutex` and `stop_mutex` is unlocked",
+              "test": "tests/acceptance/test_3.4.6.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "timestamp: `before = get_time_ms()`, `start_ms = before - 100`, call, `after = get_time_ms()`; assuming no backward wall-clock adjustment, `100 <= ts <= after - start_ms`",
+              "test": "tests/acceptance/test_3.4.6.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "unbuffered: same setup as 3.4.3 AC2 (fresh pipe, non-blocking read end, calling thread is the only reader); right after it returns 0 the complete line is read from the pipe; `EAGAIN` before the whole line was read is a failure",
+              "test": "tests/acceptance/test_3.4.6.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "it takes no lock: with both `log_mutex` and `stop_mutex` locked by the calling thread (default mutexes) it still returns 0 and writes the line; it ignores `stopped` (a stopped `t_sim` still gets the line)",
+              "test": "tests/acceptance/test_3.4.6.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "rejected line: `coder` 0 or -3, an empty text, a text with `'\\n'` → returns -1 and writes nothing",
+              "test": "tests/acceptance/test_3.4.6.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "write error: in a child process whose stdout is redirected to `/dev/full`, it returns -1",
+              "test": "tests/acceptance/test_3.4.6.c"
+            },
+            {
+              "id": "AC7",
+              "criterion": "regression: `print_state` keeps its observable behaviour; the sealed `tests/acceptance/test_3.4.3.c` stays green",
+              "test": "tests/acceptance/test_3.4.6.c"
+            },
+            {
+              "id": "AC8",
+              "criterion": "`make -C coders` builds `codexion`, the binary defines `print_log_line` and `print_state` (`nm`), and `norminette coders/` reports no error",
+              "test": "tests/acceptance/test_3.4.6.c"
+            }
+          ],
+          "spec": "docs/plan/phase-03-time-and-log/3.4.6-extract-print-log-line.md"
         }
       ]
     }
