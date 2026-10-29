@@ -1,4 +1,4 @@
-/* Unit tests for print_burnout: first stop, line, already stopped, locks. */
+/* Unit tests for print_burnout: first stop, line, already stopped, bad id. */
 
 #define _POSIX_C_SOURCE 200809L
 
@@ -20,6 +20,12 @@ static void	init_sim(t_sim *sim)
 	assert(pthread_mutex_init(&sim->log_mutex, &attr) == 0);
 	assert(pthread_mutex_init(&sim->stop_mutex, &attr) == 0);
 	assert(pthread_mutexattr_destroy(&attr) == 0);
+}
+
+static void	destroy_sim(t_sim *sim)
+{
+	assert(pthread_mutex_destroy(&sim->log_mutex) == 0);
+	assert(pthread_mutex_destroy(&sim->stop_mutex) == 0);
 }
 
 static void	check_unlocked(t_sim *sim)
@@ -52,12 +58,13 @@ static void	test_first_and_second_call(void)
 	assert(strstr(buf, " 4 burned out\n") != NULL);
 	assert(strchr(buf, '\n') == buf + n - 1);
 	check_unlocked(&sim);
+	destroy_sim(&sim);
 	close(saved);
 	close(fds[0]);
 	close(fds[1]);
 }
 
-static void	test_bad_coder_and_lock_failure(void)
+static void	test_bad_coder(void)
 {
 	t_sim	sim;
 
@@ -65,17 +72,12 @@ static void	test_bad_coder_and_lock_failure(void)
 	assert(print_burnout(&sim, 0) == -1);
 	assert(sim.stopped == 1);
 	check_unlocked(&sim);
-	init_sim(&sim);
-	assert(pthread_mutex_lock(&sim.stop_mutex) == 0);
-	assert(print_burnout(&sim, 1) == -1);
-	assert(sim.stopped == 0);
-	assert(pthread_mutex_unlock(&sim.stop_mutex) == 0);
-	check_unlocked(&sim);
+	destroy_sim(&sim);
 }
 
 int	main(void)
 {
 	test_first_and_second_call();
-	test_bad_coder_and_lock_failure();
+	test_bad_coder();
 	return (0);
 }

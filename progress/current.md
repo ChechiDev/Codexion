@@ -43,6 +43,14 @@ The 3.4.4 close is prepared. The harness runs the close check, commits the task
 branch, and opens the task 3.4 PR; then break down phase 04. Every subtask that edits `coders/Makefile` or `coders/main.h` must
 refresh the 42 header `Updated:` lines with Stdheader.
 
+Note: `make check` does not run ThreadSanitizer or valgrind; CI does. PR #12
+failed CI on `make tsan` (lock-order inversion created by the unit test
+`tests/unit/test_print_burnout.c`, which locked `stop_mutex` before calling
+`print_burnout`; production code was correct). Fixed post-close by the
+implementer (`progress/fix_3.4_tsan.md`), committed by the user. From now on,
+run `make tsan` and `make memcheck` (besides `make check`) before every code
+gate, and ask the implementer to run them too.
+
 Note: isolated, non-reproducible test failures (3.3.1 run, `test_3.1.2.c`
 after the 3.4.5 plan gate, `test_1.1.1.c` "coders/codexion missing" during
 3.4.5) are explained by concurrent `make` runs: the stop hook runs
