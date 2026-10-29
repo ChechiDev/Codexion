@@ -294,3 +294,12 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_3.4.5.md`).
 - **Documentation:** docs/reference/3.4.5-declare-print-log-line.md
 - **Commit:** feat(log): declare shared log writer [3.4.5]
+
+## 2026-10-29 — Subtask 3.4.6: Extract print log line
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-03-time-and-log/3.4.6-extract-print-log-line.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/log/print_log_line.c` centralizes timestamp, formatting and output; `print_state.c` delegates the write while retaining its stop and serialization policy; `coders/Makefile` registers the shared writer.
+- **Acceptance:** `tests/acceptance/test_3.4.6.c` — AC1–AC8 covered and green in the supplied close check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_3.4.6.md`).
+- **Documentation:** docs/reference/3.4.6-extract-print-log-line.md
+- **Commit:** refactor(log): extract shared log line writer [3.4.6]

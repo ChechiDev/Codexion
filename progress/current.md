@@ -1,10 +1,10 @@
 # Current session
 
-- **Current subtask:** 3.4.5 Declare print log line, `done` on branch
-  `feat/3.4-serialized-logger`. Plan gate: `PLAN_APPROVED`; code review:
-  `APPROVED`; close documentation and tracking are prepared for the harness.
-- **Next:** 3.4.6 Extract print log line → 3.4.4 Print burnout, each with plan
-  gate, implementation, code review and close. Closing 3.4.4 pushes the branch,
+- **Current subtask:** 3.4.6 Extract print log line, closed on branch
+  `feat/3.4-serialized-logger`. Code review: `APPROVED`; supplied close check
+  green (exit code 0). 3.4.5 closed (`1e49f64`).
+- **Next:** 3.4.4 Print burnout, with plan gate, implementation, code review
+  and close. Closing 3.4.4 pushes the branch,
   opens the task 3.4 PR and completes phase 03; then break down phase 04.
 - **Parked work:** the first 3.4.4 implementation (`print_burnout.c`, its
   `main.h`/`Makefile` edits, `test_3.4.4.c`, `test_print_burnout.c`,
@@ -39,13 +39,11 @@ section points to the task's spec folder. Applies from the task 2.3 PR on.
 
 ## Next step
 
-1. `./harness/review_with_codex.sh plan 3.4.5`, then `make check` right after
-   `PLAN_APPROVED` (structural refactor: its regression oracle may already be
-   green); implementer → code gate → close.
-2. Then 3.4.6 → 3.4.4, each with plan gate, implementer, code gate and close.
-3. Closing 3.4.4 pushes the branch, opens the task 3.4 PR and completes phase
-   03; the next step is the phase 04 breakdown. Every subtask that edits `coders/Makefile` or
-   `coders/main.h` must refresh the 42 header `Updated:` lines with Stdheader.
+Run `./harness/review_with_codex.sh plan 3.4.4`, then continue its
+implementation, code review, and close. Closing 3.4.4 pushes the branch, opens
+the task 3.4 PR and completes phase 03; the next step is the phase 04
+breakdown. Every subtask that edits `coders/Makefile` or `coders/main.h` must
+refresh the 42 header `Updated:` lines with Stdheader.
 
 Note: isolated, non-reproducible test failures (3.3.1 run, `test_3.1.2.c`
 after the 3.4.5 plan gate, `test_1.1.1.c` "coders/codexion missing" during

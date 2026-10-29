@@ -6,7 +6,7 @@
 #    By: sperez-l@student.42barcelona.com           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/10/26 16:47:34 by sperez-l          #+#    #+#              #
-#    Updated: 2026/10/29 10:59:48 by sperez-l         ###   ########.fr        #
+#    Updated: 2026/10/29 12:26:42 by sperez-l         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,6 +18,7 @@ SRC = main.c \
 	src/cli/print_arg_error.c \
 	src/cli/print_usage.c \
 	src/log/build_log_line.c \
+	src/log/print_log_line.c \
 	src/log/print_state.c \
 	src/parsing/get_arg_minimum.c \
 	src/parsing/parse_config.c \
