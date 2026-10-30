@@ -1,21 +1,19 @@
 # Current session
 
-- **Current subtask:** 4.1.2 Get request key, `done` on branch
-  `feat/4.1-request-order`. Plan gate: `PLAN_APPROVED`; code gate: `APPROVED`;
-  close documentation and tracking prepared. The supplied close-session
-  `make check` result is green (exit 0).
-- **Next:** 4.2.1 Init heap (plan: `PLAN_APPROVED`); implementer may start after
-  the harness completes this close and commit.
-- **Parked work:** the first 3.4.4 implementation (`print_burnout.c`, its
-  `main.h`/`Makefile` edits, `test_3.4.4.c`, `test_print_burnout.c`,
-  `progress/acceptance_3.4.4.sha256`) is in `git stash` as `wip-3.4.4`.
-
-- **Previous close:** 4.1.1 Is request before, committed as
-  `feat(policy): compare requests by priority [4.1.1]`.
-- **Parked work:** the first 3.4.4 implementation (`print_burnout.c`, its
-  `main.h`/`Makefile` edits, `test_3.4.4.c`, `test_print_burnout.c`,
-  `progress/acceptance_3.4.4.sha256`) is in `git stash` as `wip-3.4.4`; the
-  user deleted the stale `coders/src/log/print_burnout.o`.
+- **State (2026-10-30):** task 4.1 done and merged (PR #13, merge commit
+  `9f36fbc`; 4.1.1 `ea32953`, 4.1.2 `045ed2f`). Branch
+  `feat/4.2-heap-storage` created from `main`; `make check` green.
+- **Current subtask:** 4.2.2 Free heap, `done` pending the harness close
+  check/commit (2026-10-30). Code review `APPROVED`; reference documentation,
+  task PR narrative and commit message are prepared.
+- **Next:** harness close check and commit, then task 4.2 PR; after merge,
+  start issue #14 (Backlog) on its own branch.
+- **Parked work:** none (the `wip-3.4.4` stash was dropped).
+- **Backlog:** issue #14 (replace the `parse_config` bit mask with an
+  `invalid[]` flags array, no behaviour change). User decision 2026-10-30: do
+  it after task 4.2, on its own branch (e.g. `refactor/parse-config-flags`),
+  as a standalone refactor task; its plan gate migrates the sealed
+  `tests/acceptance/test_2.3.3.c`.
 - **Closed in task 3.4:** 3.4.1 (`7635017`), 3.4.2 (`8977acd`), 3.4.3 (`4a60ab4`).
 - **Previous:** task 3.3 done and merged (PR #11, merge commit `f065027`).
   Tasks 3.1 and 3.2 merged (PRs #9, #10). Phase 03 is `PHASE_APPROVED`.
@@ -45,9 +43,11 @@ section points to the task's spec folder. Applies from the task 2.3 PR on.
 
 ## Next step
 
-4.1.1 close is prepared. The harness runs the close check and commits it; then
-start 4.1.2. Every subtask that edits `coders/Makefile` or `coders/main.h` must
-refresh the 42 header `Updated:` lines with Stdheader.
+4.2.2 close documentation and task PR narrative are prepared. The harness runs
+the close check and commits the task; it then pushes the task branch and opens
+the PR. Its code review is APPROVED (`progress/review_4.2.2.md`). The supplied
+pre-session `make check` exited 0. Every subtask that edits `coders/Makefile`
+or `coders/main.h` must refresh the 42 header `Updated:` lines with Stdheader.
 
 Note: `make check` does not run ThreadSanitizer or valgrind; CI does. PR #12
 failed CI on `make tsan` (lock-order inversion created by the unit test
@@ -64,7 +64,7 @@ code gate (`build/tests/acceptance/test_<id>.bin`).
 Phase 04 breakdown (2026-10-29, Codex advisory): tasks 4.1 Request order,
 4.2 Heap storage, 4.3 Heap operations; 7 subtasks 4.1.1-4.3.3, each approved
 by the user, phase gate `PHASE_APPROVED` (`progress/phase_review_04.md`).
-Next: branch `feat/4.1-request-order`, start 4.1.1. Invariants for phases 05-06: one
+Invariants for phases 05-06: one
 simulation-wide strictly increasing ticket per logical request (synchronized,
 no overflow); the same `(key, ticket, coder)` pushed into both dongle heaps
 under both mutexes (lower index first), unchanged while queued; check both
