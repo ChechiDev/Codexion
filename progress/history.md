@@ -330,3 +330,12 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_4.1.2.md`).
 - **Documentation:** docs/reference/4.1.2-get-request-key.md; task narrative: progress/pr_4.1.md
 - **Commit:** feat(policy): compute FIFO and EDF request keys [4.1.2]
+
+## 2026-10-30 — Subtask 4.2.1: Init heap
+- **Layer:** core
+- **Plan:** docs/plan/phase-04-priority-queue/4.2.1-init-heap.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/heap/init_heap.c`, `coders/main.h`, and `coders/Makefile` add fixed-capacity request storage with overflow-safe allocation sizing and unchanged heap fields on failure; `docs/architecture.md` maps the core heap module.
+- **Acceptance:** `tests/acceptance/test_4.2.1.c` — AC1–AC6 cover initialization, slot writability, invalid inputs, independent allocations, and build integration.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_4.2.1.md`).
+- **Documentation:** docs/reference/4.2.1-init-heap.md
+- **Commit:** feat(heap): initialize priority queue storage [4.2.1]

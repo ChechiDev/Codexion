@@ -1759,12 +1759,12 @@
       "phase": "04",
       "layer": "core",
       "goal": "a fixed-capacity request heap whose array is allocated and freed explicitly, with overflow-checked sizing and a safe repeated free",
-      "status": "pending",
+      "status": "in_progress",
       "subtasks": [
         {
           "id": "4.2.1",
           "title": "Init heap",
-          "status": "pending",
+          "status": "done",
           "layer": "core",
           "depends": [
             "4.1.2"
