@@ -1759,7 +1759,7 @@
       "phase": "04",
       "layer": "core",
       "goal": "a fixed-capacity request heap whose array is allocated and freed explicitly, with overflow-checked sizing and a safe repeated free",
-      "status": "in_progress",
+      "status": "done",
       "subtasks": [
         {
           "id": "4.2.1",
@@ -1811,7 +1811,7 @@
         {
           "id": "4.2.2",
           "title": "Free heap",
-          "status": "pending",
+          "status": "done",
           "layer": "core",
           "depends": [
             "4.2.1"

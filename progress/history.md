@@ -339,3 +339,12 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_4.2.1.md`).
 - **Documentation:** docs/reference/4.2.1-init-heap.md
 - **Commit:** feat(heap): initialize priority queue storage [4.2.1]
+
+## 2026-10-30 — Subtask 4.2.2: Free heap
+- **Layer:** core
+- **Plan:** docs/plan/phase-04-priority-queue/4.2.2-free-heap.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/heap/free_heap.c`, `coders/main.h`, and `coders/Makefile` add idempotent heap teardown that releases the request array and resets the struct to NULL/0/0.
+- **Acceptance:** `tests/acceptance/test_4.2.2.c` — AC1–AC6 cover empty, partial and full storage, repeated and NULL calls, reuse, and build integration.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_4.2.2.md`).
+- **Documentation:** docs/reference/4.2.2-free-heap.md; task narrative: progress/pr_4.2.md
+- **Commit:** feat(heap): release priority queue storage [4.2.2]

@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/10/30 11:32:49 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/10/30 12:00:00 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,6 +127,7 @@ long	get_request_key(t_mode mode, long ticket, long last_compile_start,
 /* ---- Heap ---- */
 
 int		init_heap(t_heap *heap, int capacity);
+void	free_heap(t_heap *heap);
 
 /* ---- CLI ---- */
 
