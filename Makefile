@@ -122,8 +122,13 @@ clean:
 	@rm -rf $(BUILD)
 	@if [ -f $(DELIV)/Makefile ]; then $(MAKE) --no-print-directory -C $(DELIV) fclean; fi
 
-# Harness targets, shared by every project (keep this block last).
-ifeq ($(wildcard harness/harness.mk),)
-$(error harness/ is missing on this machine: run install.sh <project> first)
-endif
+# Harness targets, shared by every project (keep this block last). harness/ is a
+# per-machine symlink: where it is missing (a CI checkout, a new machine) only these
+# targets fail; the project's own targets above still run.
+ifneq ($(wildcard harness/harness.mk),)
 include harness/harness.mk
+else
+.PHONY: plan status check issue issue-start issue-new
+plan status check issue issue-start issue-new:
+	@echo "harness/ is missing on this machine: run install.sh <project> first" >&2; exit 1
+endif
