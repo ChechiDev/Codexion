@@ -110,21 +110,6 @@ tsan: $(TSAN_OBJ)
 	else $(STATUS) skip "no $(DELIV)/main.c yet: scenario runs skipped"; fi
 	@$(STATUS) ok "tsan clean"
 
-plan:
-	python3 harness/sync_plan.py
-
-# The whole plan at a glance: done / in progress / pending, gates, next step.
-status:
-	@python3 harness/plan_status.py
-
-# Both halves always run (-k keeps verify going past a red step), so one run
-# reports every failure; the result is red if either half is red.
-check:
-	@rc=0; \
-	$(MAKE) --no-print-directory -k verify || rc=1; \
-	./harness/check.sh || rc=1; \
-	exit $$rc
-
 env-check:
 	@command -v $(CC) >/dev/null 2>&1 || { $(STATUS) fail "$(CC) not found"; exit 1; }
 	@command -v make  >/dev/null 2>&1 || { $(STATUS) fail "make not found"; exit 1; }
@@ -136,3 +121,9 @@ env-check:
 clean:
 	@rm -rf $(BUILD)
 	@if [ -f $(DELIV)/Makefile ]; then $(MAKE) --no-print-directory -C $(DELIV) fclean; fi
+
+# Harness targets, shared by every project (keep this block last).
+ifeq ($(wildcard harness/harness.mk),)
+$(error harness/ is missing on this machine: run install.sh <project> first)
+endif
+include harness/harness.mk
