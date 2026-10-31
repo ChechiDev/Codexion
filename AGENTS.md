@@ -103,3 +103,6 @@ spec pending N.M.K
 Re-read the relevant section of `docs/`. If a tool does not do what you expect,
 **do not invent a workaround**: document the blocker in `progress/current.md`
 with status `blocked` and stop the session.
+
+> Shared workflow, the same in every project (leader role, gates, issues lane):
+> `harness/WORKFLOW.md`.

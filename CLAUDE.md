@@ -1,3 +1,5 @@
+@harness/WORKFLOW.md
+
 # Project instructions for Claude (C project)
 
 > Loaded automatically at the start of every session and **takes precedence**
