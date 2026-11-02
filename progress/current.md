@@ -1,10 +1,20 @@
 # Current session
 
-- **State (2026-11-02):** issue #14 done (ISS-14.1, PR #17 merged into
-  `main`). Task 4.3 is complete on `feat/4.3-heap-operations`: 4.3.1 Push
-  request (`0f3bdfc`), 4.3.2 Get head request (`2aab422`), and 4.3.3 Pop
-  request are closed. The supplied pre-session `make check` for 4.3.3 exited 0.
-- **Next:** harness close step commits the task and opens its PR.
+- **State (2026-11-02):** issue #14 done (ISS-14.1, PR #17 merged). Task 4.3
+  done: 4.3.1 Push request, 4.3.2 Get head request, 4.3.3 Pop request; PR #18
+  squash-merged into `main` (`f43299e`). **Phase 04 Priority queue is done
+  (7/7).** On `main`, `make check` green, tree clean.
+- **Phase 05 breakdown:** tasks 5.1-5.4 approved by the user after a Codex
+  advisory review (`progress/phase05_tasks_proposal.md`, `..._advisory.md`);
+  11 specs 5.1.1-5.4.2 validated one by one (free_* before init_* in 5.2-5.4
+  so init rolls back through them). Phase gate `PHASE_APPROVED` on round 4
+  (`progress/phase_review_05.md`; rounds asked to drop the `nm` and build/Norm
+  ACs, now in "Code review check", and to add depends 5.2.1→5.1.1,
+  5.3.1→5.2.4). User OK given.
+- **Now:** task 5.1 Get dongle pair is closed locally on `feat/5.1-seat-mapping`; its close message and task PR narrative are ready for the harness. After the harness commits and opens the PR, review and merge it to finish task 5.1.
+- **Merge style:** the user squash-merged #18; recommended default is a merge
+  commit (keeps one approved `[N.M.K]` commit per subtask on `main`), squash
+  only when the branch carries noise. User's call per PR.
 - **Flaky checks:** a transient red in an already-closed test came from other
   Claude sessions opened in codexion (their stop hook runs `make check` on the
   same `build/`). Re-run `make check` to confirm; a `flock` in the harness is a
@@ -43,9 +53,9 @@ section points to the task's spec folder. Applies from the task 2.3 PR on.
 
 ## Next step
 
-Task 4.3 is closed locally; the close message and task PR narrative are ready
+Task 5.1 is closed locally; the close message and task PR narrative are ready
 for the harness. After the harness commits and opens the PR, review and merge it
-to finish the task.
+to finish the task. Then continue with the next approved subtask, 5.2.1.
 
 Note: `make check` does not run ThreadSanitizer or valgrind; CI does. PR #12
 failed CI on `make tsan` (lock-order inversion created by the unit test
