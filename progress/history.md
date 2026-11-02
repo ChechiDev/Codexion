@@ -357,3 +357,12 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_ISS-14.1.md`).
 - **Documentation:** docs/reference/ISS-14.1-invalid-flags.md; updated historical notes: docs/reference/2.3.3-parse-config.md, docs/reference/2.4.1-print-arg-error.md, and docs/reference/2.4.2-validate-arguments.md; task narrative: progress/pr_ISS-14.md
 - **Commit:** refactor(parsing): report invalid arguments as flags [ISS-14.1]
+
+## 2026-11-02 — Subtask 4.3.1: Push request
+- **Layer:** core
+- **Plan:** docs/plan/phase-04-priority-queue/4.3.1-push-request.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/heap/push_request.c`, `coders/main.h`, and `coders/Makefile` add a bounded min-heap insertion operation that copies requests and sifts them upward using the shared comparator.
+- **Acceptance:** `tests/acceptance/test_4.3.1.c` — AC1–AC9 covered and green in the supplied pre-session check.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_4.3.1.md`).
+- **Documentation:** docs/reference/4.3.1-push-request.md
+- **Commit:** feat(heap): add request insertion [4.3.1]

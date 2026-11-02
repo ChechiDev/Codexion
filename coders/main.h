@@ -128,6 +128,7 @@ long	get_request_key(t_mode mode, long ticket, long last_compile_start,
 
 int		init_heap(t_heap *heap, int capacity);
 void	free_heap(t_heap *heap);
+int		push_request(t_heap *heap, const t_request *req);
 
 /* ---- CLI ---- */
 
