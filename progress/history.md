@@ -366,3 +366,12 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_4.3.1.md`).
 - **Documentation:** docs/reference/4.3.1-push-request.md
 - **Commit:** feat(heap): add request insertion [4.3.1]
+
+## 2026-11-02 — Subtask 4.3.2: Get head request
+- **Layer:** core
+- **Plan:** docs/plan/phase-04-priority-queue/4.3.2-get-head-request.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/heap/get_head_request.c`, `coders/main.h`, and `coders/Makefile` add a read-only heap operation that copies the minimum request to caller storage.
+- **Acceptance:** `tests/acceptance/test_4.3.2.c` — AC1–AC7 cover head selection, immutability, failure behavior, copy semantics, and build integration.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_4.3.2.md`).
+- **Documentation:** docs/reference/4.3.2-get-head-request.md
+- **Commit:** feat(heap): add request head lookup [4.3.2]

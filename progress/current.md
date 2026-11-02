@@ -4,9 +4,13 @@
   `main`). Global harness fixed (harness PR #1, `250257c`): PR titles drop a
   type prefix already in the issue title, and the close (`doc`) refuses a
   subtask already done or without an APPROVED code review. Task 4.3 is active on
-  `feat/4.3-heap-operations`: 4.3.1 Push request is closed; code review is
-  `APPROVED`.
-- **Next:** 4.3.2 Get head request plan gate.
+  `feat/4.3-heap-operations`: 4.3.1 Push request closed (`0f3bdfc`); 4.3.2
+  Get head request closed (code gate `APPROVED`, close check supplied green).
+- **Next:** 4.3.3 Pop request (last of task 4.3: its close opens the task PR).
+- **Flaky checks:** a transient red in an already-closed test came from other
+  Claude sessions opened in codexion (their stop hook runs `make check` on the
+  same `build/`). Re-run `make check` to confirm; a `flock` in the harness is a
+  possible later fix (needs the user's exception).
 - **Parked work:** none (the `wip-3.4.4` stash was dropped).
 - **Closed in task 3.4:** 3.4.1 (`7635017`), 3.4.2 (`8977acd`), 3.4.3 (`4a60ab4`).
 - **Previous:** task 3.3 done and merged (PR #11, merge commit `f065027`).
@@ -41,12 +45,9 @@ section points to the task's spec folder. Applies from the task 2.3 PR on.
 
 ## Next step
 
-ISS-14.1 is APPROVED (`progress/review_ISS-14.1.md`). This close prepares its
-reference note and task PR narrative; the harness runs the close check,
-commits the task, pushes the branch, and opens the PR. After the user approves
-the task PR merge, return to 4.3.1. Every
-subtask that edits `coders/Makefile` or `coders/main.h` must refresh the 42
-header `Updated:` lines with Stdheader.
+4.3.2 is closed. Break down 4.3.3 Pop request, the last subtask in task 4.3;
+its close prepares the task PR. Every subtask that edits `coders/Makefile` or
+`coders/main.h` must refresh the 42 header `Updated:` lines with Stdheader.
 
 Note: `make check` does not run ThreadSanitizer or valgrind; CI does. PR #12
 failed CI on `make tsan` (lock-order inversion created by the unit test

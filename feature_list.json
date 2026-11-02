@@ -1930,7 +1930,7 @@
         {
           "id": "4.3.2",
           "title": "Get head request",
-          "status": "pending",
+          "status": "done",
           "layer": "core",
           "depends": [
             "4.3.1"
