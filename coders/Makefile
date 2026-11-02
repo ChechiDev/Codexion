@@ -6,7 +6,7 @@
 #    By: sperez-l@student.42barcelona.com           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/10/26 16:47:34 by sperez-l          #+#    #+#              #
-#    Updated: 2026/11/02 17:51:31 by sperez-l         ###   ########.fr        #
+#    Updated: 2026/11/02 18:10:00 by sperez-l         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,6 +23,7 @@ SRC = main.c \
 	src/heap/pop_request.c \
 	src/heap/push_request.c \
 	src/init/get_dongle_pair.c \
+	src/init/init_dongle.c \
 	src/log/build_log_line.c \
 	src/log/print_burnout.c \
 	src/log/print_log_line.c \

@@ -393,6 +393,15 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.1.1.md`); implementation notes report clean TSan and Valgrind runs.
 - **Documentation:** docs/reference/5.1.1-get-dongle-pair.md; task narrative: progress/pr_5.1.md
 - **Commit:** feat(init): map coder seats to ordered dongle pairs [5.1.1]
+
+## 2026-11-02 — Subtask 5.2.1: Init dongle
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-05-simulation-state/5.2.1-init-dongle.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/init/init_dongle.c`, `coders/main.h`, and `coders/Makefile` initialize each dongle's mutex, condition variable, capacity-two request heap, and initial state with reverse rollback.
+- **Acceptance:** `tests/acceptance/test_5.2.1.c` — AC1–AC6 cover defaults, synchronization, capacity/order, independent dongles, and NULL rejection.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.2.1.md`); implementation notes report clean ThreadSanitizer and Valgrind runs.
+- **Documentation:** docs/reference/5.2.1-init-dongle.md
+- **Commit:** feat(init): initialize dongle state [5.2.1]
 # 2026-11-02 — Close 5.1.1 Get dongle pair
 
 - Closed 5.1.1: added the reference note, marked the approved spec done, and refreshed the generated plan index.

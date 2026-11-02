@@ -11,7 +11,7 @@
   (`progress/phase_review_05.md`; rounds asked to drop the `nm` and build/Norm
   ACs, now in "Code review check", and to add depends 5.2.1→5.1.1,
   5.3.1→5.2.4). User OK given.
-- **Now:** task 5.1 Get dongle pair is closed locally on `feat/5.1-seat-mapping`; its close message and task PR narrative are ready for the harness. After the harness commits and opens the PR, review and merge it to finish task 5.1.
+- **Now:** task 5.1 merged (PR #19, `b7143db`). Subtask 5.2.1 Init dongle is code-approved and closed locally; the harness has the close message for its check and commit.
 - **Merge style:** the user squash-merged #18; recommended default is a merge
   commit (keeps one approved `[N.M.K]` commit per subtask on `main`), squash
   only when the branch carries noise. User's call per PR.
@@ -53,9 +53,9 @@ section points to the task's spec folder. Applies from the task 2.3 PR on.
 
 ## Next step
 
-Task 5.1 is closed locally; the close message and task PR narrative are ready
-for the harness. After the harness commits and opens the PR, review and merge it
-to finish the task. Then continue with the next approved subtask, 5.2.1.
+The harness should run the close check and commit 5.2.1 from
+`progress/close_5.2.1.msg`. After that commit, proceed to 5.2.2 Destroy dongle
+on the dongles task branch.
 
 Note: `make check` does not run ThreadSanitizer or valgrind; CI does. PR #12
 failed CI on `make tsan` (lock-order inversion created by the unit test
