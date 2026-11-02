@@ -23,14 +23,27 @@ static void valid_args(char **argv)
 	argv[9] = NULL;
 }
 
+static void assert_flags(const int *invalid, int first, int second, int third)
+{
+	int position;
+
+	position = 0;
+	assert(invalid[0] == 77);
+	while (++position <= 8)
+		assert(invalid[position] == (position == first || position == second
+			|| position == third));
+}
+
 /* AC1: a valid edf invocation fills every config field. */
 static void test_ac1_valid_edf_config(void)
 {
 	char *argv[10];
 	t_config config;
+	int invalid[9] = {77};
 
 	valid_args(argv);
-	assert(parse_config(argv, &config) == 0);
+	assert(parse_config(argv, &config, invalid) == 0);
+	assert_flags(invalid, 0, 0, 0);
 	assert(config.number_of_coders == 4);
 	assert(config.time_to_burnout == 800);
 	assert(config.time_to_compile == 200);
@@ -46,6 +59,7 @@ static void test_ac2_minimum_fifo_config(void)
 {
 	char *argv[10];
 	t_config config;
+	int invalid[9] = {77};
 
 	valid_args(argv);
 	argv[1] = "1";
@@ -56,7 +70,8 @@ static void test_ac2_minimum_fifo_config(void)
 	argv[6] = "0";
 	argv[7] = "0";
 	argv[8] = "fifo";
-	assert(parse_config(argv, &config) == 0);
+	assert(parse_config(argv, &config, invalid) == 0);
+	assert_flags(invalid, 0, 0, 0);
 	assert(config.number_of_coders == 1);
 	assert(config.time_to_burnout == 1);
 	assert(config.time_to_compile == 0);
@@ -72,10 +87,12 @@ static void test_ac3_trimmed_number(void)
 {
 	char *argv[10];
 	t_config config;
+	int invalid[9] = {77};
 
 	valid_args(argv);
 	argv[1] = "  0007  ";
-	assert(parse_config(argv, &config) == 0);
+	assert(parse_config(argv, &config, invalid) == 0);
+	assert_flags(invalid, 0, 0, 0);
 	assert(config.number_of_coders == 7);
 }
 
@@ -84,13 +101,16 @@ static void test_ac4_positive_field_minimums(void)
 {
 	char *argv[10];
 	t_config config;
+	int invalid[9] = {77};
 
 	valid_args(argv);
 	argv[1] = "0";
-	assert(parse_config(argv, &config) == (1 << 1));
+	assert(parse_config(argv, &config, invalid) == 1);
+	assert_flags(invalid, 1, 0, 0);
 	valid_args(argv);
 	argv[2] = "0";
-	assert(parse_config(argv, &config) == (1 << 2));
+	assert(parse_config(argv, &config, invalid) == 1);
+	assert_flags(invalid, 2, 0, 0);
 }
 
 /* AC5: every numeric position rejects each invalid number alone. */
@@ -99,6 +119,7 @@ static void test_ac5_invalid_numeric_positions(void)
 	static const char *invalid[] = {"-1", "abc", "", "2147483648"};
 	char *argv[10];
 	t_config config;
+	int flags[9] = {77};
 	int position;
 	size_t index;
 
@@ -110,7 +131,8 @@ static void test_ac5_invalid_numeric_positions(void)
 		{
 			valid_args(argv);
 			argv[position] = (char *)invalid[index];
-			assert(parse_config(argv, &config) == (1 << position));
+			assert(parse_config(argv, &config, flags) == 1);
+			assert_flags(flags, position, 0, 0);
 			index++;
 		}
 		position++;
@@ -123,6 +145,7 @@ static void test_ac6_invalid_scheduler(void)
 	static const char *invalid[] = {"FIFO", " edf", "rr"};
 	char *argv[10];
 	t_config config;
+	int flags[9] = {77};
 	size_t index;
 
 	index = 0;
@@ -130,7 +153,8 @@ static void test_ac6_invalid_scheduler(void)
 	{
 		valid_args(argv);
 		argv[8] = (char *)invalid[index];
-		assert(parse_config(argv, &config) == (1 << 8));
+		assert(parse_config(argv, &config, flags) == 1);
+		assert_flags(flags, 8, 0, 0);
 		index++;
 	}
 }
@@ -140,19 +164,25 @@ static void test_ac7_all_invalid_positions_reported(void)
 {
 	char *argv[10];
 	t_config config;
+	int invalid[9] = {77};
 	int position;
 
 	valid_args(argv);
 	argv[2] = "abc";
 	argv[3] = "-1";
 	argv[8] = "rr";
-	assert(parse_config(argv, &config) == 0x10c);
+	assert(parse_config(argv, &config, invalid) == 3);
+	assert_flags(invalid, 2, 3, 8);
 	valid_args(argv);
 	position = 1;
 	while (position <= 7)
 		argv[position++] = "abc";
 	argv[8] = "rr";
-	assert(parse_config(argv, &config) == 0x1fe);
+	assert(parse_config(argv, &config, invalid) == 8);
+	assert(invalid[0] == 77);
+	position = 1;
+	while (position <= 8)
+		assert(invalid[position++] == 1);
 }
 
 /* AC8: parsing does not alter any argv string, including invalid strings. */
@@ -171,9 +201,11 @@ static void test_ac8_argv_unchanged(void)
 	const char *original[] = {"codexion", "  0007  ", "abc", "200", "200",
 		"200", "3", "50", " edf"};
 	t_config config;
+	int invalid[9] = {77};
 	int position;
 
-	assert(parse_config(argv, &config) == ((1 << 2) | (1 << 8)));
+	assert(parse_config(argv, &config, invalid) == 2);
+	assert_flags(invalid, 2, 8, 0);
 	position = 0;
 	while (position <= 8)
 	{

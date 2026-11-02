@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/28 12:00:00 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/10/28 12:00:00 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/11/02 12:00:00 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,22 +35,23 @@ static void	set_field_addresses(int **fields, t_config *config)
 	fields[7] = &config->dongle_cooldown;
 }
 
-int	parse_config(char **argv, t_config *config)
+int	parse_config(char **argv, t_config *config, int *invalid)
 {
 	int	*fields[8];
-	int	mask;
+	int	count;
 	int	position;
 
-	mask = 0;
+	count = 0;
 	set_field_addresses(fields, config);
 	position = 1;
 	while (position <= 7)
 	{
-		if (parse_field(argv[position], position, fields[position]) != 0)
-			mask |= 1 << position;
+		invalid[position] = parse_field(argv[position], position,
+				fields[position]) != 0;
+		count += invalid[position];
 		position++;
 	}
-	if (parse_mode(argv[8], &config->mode) != 0)
-		mask |= 1 << 8;
-	return (mask);
+	invalid[8] = parse_mode(argv[8], &config->mode) != 0;
+	count += invalid[8];
+	return (count);
 }

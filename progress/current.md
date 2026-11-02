@@ -1,19 +1,18 @@
 # Current session
 
-- **State (2026-10-30):** task 4.1 done and merged (PR #13, merge commit
-  `9f36fbc`; 4.1.1 `ea32953`, 4.1.2 `045ed2f`). Branch
-  `feat/4.2-heap-storage` created from `main`; `make check` green.
-- **Current subtask:** 4.2.2 Free heap, `done` pending the harness close
-  check/commit (2026-10-30). Code review `APPROVED`; reference documentation,
-  task PR narrative and commit message are prepared.
-- **Next:** harness close check and commit, then task 4.2 PR; after merge,
-  start issue #14 (Backlog) on its own branch.
+- **State (2026-11-02):** ISS-14.1 is code-approved and its close artifacts
+  and task PR narrative are prepared. The supplied pre-session `make check`
+  exited 0; the harness will run the close check, commit, and open the task PR.
+  The global harness gained the **issues lane**
+  (`b7f97bb` + `3fdc195`, pushed) and codexion was migrated to the shared
+  harness files (`install.sh . --migrate`, PR #16 merged, CI green):
+  `Makefile` includes `harness/harness.mk`, `CLAUDE.md` imports
+  `@harness/WORKFLOW.md`, `docs/plan/issues/README.md` turns the lane on.
+  On `main`, `make check` green. Next phase work: 4.3.1 Push request.
+- **Next:** after the task PR is opened and the user approves the merge, resume
+  task 4.3 at subtask 4.3.1 (Push request), following its approved spec and
+  usual plan/code/close gates.
 - **Parked work:** none (the `wip-3.4.4` stash was dropped).
-- **Backlog:** issue #14 (replace the `parse_config` bit mask with an
-  `invalid[]` flags array, no behaviour change). User decision 2026-10-30: do
-  it after task 4.2, on its own branch (e.g. `refactor/parse-config-flags`),
-  as a standalone refactor task; its plan gate migrates the sealed
-  `tests/acceptance/test_2.3.3.c`.
 - **Closed in task 3.4:** 3.4.1 (`7635017`), 3.4.2 (`8977acd`), 3.4.3 (`4a60ab4`).
 - **Previous:** task 3.3 done and merged (PR #11, merge commit `f065027`).
   Tasks 3.1 and 3.2 merged (PRs #9, #10). Phase 03 is `PHASE_APPROVED`.
@@ -43,11 +42,12 @@ section points to the task's spec folder. Applies from the task 2.3 PR on.
 
 ## Next step
 
-4.2.2 close documentation and task PR narrative are prepared. The harness runs
-the close check and commits the task; it then pushes the task branch and opens
-the PR. Its code review is APPROVED (`progress/review_4.2.2.md`). The supplied
-pre-session `make check` exited 0. Every subtask that edits `coders/Makefile`
-or `coders/main.h` must refresh the 42 header `Updated:` lines with Stdheader.
+ISS-14.1 is APPROVED (`progress/review_ISS-14.1.md`). This close prepares its
+reference note and task PR narrative; the harness runs the close check,
+commits the task, pushes the branch, and opens the PR. After the user approves
+the task PR merge, return to 4.3.1. Every
+subtask that edits `coders/Makefile` or `coders/main.h` must refresh the 42
+header `Updated:` lines with Stdheader.
 
 Note: `make check` does not run ThreadSanitizer or valgrind; CI does. PR #12
 failed CI on `make tsan` (lock-order inversion created by the unit test
