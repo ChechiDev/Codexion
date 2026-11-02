@@ -408,3 +408,12 @@ Entry template (filled in at close):
 - Updated `progress/current.md` and wrote the task 5.1 PR narrative for the harness.
 - **Commit:** feat(init): map coder seats to ordered dongle pairs [5.1.1]
 
+
+## 2026-11-02 — Subtask 5.2.2: Destroy dongle
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-05-simulation-state/5.2.2-destroy-dongle.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/cleanup/destroy_dongle.c`, `coders/main.h`, and `coders/Makefile` add best-effort reverse-order teardown for a dongle's heap, condition variable, and mutex; `docs/architecture.md` documents the `cleanup/` adapter.
+- **Acceptance:** `tests/acceptance/test_5.2.2.c` — AC1–AC5 cover teardown state, queued requests, used synchronization objects, reinitialization, and NULL rejection.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.2.2.md`); implementation review records clean TSan, memcheck, and direct acceptance Valgrind runs.
+- **Documentation:** docs/reference/5.2.2-destroy-dongle.md
+- **Commit:** feat(cleanup): destroy dongle resources [5.2.2]
