@@ -384,3 +384,18 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_4.3.3.md`); implementation notes report the acceptance binary Valgrind exit 0.
 - **Documentation:** docs/reference/4.3.3-pop-request.md; task narrative: progress/pr_4.3.md
 - **Commit:** feat(heap): remove request head [4.3.3]
+
+## 2026-11-02 — Subtask 5.1.1: Get dongle pair
+- **Layer:** core
+- **Plan:** docs/plan/phase-05-simulation-state/5.1.1-get-dongle-pair.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/init/get_dongle_pair.c`, `coders/main.h`, and `coders/Makefile` provide the pure circular seat mapping with ordered dongle indices.
+- **Acceptance:** `tests/acceptance/test_5.1.1.c` — AC1–AC5 cover ring mapping, the single-dongle case, ordered pairs, `INT_MAX`, and invalid-input output preservation.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.1.1.md`); implementation notes report clean TSan and Valgrind runs.
+- **Documentation:** docs/reference/5.1.1-get-dongle-pair.md; task narrative: progress/pr_5.1.md
+- **Commit:** feat(init): map coder seats to ordered dongle pairs [5.1.1]
+# 2026-11-02 — Close 5.1.1 Get dongle pair
+
+- Closed 5.1.1: added the reference note, marked the approved spec done, and refreshed the generated plan index.
+- Updated `progress/current.md` and wrote the task 5.1 PR narrative for the harness.
+- **Commit:** feat(init): map coder seats to ordered dongle pairs [5.1.1]
+

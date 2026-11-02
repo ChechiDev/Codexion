@@ -72,8 +72,13 @@
       "title": "Simulation state init and teardown",
       "goal": "build the `t_sim` (coders, dongles with mutex/cond/heap, stop and log mutexes, seat-to-dongle mapping with 1 dongle for 1 coder) and tear it down completely, cleaning up partial initialisation on any malloc or pthread init failure without leaks",
       "file": "docs/plan/phase-05-simulation-state.md",
-      "status": "pending",
-      "tasks": []
+      "status": "in_progress",
+      "tasks": [
+        "5.1",
+        "5.2",
+        "5.3",
+        "5.4"
+      ]
     },
     {
       "id": "06",
@@ -2040,6 +2045,511 @@
             }
           ],
           "spec": "docs/plan/phase-04-priority-queue/4.3.3-pop-request.md"
+        }
+      ]
+    },
+    {
+      "id": "5.1",
+      "title": "Seat mapping",
+      "phase": "05",
+      "layer": "core",
+      "goal": "map each 0-based seat to its two dongle indices, lower index first, with a single shared dongle when there is one coder and no overflow at the int bounds",
+      "status": "done",
+      "subtasks": [
+        {
+          "id": "5.1.1",
+          "title": "Get dongle pair",
+          "status": "done",
+          "layer": "core",
+          "depends": [],
+          "files": [
+            "coders/src/init/get_dongle_pair.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "N = 4: seats 0, 1, 2, 3 return 0 with `(first, second)` = `(0, 1)`, `(1, 2)`, `(2, 3)`, `(0, 3)` (the last seat wraps to dongle 0 and still gets the lower index first)",
+              "test": "tests/acceptance/test_5.1.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "N = 1: seat 0 returns 0 with `first == second == 0` (one coder, one dongle)",
+              "test": "tests/acceptance/test_5.1.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "N = 2: seats 0 and 1 both return 0 with `(0, 1)` (both coders share both dongles); for every valid seat of AC1 and AC3, `first < second`",
+              "test": "tests/acceptance/test_5.1.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "int bounds, N = `INT_MAX`: seat 0 gives `(0, 1)`, seat `INT_MAX - 2` gives `(INT_MAX - 2, INT_MAX - 1)`, seat `INT_MAX - 1` gives `(0, INT_MAX - 1)`, all returning 0 with no overflow (clean under `-fsanitize=undefined` if the oracle uses it)",
+              "test": "tests/acceptance/test_5.1.1.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "invalid input returns -1 and leaves both outputs unchanged (the test prefills them with a sentinel, e.g. -42): seat -1, seat `INT_MIN`, seat == N, seat > N (N = 4); N of 0, -1 and `INT_MIN` (seat 0); `first` NULL, `second` NULL (valid seat and N, the non-NULL output still unchanged)",
+              "test": "tests/acceptance/test_5.1.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-05-simulation-state/5.1.1-get-dongle-pair.md"
+        }
+      ]
+    },
+    {
+      "id": "5.2",
+      "title": "Dongles",
+      "phase": "05",
+      "layer": "adapters",
+      "goal": "initialise one dongle (mutex, cond, capacity-2 request heap, available, never released) and the array of N dongles, rolling back exactly what succeeded on any failure, and tear them down in reverse",
+      "status": "pending",
+      "subtasks": [
+        {
+          "id": "5.2.1",
+          "title": "Init dongle",
+          "status": "pending",
+          "layer": "adapters",
+          "depends": [
+            "4.2.2",
+            "5.1.1"
+          ],
+          "files": [
+            "coders/src/init/init_dongle.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "on a zeroed `t_dongle`, `init_dongle(&dongle)` returns 0 with `available == 1`, `released_at == -1`, `heap.items != NULL`, `heap.size == 0`, `heap.capacity == 2`. Repeated on a non-live `t_dongle` prefilled byte-wise with a sentinel pattern: same result. The test then tears it down by hand (`free_heap`, `pthread_cond_destroy`, `pthread_mutex_destroy`, each returning 0)",
+              "test": "tests/acceptance/test_5.2.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "the mutex is initialised and unlocked: `pthread_mutex_trylock` succeeds right after the call and `pthread_mutex_unlock` returns 0",
+              "test": "tests/acceptance/test_5.2.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "the cond is initialised and paired with the mutex: holding `mutex`, `pthread_cond_timedwait` with an absolute deadline already in the past returns `ETIMEDOUT` (the caller owns the mutex again and unlocks it); `pthread_cond_broadcast` returns 0",
+              "test": "tests/acceptance/test_5.2.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "the heap holds exactly the two neighbours: two `push_request` calls with distinct requests return 0, a third returns -1, and `get_head_request` returns the one `is_request_before` places first",
+              "test": "tests/acceptance/test_5.2.1.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "two dongles initialised one after the other are independent: with the first's mutex locked by the test, a `pthread_mutex_trylock` on the second succeeds; their `heap.items` differ, and a push into one leaves the other's `heap.size` at 0",
+              "test": "tests/acceptance/test_5.2.1.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "`init_dongle(NULL)` returns -1 with no crash",
+              "test": "tests/acceptance/test_5.2.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-05-simulation-state/5.2.1-init-dongle.md"
+        },
+        {
+          "id": "5.2.2",
+          "title": "Destroy dongle",
+          "status": "pending",
+          "layer": "adapters",
+          "depends": [
+            "5.2.1"
+          ],
+          "files": [
+            "coders/src/cleanup/destroy_dongle.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "after `init_dongle(&dongle)` returned 0, `destroy_dongle(&dongle)` returns 0 and leaves `heap.items == NULL`, `heap.size == 0`, `heap.capacity == 0`",
+              "test": "tests/acceptance/test_5.2.2.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "with requests still queued (two `push_request` calls after `init_dongle`, `heap.size == 2`), and after `available` and `released_at` were changed by the test (0 and 1234), it returns 0 and the heap is reset as in AC1",
+              "test": "tests/acceptance/test_5.2.2.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "after the mutex was used (locked and unlocked by the test) and the cond was used (one `pthread_cond_broadcast` and one `pthread_cond_timedwait` with a past deadline), it returns 0",
+              "test": "tests/acceptance/test_5.2.2.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "reuse: after `destroy_dongle`, `init_dongle` on the same struct returns 0 and the dongle works (`pthread_mutex_trylock` succeeds and is unlocked, two pushes succeed, a third fails); a second `destroy_dongle` returns 0 and resets the heap",
+              "test": "tests/acceptance/test_5.2.2.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "`destroy_dongle(NULL)` returns -1 with no crash",
+              "test": "tests/acceptance/test_5.2.2.c"
+            }
+          ],
+          "spec": "docs/plan/phase-05-simulation-state/5.2.2-destroy-dongle.md"
+        },
+        {
+          "id": "5.2.3",
+          "title": "Free dongles",
+          "status": "pending",
+          "layer": "adapters",
+          "depends": [
+            "5.2.2"
+          ],
+          "files": [
+            "coders/src/cleanup/free_dongles.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "the test `malloc`s an array of 3 `t_dongle`, initialises all of them with `init_dongle`, pushes one request into each heap; `free_dongles(array, 3)` returns 0",
+              "test": "tests/acceptance/test_5.2.3.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "partial array: an array of 4 prefilled byte-wise with a sentinel pattern, only elements 0 and 1 initialised with `init_dongle`; `free_dongles(array, 2)` returns 0 and never touches elements 2 and 3 (no invalid access, no destroy of an uninitialised mutex/cond: valgrind and TSan clean)",
+              "test": "tests/acceptance/test_5.2.3.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "count 0: a `malloc`'d array with no initialised element; `free_dongles(array, 0)` returns 0 and the array is freed (valgrind: no leak)",
+              "test": "tests/acceptance/test_5.2.3.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "`free_dongles(NULL, 0)` returns 0 with no crash; `free_dongles(NULL, 3)` returns -1 with no crash",
+              "test": "tests/acceptance/test_5.2.3.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "negative count: on an array of 1 initialised dongle, `free_dongles(array, -1)` returns -1 and touches nothing (the test then calls `free_dongles(array, 1)`, which returns 0)",
+              "test": "tests/acceptance/test_5.2.3.c"
+            }
+          ],
+          "spec": "docs/plan/phase-05-simulation-state/5.2.3-free-dongles.md"
+        },
+        {
+          "id": "5.2.4",
+          "title": "Init dongles",
+          "status": "pending",
+          "layer": "adapters",
+          "depends": [
+            "5.2.1",
+            "5.2.3"
+          ],
+          "files": [
+            "coders/src/init/init_dongles.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "`init_dongles(&dongles, 4)` returns 0 with `dongles != NULL`; every element has `available == 1`, `released_at == -1`, `heap.size == 0`, `heap.capacity == 2`, `heap.items != NULL`, and its mutex is unlocked (`pthread_mutex_trylock` succeeds, then unlocked). The test then calls `free_dongles(dongles, 4)`, which returns 0",
+              "test": "tests/acceptance/test_5.2.4.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "`n = 1` and `n = 200` behave as AC1 (every element initialised, then freed with `free_dongles(dongles, n)`)",
+              "test": "tests/acceptance/test_5.2.4.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "the elements are independent: with element 0's mutex locked by the test, `pthread_mutex_trylock` on element 1 succeeds; every `heap.items` differs; a push into element 2 leaves element 3's `heap.size` at 0",
+              "test": "tests/acceptance/test_5.2.4.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "invalid input returns -1 and leaves the out-pointer unchanged (the test prefills it with a non-NULL sentinel address it never dereferences): `n` of 0, -1 and `INT_MIN`; and `init_dongles(NULL, 4)` returns -1 with no crash",
+              "test": "tests/acceptance/test_5.2.4.c"
+            }
+          ],
+          "spec": "docs/plan/phase-05-simulation-state/5.2.4-init-dongles.md"
+        }
+      ]
+    },
+    {
+      "id": "5.3",
+      "title": "Coders",
+      "phase": "05",
+      "layer": "adapters",
+      "goal": "initialise one coder (id, ordered dongle pair, own mutex, zeroed compile state, back pointer) and the array of N coders with the same rollback guarantees, and tear them down in reverse",
+      "status": "pending",
+      "subtasks": [
+        {
+          "id": "5.3.1",
+          "title": "Init coder",
+          "status": "pending",
+          "layer": "adapters",
+          "depends": [
+            "5.1.1",
+            "5.2.4"
+          ],
+          "files": [
+            "coders/src/init/init_coder.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "with a `t_sim sim` whose address is only stored (never read), `n = 4` and seats 0, 1, 2, 3: each call returns 0 with `id` 1, 2, 3, 4, `(first_dongle, second_dongle)` equal to what `get_dongle_pair` returns for that seat (`(0, 1)`, `(1, 2)`, `(2, 3)`, `(0, 3)`), `last_compile_start == 0`, `compile_count == 0`, `sim == &sim`, and its mutex unlocked (`pthread_mutex_trylock` succeeds, then unlocked). The test destroys each mutex by hand (`pthread_mutex_destroy` returns 0)",
+              "test": "tests/acceptance/test_5.3.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "on a `t_coder` prefilled byte-wise with a sentinel pattern, a valid call gives the same field values as AC1, and the bytes of `thread` are still the sentinel (it is never written)",
+              "test": "tests/acceptance/test_5.3.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "`n = 1`, seat 0: returns 0 with `id == 1` and `first_dongle == second_dongle == 0`",
+              "test": "tests/acceptance/test_5.3.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "invalid input returns -1 and leaves the whole `t_coder` byte-for-byte unchanged (sentinel-prefilled, compared with `memcmp`; no mutex was initialised): `sim` NULL; seat -1, seat == n, seat > n (n = 4); n of 0 and -1 (seat 0). `init_coder(NULL, &sim, 0, 4)` returns -1 with no crash",
+              "test": "tests/acceptance/test_5.3.1.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "two coders initialised one after the other have independent mutexes: with the first's locked by the test, `pthread_mutex_trylock` on the second succeeds",
+              "test": "tests/acceptance/test_5.3.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-05-simulation-state/5.3.1-init-coder.md"
+        },
+        {
+          "id": "5.3.2",
+          "title": "Destroy coder",
+          "status": "pending",
+          "layer": "adapters",
+          "depends": [
+            "5.3.1"
+          ],
+          "files": [
+            "coders/src/cleanup/destroy_coder.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "after `init_coder(&coder, &sim, 0, 4)` returned 0, `destroy_coder(&coder)` returns 0",
+              "test": "tests/acceptance/test_5.3.2.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "after the mutex was used (locked and unlocked by the test) and `last_compile_start` / `compile_count` were changed (1234 and 3), it returns 0, and `id`, `first_dongle`, `second_dongle`, `last_compile_start`, `compile_count`, `sim` and the bytes of `thread` keep their values (it only destroys the mutex)",
+              "test": "tests/acceptance/test_5.3.2.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "reuse: after `destroy_coder`, `init_coder` on the same struct returns 0 with a working mutex (`pthread_mutex_trylock` succeeds, then unlocked); a second `destroy_coder` returns 0",
+              "test": "tests/acceptance/test_5.3.2.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "`destroy_coder(NULL)` returns -1 with no crash",
+              "test": "tests/acceptance/test_5.3.2.c"
+            }
+          ],
+          "spec": "docs/plan/phase-05-simulation-state/5.3.2-destroy-coder.md"
+        },
+        {
+          "id": "5.3.3",
+          "title": "Free coders",
+          "status": "pending",
+          "layer": "adapters",
+          "depends": [
+            "5.3.2"
+          ],
+          "files": [
+            "coders/src/cleanup/free_coders.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "the test `malloc`s an array of 3 `t_coder`, initialises all of them with `init_coder(&array[i], &sim, i, 3)`; `free_coders(array, 3)` returns 0",
+              "test": "tests/acceptance/test_5.3.3.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "partial array: an array of 4 prefilled byte-wise with a sentinel pattern, only elements 0 and 1 initialised with `init_coder`; `free_coders(array, 2)` returns 0 and never touches elements 2 and 3 (no invalid access, no destroy of an uninitialised mutex: valgrind and TSan clean)",
+              "test": "tests/acceptance/test_5.3.3.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "count 0: a `malloc`'d array with no initialised element; `free_coders(array, 0)` returns 0 and the array is freed (valgrind: no leak)",
+              "test": "tests/acceptance/test_5.3.3.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "`free_coders(NULL, 0)` returns 0 with no crash; `free_coders(NULL, 3)` returns -1 with no crash",
+              "test": "tests/acceptance/test_5.3.3.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "negative count: on an array of 1 initialised coder, `free_coders(array, -1)` returns -1 and touches nothing (the test then calls `free_coders(array, 1)`, which returns 0)",
+              "test": "tests/acceptance/test_5.3.3.c"
+            }
+          ],
+          "spec": "docs/plan/phase-05-simulation-state/5.3.3-free-coders.md"
+        },
+        {
+          "id": "5.3.4",
+          "title": "Init coders",
+          "status": "pending",
+          "layer": "adapters",
+          "depends": [
+            "5.3.1",
+            "5.3.3"
+          ],
+          "files": [
+            "coders/src/init/init_coders.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "with a `t_sim sim` whose address is only stored, `init_coders(&coders, &sim, 4)` returns 0 with `coders != NULL`; element `i` has `id == i + 1`, the dongle pair of seat `i` (`(0, 1)`, `(1, 2)`, `(2, 3)`, `(0, 3)`), `last_compile_start == 0`, `compile_count == 0`, `sim == &sim`, and its mutex unlocked (`pthread_mutex_trylock` succeeds, then unlocked). The test then calls `free_coders(coders, 4)`, which returns 0",
+              "test": "tests/acceptance/test_5.3.4.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "`n = 1` gives one coder with `id == 1` and `first_dongle == second_dongle == 0`; `n = 200` gives 200 coders, each with `id == i + 1` and `first_dongle < second_dongle`, the last one `(0, 199)`; both freed with `free_coders(coders, n)`",
+              "test": "tests/acceptance/test_5.3.4.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "the coder mutexes are independent: with element 0's mutex locked by the test, `pthread_mutex_trylock` on element 1 succeeds",
+              "test": "tests/acceptance/test_5.3.4.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "invalid input returns -1 and leaves the out-pointer unchanged (prefilled with a non-NULL sentinel address never dereferenced): `n` of 0, -1 and `INT_MIN`; `sim` NULL (n = 4); and `init_coders(NULL, &sim, 4)` returns -1 with no crash",
+              "test": "tests/acceptance/test_5.3.4.c"
+            }
+          ],
+          "spec": "docs/plan/phase-05-simulation-state/5.3.4-init-coders.md"
+        }
+      ]
+    },
+    {
+      "id": "5.4",
+      "title": "Simulation",
+      "phase": "05",
+      "layer": "adapters",
+      "goal": "build the whole `t_sim` (config, stop/log/ticket mutexes, dongles, coders) in a fixed order with a full reverse rollback on any failure, and free all of it; threads are not started here (phase 09)",
+      "status": "pending",
+      "subtasks": [
+        {
+          "id": "5.4.1",
+          "title": "Free sim",
+          "status": "pending",
+          "layer": "adapters",
+          "depends": [
+            "5.2.4",
+            "5.3.4"
+          ],
+          "files": [
+            "coders/src/cleanup/free_sim.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "full simulation built by hand by the test (the three mutexes `stop_mutex`, `log_mutex`, `ticket_mutex` initialised, `config.number_of_coders = 3`, `init_dongles(&sim.dongles, 3)` and `init_coders(&sim.coders, &sim, 3)` returned 0): `free_sim(&sim)` returns 0 and leaves `sim.dongles == NULL` and `sim.coders == NULL`",
+              "test": "tests/acceptance/test_5.4.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "partial arrays: with the three mutexes live and `dongles` built but `coders == NULL`, it returns 0 and leaves both NULL; with the three mutexes live and both arrays NULL, it returns 0",
+              "test": "tests/acceptance/test_5.4.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "after use (every mutex locked and unlocked once, one push into a dongle heap, a coder's `compile_count` set to 2) and with `stopped = 1`, `start_ms = 1000`, `next_ticket = 7`, it returns 0 and leaves `config`, `start_ms`, `stopped` and `next_ticket` unchanged",
+              "test": "tests/acceptance/test_5.4.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "reuse: after `free_sim`, the test builds the same simulation again on the same struct (as AC1) and a second `free_sim` returns 0 with both arrays NULL",
+              "test": "tests/acceptance/test_5.4.1.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "`n = 1` (one coder, one dongle) behaves as AC1",
+              "test": "tests/acceptance/test_5.4.1.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "`free_sim(NULL)` returns -1 with no crash",
+              "test": "tests/acceptance/test_5.4.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-05-simulation-state/5.4.1-free-sim.md"
+        },
+        {
+          "id": "5.4.2",
+          "title": "Init sim",
+          "status": "pending",
+          "layer": "adapters",
+          "depends": [
+            "5.4.1"
+          ],
+          "files": [
+            "coders/src/init/init_sim.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "with the config `4 800 200 200 200 3 50 edf`, `init_sim(&sim, &config)` returns 0; `sim.config` equals the input field by field; `start_ms == 0`, `stopped == 0`, `next_ticket == 0`; the 4 dongles have `available == 1`, `released_at == -1`, `heap.size == 0`, `heap.capacity == 2`; coder `i` has `id == i + 1`, the dongle pair of seat `i`, `last_compile_start == 0`, `compile_count == 0` and `sim == &sim`; `stop_mutex`, `log_mutex`, `ticket_mutex`, every dongle mutex and every coder mutex are unlocked (`pthread_mutex_trylock` succeeds, then unlocked). The test then calls `free_sim(&sim)`, which returns 0",
+              "test": "tests/acceptance/test_5.4.2.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "`number_of_coders` 1 (one coder, `first_dongle == second_dongle == 0`, one dongle) and 200 (every coder's two indices in `[0, 200)`, the last one `(0, 199)`) behave as AC1",
+              "test": "tests/acceptance/test_5.4.2.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "the phase 03 state functions work on the built simulation: `is_stopped(&sim)` returns 0; after `set_stopped(&sim)`, `is_stopped(&sim)` returns 1",
+              "test": "tests/acceptance/test_5.4.2.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "on a `t_sim` prefilled byte-wise with a sentinel pattern (owning nothing live), a valid call gives the same result as AC1",
+              "test": "tests/acceptance/test_5.4.2.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "invalid input returns -1 and leaves the whole `t_sim` byte-for-byte unchanged (sentinel-prefilled, compared with `memcmp`): `config` NULL; `number_of_coders` 0 and -1. `init_sim(NULL, &config)` returns -1 with no crash",
+              "test": "tests/acceptance/test_5.4.2.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "reuse: `init_sim`, `free_sim`, `init_sim` again on the same struct (with a different `number_of_coders`, 3 then 5), `free_sim`: every call returns 0",
+              "test": "tests/acceptance/test_5.4.2.c"
+            }
+          ],
+          "spec": "docs/plan/phase-05-simulation-state/5.4.2-init-sim.md"
         }
       ]
     }
