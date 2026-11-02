@@ -1,8 +1,9 @@
 # Current session
 
-- **State (2026-11-02):** task ISS-14 is closed on its branch; ISS-14.1 is
-  code-approved and its close artifacts and PR narrative are prepared. The
-  harness will run the close check, commit, and open the task PR. The global harness gained the **issues lane**
+- **State (2026-11-02):** ISS-14.1 is code-approved and its close artifacts
+  and task PR narrative are prepared. The supplied pre-session `make check`
+  exited 0; the harness will run the close check, commit, and open the task PR.
+  The global harness gained the **issues lane**
   (`b7f97bb` + `3fdc195`, pushed) and codexion was migrated to the shared
   harness files (`install.sh . --migrate`, PR #16 merged, CI green):
   `Makefile` includes `harness/harness.mk`, `CLAUDE.md` imports
@@ -41,10 +42,10 @@ section points to the task's spec folder. Applies from the task 2.3 PR on.
 
 ## Next step
 
-ISS-14.1 is APPROVED (`progress/review_ISS-14.1.md`). Its close artifacts and
-task PR narrative are prepared; the harness runs the close check, commits the
-task, pushes the branch, and opens the PR. The supplied pre-session `make check`
-exited 0. After the user approves the task PR merge, return to 4.3.1. Every
+ISS-14.1 is APPROVED (`progress/review_ISS-14.1.md`). This close prepares its
+reference note and task PR narrative; the harness runs the close check,
+commits the task, pushes the branch, and opens the PR. After the user approves
+the task PR merge, return to 4.3.1. Every
 subtask that edits `coders/Makefile` or `coders/main.h` must refresh the 42
 header `Updated:` lines with Stdheader.
 

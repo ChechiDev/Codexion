@@ -357,3 +357,7 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_ISS-14.1.md`).
 - **Documentation:** docs/reference/ISS-14.1-invalid-flags.md; updated historical notes: docs/reference/2.3.3-parse-config.md, docs/reference/2.4.1-print-arg-error.md, and docs/reference/2.4.2-validate-arguments.md; task narrative: progress/pr_ISS-14.md
 - **Commit:** refactor(parsing): report invalid arguments as flags [ISS-14.1]
+
+## 2026-11-02 — Close ISS-14.1
+- **Result:** Reference documentation and task PR narrative prepared; the harness will run the close check, commit the task, push the branch, and open the PR.
+- **Commit:** refactor(parsing): report invalid arguments as flags [ISS-14.1]
