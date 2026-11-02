@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/10/30 12:00:00 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/11/02 12:00:00 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ int		build_number_text(long n, char *buf);
 int		get_arg_minimum(int position);
 int		parse_number(const char *str, int *out);
 int		parse_mode(const char *str, t_mode *out);
-int		parse_config(char **argv, t_config *config);
+int		parse_config(char **argv, t_config *config, int *invalid);
 
 /* ---- Time ---- */
 

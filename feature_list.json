@@ -2043,5 +2043,72 @@
         }
       ]
     }
+  ],
+  "issues": [
+    {
+      "id": "ISS-14",
+      "number": 14,
+      "title": "refactor: replace parse_config bit mask with invalid flags [2.3]",
+      "issue": "https://github.com/ChechiDev/codexion/issues/14",
+      "type": "refactor",
+      "origin": "2.3",
+      "priority": "next",
+      "goal": "parse_config reports invalid arguments through an int invalid[9] flag array instead of a bit mask, with no change in user-visible behaviour",
+      "file": "docs/plan/issues/ISS-14-refactor-replace-parse-config-bit-mask-with-invalid-flags-2-3.md",
+      "status": "done",
+      "subtasks": [
+        {
+          "id": "ISS-14.1",
+          "title": "Report invalid arguments as flags",
+          "status": "done",
+          "layer": "core",
+          "depends": [
+            "2.3.3",
+            "2.4.2"
+          ],
+          "files": [
+            "coders/src/parsing/parse_config.c",
+            "coders/main.h",
+            "coders/main.c"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "`parse_config(argv, &config, invalid)` on `{\"codexion\",\"4\",\"800\",\"200\",\"200\",\"200\",\"3\",\"50\",\"edf\",NULL}` returns 0, sets `invalid[1]` to `invalid[8]` to 0 and fills the eight `t_config` fields with 4, 800, 200, 200, 200, 3, 50 and `MODE_EDF`",
+              "test": "tests/acceptance/test_ISS-14.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "with `invalid[1]` to `invalid[8]` pre-filled with a garbage value (42), a call with only positions 2, 3 and 8 invalid returns 3 and leaves exactly `invalid[2]`, `invalid[3]` and `invalid[8]` at 1 and the other five positions at 0, so the caller never has to zero the array",
+              "test": "tests/acceptance/test_ISS-14.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "all eight arguments invalid returns 8 with `invalid[1]` to `invalid[8]` all at 1; a sentinel stored in `invalid[0]` before the call is unchanged after it, in this and every other case",
+              "test": "tests/acceptance/test_ISS-14.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "a single invalid argument at each position `pos` in 1..8 (numeric values `\"-1\"`, `\"abc\"`, `\"\"`, `\"2147483648\"`; scheduler `\"FIFO\"`, `\" edf\"`, `\"rr\"`), all others valid, returns 1 with only `invalid[pos]` set to 1; every `argv` string is byte-for-byte unchanged after the call",
+              "test": "tests/acceptance/test_ISS-14.1.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "the binary is unchanged for the user: `./codexion 4 -5 abc 200 200 3 50 rr` writes the error lines for positions 2, 3 and 8 in that order, then the usage exactly once, nothing to stdout, exit status 1; a single invalid argument writes its own error line then the usage, status 1; `./codexion 4 800 200 200 200 3 50 edf` exits 0 with empty stderr",
+              "test": "tests/acceptance/test_ISS-14.1.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "`make -C coders` builds `codexion`, `norminette coders/` reports no error, and an invalid run under valgrind reports no leak and no error",
+              "test": "tests/acceptance/test_ISS-14.1.c"
+            }
+          ],
+          "spec": "docs/plan/issues/ISS-14-refactor-replace-parse-config-bit-mask-with-invalid-flags-2-3/ISS-14.1-invalid-flags.md",
+          "migrates": [
+            "tests/acceptance/test_2.3.3.c"
+          ]
+        }
+      ]
+    }
   ]
 }

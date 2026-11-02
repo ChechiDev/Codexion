@@ -348,3 +348,12 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_4.2.2.md`).
 - **Documentation:** docs/reference/4.2.2-free-heap.md; task narrative: progress/pr_4.2.md
 - **Commit:** feat(heap): release priority queue storage [4.2.2]
+
+## 2026-11-02 — Subtask ISS-14.1: Report invalid arguments as flags
+- **Layer:** core
+- **Plan:** docs/plan/issues/ISS-14-refactor-replace-parse-config-bit-mask-with-invalid-flags-2-3/ISS-14.1-invalid-flags.md (plan_review: PLAN_APPROVED)
+- **Changes:** `parse_config` now fills caller-owned per-position flags and returns an invalid count; `main.c` consumes the array, and the sealed 2.3.3 acceptance oracle was migrated from bit-mask assertions.
+- **Acceptance:** `tests/acceptance/test_ISS-14.1.c` — AC1–AC6 covered and green in the supplied pre-session check.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_ISS-14.1.md`).
+- **Documentation:** docs/reference/ISS-14.1-invalid-flags.md; updated historical notes: docs/reference/2.3.3-parse-config.md, docs/reference/2.4.1-print-arg-error.md, and docs/reference/2.4.2-validate-arguments.md; task narrative: progress/pr_ISS-14.md
+- **Commit:** refactor(parsing): report invalid arguments as flags [ISS-14.1]
