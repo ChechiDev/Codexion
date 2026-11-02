@@ -6,7 +6,7 @@
 #    By: sperez-l@student.42barcelona.com           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/10/26 16:47:34 by sperez-l          #+#    #+#              #
-#    Updated: 2026/11/02 13:31:21 by sperez-l         ###   ########.fr        #
+#    Updated: 2026/11/02 15:31:22 by sperez-l         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,6 +20,7 @@ SRC = main.c \
 	src/heap/free_heap.c \
 	src/heap/get_head_request.c \
 	src/heap/init_heap.c \
+	src/heap/pop_request.c \
 	src/heap/push_request.c \
 	src/log/build_log_line.c \
 	src/log/print_burnout.c \

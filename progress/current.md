@@ -1,12 +1,10 @@
 # Current session
 
 - **State (2026-11-02):** issue #14 done (ISS-14.1, PR #17 merged into
-  `main`). Global harness fixed (harness PR #1, `250257c`): PR titles drop a
-  type prefix already in the issue title, and the close (`doc`) refuses a
-  subtask already done or without an APPROVED code review. Task 4.3 is active on
-  `feat/4.3-heap-operations`: 4.3.1 Push request closed (`0f3bdfc`); 4.3.2
-  Get head request closed (code gate `APPROVED`, close check supplied green).
-- **Next:** 4.3.3 Pop request (last of task 4.3: its close opens the task PR).
+  `main`). Task 4.3 is complete on `feat/4.3-heap-operations`: 4.3.1 Push
+  request (`0f3bdfc`), 4.3.2 Get head request (`2aab422`), and 4.3.3 Pop
+  request are closed. The supplied pre-session `make check` for 4.3.3 exited 0.
+- **Next:** harness close step commits the task and opens its PR.
 - **Flaky checks:** a transient red in an already-closed test came from other
   Claude sessions opened in codexion (their stop hook runs `make check` on the
   same `build/`). Re-run `make check` to confirm; a `flock` in the harness is a
@@ -45,9 +43,9 @@ section points to the task's spec folder. Applies from the task 2.3 PR on.
 
 ## Next step
 
-4.3.2 is closed. Break down 4.3.3 Pop request, the last subtask in task 4.3;
-its close prepares the task PR. Every subtask that edits `coders/Makefile` or
-`coders/main.h` must refresh the 42 header `Updated:` lines with Stdheader.
+Task 4.3 is closed locally; the close message and task PR narrative are ready
+for the harness. After the harness commits and opens the PR, review and merge it
+to finish the task.
 
 Note: `make check` does not run ThreadSanitizer or valgrind; CI does. PR #12
 failed CI on `make tsan` (lock-order inversion created by the unit test

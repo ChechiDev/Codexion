@@ -375,3 +375,12 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_4.3.2.md`).
 - **Documentation:** docs/reference/4.3.2-get-head-request.md
 - **Commit:** feat(heap): add request head lookup [4.3.2]
+
+## 2026-11-02 — Subtask 4.3.3: Pop request
+- **Layer:** core
+- **Plan:** docs/plan/phase-04-priority-queue/4.3.3-pop-request.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/heap/pop_request.c`, `coders/main.h`, and `coders/Makefile` add removal of the minimum request and restore heap order using the shared comparator.
+- **Acceptance:** `tests/acceptance/test_4.3.3.c` — AC1–AC9 cover removal order, invariants, failure preservation, edge sizes, interleaving, and build integration.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_4.3.3.md`); implementation notes report the acceptance binary Valgrind exit 0.
+- **Documentation:** docs/reference/4.3.3-pop-request.md; task narrative: progress/pr_4.3.md
+- **Commit:** feat(heap): remove request head [4.3.3]

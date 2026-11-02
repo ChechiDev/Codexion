@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/11/02 13:31:21 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/11/02 15:31:22 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,7 @@ int		init_heap(t_heap *heap, int capacity);
 void	free_heap(t_heap *heap);
 int		push_request(t_heap *heap, const t_request *req);
 int		get_head_request(const t_heap *heap, t_request *out);
+int		pop_request(t_heap *heap, t_request *out);
 
 /* ---- CLI ---- */
 

@@ -60,7 +60,7 @@
       "title": "Priority queue",
       "goal": "a hand-written binary min-heap of dongle requests ordered by key then arrival ticket, supporting the fifo key (arrival ticket) and the edf key (last_compile_start + time_to_burnout)",
       "file": "docs/plan/phase-04-priority-queue.md",
-      "status": "in_progress",
+      "status": "done",
       "tasks": [
         "4.1",
         "4.2",
@@ -1863,7 +1863,7 @@
       "phase": "04",
       "layer": "core",
       "goal": "push, peek and pop on the min-heap (sift up/down on the request order); a rejected operation (full, empty) leaves the heap and the output untouched",
-      "status": "in_progress",
+      "status": "done",
       "subtasks": [
         {
           "id": "4.3.1",
@@ -1982,7 +1982,7 @@
         {
           "id": "4.3.3",
           "title": "Pop request",
-          "status": "pending",
+          "status": "done",
           "layer": "core",
           "depends": [
             "4.3.2"
