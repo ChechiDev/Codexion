@@ -1,23 +1,24 @@
 # Current session
 
-- **State (2026-11-02):** ISS-14.1 is code-approved and its close artifacts
-  and task PR narrative are prepared. The supplied pre-session `make check`
-  exited 0; the harness will run the close check, commit, and open the task PR.
-  The global harness gained the **issues lane**
-  (`b7f97bb` + `3fdc195`, pushed) and codexion was migrated to the shared
-  harness files (`install.sh . --migrate`, PR #16 merged, CI green):
-  `Makefile` includes `harness/harness.mk`, `CLAUDE.md` imports
-  `@harness/WORKFLOW.md`, `docs/plan/issues/README.md` turns the lane on.
-  On `main`, `make check` green. Next phase work: 4.3.1 Push request.
-- **Next:** after the task PR is opened and the user approves the merge, resume
-  task 4.3 at subtask 4.3.1 (Push request), following its approved spec and
-  usual plan/code/close gates.
+- **State (2026-11-02):** issue #14 done (ISS-14.1, PR #17 merged into
+  `main`). Task 4.3 is complete on `feat/4.3-heap-operations`: 4.3.1 Push
+  request (`0f3bdfc`), 4.3.2 Get head request (`2aab422`), and 4.3.3 Pop
+  request are closed. The supplied pre-session `make check` for 4.3.3 exited 0.
+- **Next:** harness close step commits the task and opens its PR.
+- **Flaky checks:** a transient red in an already-closed test came from other
+  Claude sessions opened in codexion (their stop hook runs `make check` on the
+  same `build/`). Re-run `make check` to confirm; a `flock` in the harness is a
+  possible later fix (needs the user's exception).
 - **Parked work:** none (the `wip-3.4.4` stash was dropped).
 - **Closed in task 3.4:** 3.4.1 (`7635017`), 3.4.2 (`8977acd`), 3.4.3 (`4a60ab4`).
 - **Previous:** task 3.3 done and merged (PR #11, merge commit `f065027`).
   Tasks 3.1 and 3.2 merged (PRs #9, #10). Phase 03 is `PHASE_APPROVED`.
 - **Start:** 2026-10-28
 - **Engine/role:** leader → phase gate (Codex) → user OK → per-subtask cycle
+
+- **4.3.1 gates:** plan `PLAN_APPROVED` (`progress/plan_review_4.3.1.md`);
+  code `APPROVED` (`progress/review_4.3.1.md`); close documentation and tracking
+  complete. Supplied outside-sandbox `make check` exited 0.
 
 ## Decisions taken during the phase 03 breakdown (2026-10-28)
 
@@ -42,12 +43,9 @@ section points to the task's spec folder. Applies from the task 2.3 PR on.
 
 ## Next step
 
-ISS-14.1 is APPROVED (`progress/review_ISS-14.1.md`). This close prepares its
-reference note and task PR narrative; the harness runs the close check,
-commits the task, pushes the branch, and opens the PR. After the user approves
-the task PR merge, return to 4.3.1. Every
-subtask that edits `coders/Makefile` or `coders/main.h` must refresh the 42
-header `Updated:` lines with Stdheader.
+Task 4.3 is closed locally; the close message and task PR narrative are ready
+for the harness. After the harness commits and opens the PR, review and merge it
+to finish the task.
 
 Note: `make check` does not run ThreadSanitizer or valgrind; CI does. PR #12
 failed CI on `make tsan` (lock-order inversion created by the unit test
