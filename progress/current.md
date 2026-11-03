@@ -11,6 +11,16 @@
   (`progress/phase_review_05.md`; rounds asked to drop the `nm` and build/Norm
   ACs, now in "Code review check", and to add depends 5.2.1→5.1.1,
   5.3.1→5.2.4). User OK given.
+- **Phase 06 breakdown (2026-11-03):** tasks 6.1 Requests, 6.2 Readiness,
+  6.3 Acquisition and release approved by the user after a Codex advisory
+  (`progress/phase06_tasks_proposal.md`, `..._advisory.md`); 9 specs
+  6.1.1-6.3.5 validated one by one (6.3.3 release before 6.3.4 take; 6.3.5
+  had its own advisory, `progress/advisory_6.3.5_spec.md`). Verb `wake_`
+  added by PR #23 (merged). Phase gate `PHASE_APPROVED` on round 3
+  (`progress/phase_review_06.md`; rounds: linear depends chain for the shared
+  main.h/Makefile, 6.2.2 `LONG_MAX` is representable, 6.3.2 cond-choice AC
+  moved to code review, 6.3.3 reads the release time after locking + a
+  contention AC). User OK given; task 6.1 is now closed (6.1.1 and 6.1.2).
 - **Task 5.4 complete (2026-11-03):** 5.4.1 Free sim and 5.4.2 Init simulation are closed on `feat/5.4-simulation`. The public initializer is `init_simulation`; phase review and plan review re-sealed this name after resolving conflicts with seven sealed phase 03 acceptance helpers. Subtask close documentation and task PR narrative are ready; the harness will perform the final close check and commit. See `progress/review_5.4.2.md`, `docs/reference/5.4.2-init-sim.md`, and `progress/pr_5.4.md`.
 - **Merge style:** the user squash-merged #18; recommended default is a merge
   commit (keeps one approved `[N.M.K]` commit per subtask on `main`), squash
@@ -52,9 +62,18 @@
 only code, tests, CI, build files and README.md, and a new "Documentation"
 section points to the task's spec folder. Applies from the task 2.3 PR on.
 
+`~/.claude-codex-harness` commit `8b86788` (2026-11-03, user-granted exception
+for `codex/documenter.md` only, committed by the user because the project guard
+blocks commit commands whose paths contain the agent names): the PR "Issues
+resolved" now lists every problem met during the task (one paragraph each:
+what broke, why it was missed, options, resolution) and also reads
+`progress/impl_*.md`, `progress/advisory_*.md` and `progress/current.md`.
+Prompted by PR #22, where the `init_sim` clash was only half a sentence (fixed
+by hand in the PR body). Applies from the task 6.x PRs on.
+
 ## Next step
 
-Harness: run the close check and commit subtask 5.4.2, then open the task 5.4 pull request.
+Harness: run the close check and commit subtask 6.1.2, finishing task 6.1.
 
 Note: `make check` does not run ThreadSanitizer or valgrind; CI does. PR #12
 failed CI on `make tsan` (lock-order inversion created by the unit test
