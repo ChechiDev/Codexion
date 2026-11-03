@@ -92,6 +92,7 @@ Rules:
   | `trim_` | trims text | `trim_slice` |
   | `sleep_` | waits for a duration | `sleep_ms` |
   | `wait_` | blocks until a condition holds | `wait_for_dongles` |
+  | `wake_` | wakes the threads blocked on a condition | `wake_dongles` |
   | `take_` / `release_` | acquires / gives back a shared resource | `take_dongles`, `release_dongles` |
   | `push_` / `pop_` | adds to / removes from a queue | `push_request`, `pop_request` |
   | `sift_` | restores the heap order after a change | `sift_up` |
