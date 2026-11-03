@@ -1,6 +1,6 @@
 # Current session
 
-- **State (2026-11-02):** issue #14 done (ISS-14.1, PR #17 merged). Task 4.3
+- **State (2026-11-03):** issue #14 done (ISS-14.1, PR #17 merged). Task 4.3
   done: 4.3.1 Push request, 4.3.2 Get head request, 4.3.3 Pop request; PR #18
   squash-merged into `main` (`f43299e`). **Phase 04 Priority queue is done
   (7/7).** On `main`, `make check` green, tree clean.
@@ -11,7 +11,7 @@
   (`progress/phase_review_05.md`; rounds asked to drop the `nm` and build/Norm
   ACs, now in "Code review check", and to add depends 5.2.1→5.1.1,
   5.3.1→5.2.4). User OK given.
-- **Now:** task 5.1 merged (PR #19). 5.2.1 closed (`daaba6b`). Subtask 5.2.2 Destroy dongle has plan `PLAN_APPROVED`, code `APPROVED` (`progress/review_5.2.2.md`), and close artifacts prepared on `feat/5.2-dongles`. Supplied outside-sandbox `make check` exited 0.
+- **Now:** task 5.1 merged (PR #19). Subtasks 5.2.1 (`daaba6b`), 5.2.2 (`7cf7ee7`), and 5.2.3 Free dongles are closed on `feat/5.2-dongles`. 5.2.3 has `PLAN_APPROVED` and `APPROVED`; the close is documented and awaiting the harness check and commit.
 - **Merge style:** the user squash-merged #18; recommended default is a merge
   commit (keeps one approved `[N.M.K]` commit per subtask on `main`), squash
   only when the branch carries noise. User's call per PR.
@@ -53,9 +53,8 @@ section points to the task's spec folder. Applies from the task 2.3 PR on.
 
 ## Next step
 
-The harness should run the close check and commit 5.2.2 from
-`progress/close_5.2.2.msg`. After that commit, proceed to 5.2.3 Free dongles
-on the same task branch.
+After the harness commits 5.2.3, proceed to 5.2.4 Init dongles on the same
+task branch.
 
 Note: `make check` does not run ThreadSanitizer or valgrind; CI does. PR #12
 failed CI on `make tsan` (lock-order inversion created by the unit test

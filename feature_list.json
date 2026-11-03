@@ -2199,7 +2199,7 @@
         {
           "id": "5.2.3",
           "title": "Free dongles",
-          "status": "pending",
+          "status": "done",
           "layer": "adapters",
           "depends": [
             "5.2.2"

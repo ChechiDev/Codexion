@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/11/02 18:30:00 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/11/03 10:00:00 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,6 +149,7 @@ int		init_dongle(t_dongle *dongle);
 /* ---- Cleanup ---- */
 
 int		destroy_dongle(t_dongle *dongle);
+int		free_dongles(t_dongle *dongles, int count);
 
 /* ---- CLI ---- */
 

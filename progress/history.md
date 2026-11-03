@@ -417,3 +417,12 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.2.2.md`); implementation review records clean TSan, memcheck, and direct acceptance Valgrind runs.
 - **Documentation:** docs/reference/5.2.2-destroy-dongle.md
 - **Commit:** feat(cleanup): destroy dongle resources [5.2.2]
+
+## 2026-11-03 — Subtask 5.2.3: Free dongles
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-05-simulation-state/5.2.3-free-dongles.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/cleanup/free_dongles.c`, `coders/main.h`, and `coders/Makefile` add reverse-order teardown of the initialized dongle prefix and release its array; `docs/architecture.md` documents array ownership in cleanup.
+- **Acceptance:** `tests/acceptance/test_5.2.3.c` — AC1–AC5 covered and green in the supplied close check.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.2.3.md`); implementation notes record clean TSan, memcheck, and acceptance Valgrind runs.
+- **Documentation:** docs/reference/5.2.3-free-dongles.md
+- **Commit:** feat(cleanup): release dongle array [5.2.3]
