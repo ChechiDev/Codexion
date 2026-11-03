@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/11/03 12:04:00 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/11/03 12:30:00 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,6 +162,7 @@ int		init_coder(t_coder *coder, t_sim *sim, int seat, int n);
 
 /* ---- Cleanup ---- */
 
+int		destroy_coder(t_coder *coder);
 int		destroy_dongle(t_dongle *dongle);
 int		free_dongles(t_dongle *dongles, int count);
 

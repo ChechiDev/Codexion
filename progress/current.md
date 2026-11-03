@@ -11,10 +11,10 @@
   (`progress/phase_review_05.md`; rounds asked to drop the `nm` and build/Norm
   ACs, now in "Code review check", and to add depends 5.2.1→5.1.1,
   5.3.1→5.2.4). User OK given.
-- **Now:** tasks 5.1 (PR #19) and 5.2 (PR #20) merged. Subtask 5.3.1 Init coder
-  is closed on `feat/5.3-coders`; plan and code gates are approved, and the
-  supplied outside-sandbox close `make check` exited 0. The harness will open
-  the task PR after committing this close.
+- **Now:** tasks 5.1 (PR #19) and 5.2 (PR #20) merged. 5.3.1 closed (`0350ecf`)
+  and 5.3.2 Destroy coder is closed on `feat/5.3-coders`; plan and code gates
+  are approved, and the supplied outside-sandbox close `make check` exited 0.
+  The harness will open the task PR after committing this close.
 - **Merge style:** the user squash-merged #18; recommended default is a merge
   commit (keeps one approved `[N.M.K]` commit per subtask on `main`), squash
   only when the branch carries noise. User's call per PR.
@@ -57,7 +57,7 @@ section points to the task's spec folder. Applies from the task 2.3 PR on.
 
 ## Next step
 
-Proceed to subtask 5.3.2 (Destroy coder): review its approved spec and run the
+Proceed to subtask 5.3.3 (Free coders): review its approved spec and run the
 plan gate on `feat/5.3-coders`.
 
 Note: `make check` does not run ThreadSanitizer or valgrind; CI does. PR #12

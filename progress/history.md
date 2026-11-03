@@ -444,3 +444,12 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.2.4.md`); implementation notes record clean TSan, memcheck, and acceptance Valgrind runs.
 - **Documentation:** docs/reference/5.2.4-init-dongles.md; task narrative: progress/pr_5.2.md
 - **Commit:** feat(init): initialize dongle array [5.2.4]
+
+## 2026-11-03 — Subtask 5.3.2: Destroy coder
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-05-simulation-state/5.3.2-destroy-coder.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/cleanup/destroy_coder.c`, `coders/main.h`, and `coders/Makefile` add coder mutex teardown; `docs/architecture.md` records it in the cleanup adapter map.
+- **Acceptance:** `tests/acceptance/test_5.3.2.c` — AC1–AC4 cover destruction, preservation of other fields, reinitialization, and NULL rejection.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.3.2.md`); implementation notes report clean TSan, memcheck, and acceptance Valgrind runs.
+- **Documentation:** docs/reference/5.3.2-destroy-coder.md
+- **Commit:** feat(cleanup): destroy coder mutex [5.3.2]
