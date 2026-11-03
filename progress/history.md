@@ -426,3 +426,12 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.2.3.md`); implementation notes record clean TSan, memcheck, and acceptance Valgrind runs.
 - **Documentation:** docs/reference/5.2.3-free-dongles.md
 - **Commit:** feat(cleanup): release dongle array [5.2.3]
+
+## 2026-11-03 — Subtask 5.2.4: Init dongles
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-05-simulation-state/5.2.4-init-dongles.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/init/init_dongles.c`, `coders/main.h`, and `coders/Makefile` add overflow-checked array allocation, ordered element initialization, and prefix rollback through `free_dongles`; acceptance and unit coverage exercise valid sizes, independence, and invalid inputs.
+- **Acceptance:** `tests/acceptance/test_5.2.4.c` — AC1–AC4 covered and green in the supplied close check.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.2.4.md`); implementation notes record clean TSan, memcheck, and acceptance Valgrind runs.
+- **Documentation:** docs/reference/5.2.4-init-dongles.md; task narrative: progress/pr_5.2.md
+- **Commit:** feat(init): initialize dongle array [5.2.4]
