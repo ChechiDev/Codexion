@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/11/03 11:00:00 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/11/03 12:04:00 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,18 @@ typedef struct s_dongle
 	long			released_at;
 }	t_dongle;
 
+typedef struct s_coder
+{
+	int				id;
+	int				first_dongle;
+	int				second_dongle;
+	pthread_mutex_t	mutex;
+	long			last_compile_start;
+	int				compile_count;
+	pthread_t		thread;
+	struct s_sim	*sim;
+}	t_coder;
+
 /* ---- Utils ---- */
 
 int		is_digit(char c);
@@ -146,6 +158,7 @@ int		pop_request(t_heap *heap, t_request *out);
 int		get_dongle_pair(int seat, int n, int *first, int *second);
 int		init_dongle(t_dongle *dongle);
 int		init_dongles(t_dongle **out, int n);
+int		init_coder(t_coder *coder, t_sim *sim, int seat, int n);
 
 /* ---- Cleanup ---- */
 

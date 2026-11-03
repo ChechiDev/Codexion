@@ -2284,12 +2284,12 @@
       "phase": "05",
       "layer": "adapters",
       "goal": "initialise one coder (id, ordered dongle pair, own mutex, zeroed compile state, back pointer) and the array of N coders with the same rollback guarantees, and tear them down in reverse",
-      "status": "pending",
+      "status": "in_progress",
       "subtasks": [
         {
           "id": "5.3.1",
           "title": "Init coder",
-          "status": "pending",
+          "status": "done",
           "layer": "adapters",
           "depends": [
             "5.1.1",

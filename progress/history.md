@@ -16,6 +16,15 @@ Entry template (filled in at close):
 - **Commit:** <type>(<scope>): <what> [N.M.K]   (subject only: the hash is in git log)
 -->
 
+## 2026-11-03 — Subtask 5.3.1: Init coder
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-05-simulation-state/5.3.1-init-coder.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/init/init_coder.c`, `coders/main.h`, and `coders/Makefile` add coder initialization with validated seat mapping, an owned mutex, zeroed compile state, and a borrowed simulation pointer.
+- **Acceptance:** `tests/acceptance/test_5.3.1.c` — AC1–AC5 cover initialized fields, untouched thread storage, the one-coder mapping, invalid-input preservation, and mutex independence.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.3.1.md`); implementation notes report clean TSan, memcheck, and acceptance Valgrind runs.
+- **Documentation:** docs/reference/5.3.1-init-coder.md
+- **Commit:** feat(init): initialize coder state [5.3.1]
+
 ## 2026-10-26 — Subtask 1.1.1: Deliverable Makefile
 - **Layer:** interfaces
 - **Plan:** docs/plan/phase-01-build-skeleton/1.1.1-deliverable-makefile.md (plan_review: PLAN_APPROVED)
