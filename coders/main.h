@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/11/03 14:00:00 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/11/03 15:00:00 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,14 +57,6 @@ typedef struct s_slice
 	int			len;
 }	t_slice;
 
-typedef struct s_sim
-{
-	long			start_ms;
-	int				stopped;
-	pthread_mutex_t	stop_mutex;
-	pthread_mutex_t	log_mutex;
-}	t_sim;
-
 typedef struct s_request
 {
 	long	key;
@@ -99,6 +91,19 @@ typedef struct s_coder
 	pthread_t		thread;
 	struct s_sim	*sim;
 }	t_coder;
+
+typedef struct s_sim
+{
+	t_config		config;
+	long			start_ms;
+	int				stopped;
+	long			next_ticket;
+	t_dongle		*dongles;
+	t_coder			*coders;
+	pthread_mutex_t	stop_mutex;
+	pthread_mutex_t	log_mutex;
+	pthread_mutex_t	ticket_mutex;
+}	t_sim;
 
 /* ---- Utils ---- */
 
@@ -167,6 +172,7 @@ int		destroy_coder(t_coder *coder);
 int		destroy_dongle(t_dongle *dongle);
 int		free_dongles(t_dongle *dongles, int count);
 int		free_coders(t_coder *coders, int count);
+int		free_sim(t_sim *sim);
 
 /* ---- CLI ---- */
 

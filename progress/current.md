@@ -11,7 +11,7 @@
   (`progress/phase_review_05.md`; rounds asked to drop the `nm` and build/Norm
   ACs, now in "Code review check", and to add depends 5.2.1→5.1.1,
   5.3.1→5.2.4). User OK given.
-- **Now:** tasks 5.1 (PR #19) and 5.2 (PR #20) merged. 5.3.1 (`0350ecf`), 5.3.2 (`32dcd42`), 5.3.3 (`83bbdb4`) closed. Subtask 5.3.4 Init coders closed on `feat/5.3-coders`; task 5.3 is complete and its PR narrative is ready for the harness.
+- **Now:** tasks 5.1 (PR #19), 5.2 (PR #20) and 5.3 (PR #21) merged. Subtask 5.4.1 Free sim has code review `APPROVED`; close artifacts are prepared on `feat/5.4-simulation`. Subtask 5.4.2 Init sim is next.
 - **Merge style:** the user squash-merged #18; recommended default is a merge
   commit (keeps one approved `[N.M.K]` commit per subtask on `main`), squash
   only when the branch carries noise. User's call per PR.
@@ -54,7 +54,7 @@ section points to the task's spec folder. Applies from the task 2.3 PR on.
 
 ## Next step
 
-Harness: run the close check, commit task 5.3, and open its pull request.
+Harness: run the close check, commit subtask 5.4.1, and open/update the task 5.4 pull request.
 
 Note: `make check` does not run ThreadSanitizer or valgrind; CI does. PR #12
 failed CI on `make tsan` (lock-order inversion created by the unit test

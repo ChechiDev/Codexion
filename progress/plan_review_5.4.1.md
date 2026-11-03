@@ -1,0 +1,16 @@
+# Plan review — subtask 5.4.1
+
+**Verdict:** PLAN_APPROVED
+
+## Plan analysis
+- Layers: simulation resource teardown belongs in the cleanup adapter; it reuses the existing coder and dongle cleanup APIs. No core logic or new port is needed.
+- Scope: one public function, `free_sim`, with three declared production files: its source, the shared header, and the deliverable Makefile. The header additions supply the state this function releases. Dependencies 5.2.4 and 5.3.4 are done.
+- Test strategy: the oracle assembles the simulation through the public initialization APIs, then checks `free_sim` through the public header. It covers complete, partial, used, rebuilt, one-coder, and NULL states. The new header fields and function are not implemented yet, so the oracle is intentionally red. The specified best-effort behavior on resource-destruction failures remains a code-review check because provoking such failures would require an invalid resource state.
+
+## Acceptance tests (traceability)
+- AC1 → `test_ac1_free_full_sim` (red)
+- AC2 → `test_ac2_free_partial_arrays` (red)
+- AC3 → `test_ac3_preserve_state_after_use` (red)
+- AC4 → `test_ac4_rebuild_same_struct` (red)
+- AC5 → `test_ac5_free_one_coder_sim` (red)
+- AC6 → `test_ac6_reject_null` (red)

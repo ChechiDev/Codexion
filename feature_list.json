@@ -2454,12 +2454,12 @@
       "phase": "05",
       "layer": "adapters",
       "goal": "build the whole `t_sim` (config, stop/log/ticket mutexes, dongles, coders) in a fixed order with a full reverse rollback on any failure, and free all of it; threads are not started here (phase 09)",
-      "status": "pending",
+      "status": "in_progress",
       "subtasks": [
         {
           "id": "5.4.1",
           "title": "Free sim",
-          "status": "pending",
+          "status": "done",
           "layer": "adapters",
           "depends": [
             "5.2.4",
