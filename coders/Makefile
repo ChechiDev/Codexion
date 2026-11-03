@@ -6,7 +6,7 @@
 #    By: sperez-l@student.42barcelona.com           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/10/26 16:47:34 by sperez-l          #+#    #+#              #
-#    Updated: 2026/11/03 19:05:00 by sperez-l         ###   ########.fr        #
+#    Updated: 2026/11/03 19:40:00 by sperez-l         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,6 +22,7 @@ SRC = main.c \
 	src/cleanup/free_sim.c \
 	src/cli/print_arg_error.c \
 	src/cli/print_usage.c \
+	src/dongle/build_request.c \
 	src/heap/free_heap.c \
 	src/heap/get_head_request.c \
 	src/heap/init_heap.c \

@@ -2563,7 +2563,7 @@
       "phase": "06",
       "layer": "adapters",
       "goal": "hand out one simulation-wide, strictly increasing ticket per request under its mutex, and build a coder's `(key, ticket, coder)` request for the configured policy before any dongle is locked",
-      "status": "in_progress",
+      "status": "done",
       "subtasks": [
         {
           "id": "6.1.1",
@@ -2608,7 +2608,7 @@
         {
           "id": "6.1.2",
           "title": "Build request",
-          "status": "pending",
+          "status": "done",
           "layer": "orchestration",
           "depends": [
             "6.1.1"

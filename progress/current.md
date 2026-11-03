@@ -20,7 +20,7 @@
   (`progress/phase_review_06.md`; rounds: linear depends chain for the shared
   main.h/Makefile, 6.2.2 `LONG_MAX` is representable, 6.3.2 cond-choice AC
   moved to code review, 6.3.3 reads the release time after locking + a
-  contention AC). User OK given; 6.1.1 is closed and 6.1.2 is next.
+  contention AC). User OK given; task 6.1 is now closed (6.1.1 and 6.1.2).
 - **Task 5.4 complete (2026-11-03):** 5.4.1 Free sim and 5.4.2 Init simulation are closed on `feat/5.4-simulation`. The public initializer is `init_simulation`; phase review and plan review re-sealed this name after resolving conflicts with seven sealed phase 03 acceptance helpers. Subtask close documentation and task PR narrative are ready; the harness will perform the final close check and commit. See `progress/review_5.4.2.md`, `docs/reference/5.4.2-init-sim.md`, and `progress/pr_5.4.md`.
 - **Merge style:** the user squash-merged #18; recommended default is a merge
   commit (keeps one approved `[N.M.K]` commit per subtask on `main`), squash
@@ -73,7 +73,7 @@ by hand in the PR body). Applies from the task 6.x PRs on.
 
 ## Next step
 
-Harness: run the close check and commit subtask 6.1.1, then continue with 6.1.2.
+Harness: run the close check and commit subtask 6.1.2, finishing task 6.1.
 
 Note: `make check` does not run ThreadSanitizer or valgrind; CI does. PR #12
 failed CI on `make tsan` (lock-order inversion created by the unit test
