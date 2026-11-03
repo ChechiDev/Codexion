@@ -10,7 +10,7 @@
 
 #include "main.h"
 
-static void	init_sim(t_sim *sim, int errorcheck)
+static void	setup_sim(t_sim *sim, int errorcheck)
 {
 	pthread_mutexattr_t	attr;
 
@@ -72,7 +72,7 @@ static void	test_all_states_text(void)
 	state = 0;
 	while (state < 4)
 	{
-		init_sim(&sim, 0);
+		setup_sim(&sim, 0);
 		saved = redirect_stdout(fds);
 		assert(print_state(&sim, 7, (t_state)state) == 0);
 		assert(restore_stdout(saved, fds, buf) > 0);
@@ -91,7 +91,7 @@ static void	test_rejections_write_nothing(void)
 	int		saved;
 	char	buf[64];
 
-	init_sim(&sim, 0);
+	setup_sim(&sim, 0);
 	saved = redirect_stdout(fds);
 	assert(print_state(&sim, 1, (t_state)-1) == -1);
 	assert(print_state(&sim, 1, (t_state)4) == -1);
@@ -110,7 +110,7 @@ static void	test_lock_failures(void)
 	int		saved;
 	char	buf[64];
 
-	init_sim(&sim, 1);
+	setup_sim(&sim, 1);
 	saved = redirect_stdout(fds);
 	assert(pthread_mutex_lock(&sim.log_mutex) == 0);
 	assert(print_state(&sim, 1, STATE_COMPILING) == -1);
@@ -129,7 +129,7 @@ static void	test_write_error(void)
 	int		saved;
 	int		full;
 
-	init_sim(&sim, 0);
+	setup_sim(&sim, 0);
 	full = open("/dev/full", O_WRONLY);
 	assert(full >= 0);
 	saved = dup(STDOUT_FILENO);

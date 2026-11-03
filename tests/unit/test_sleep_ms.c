@@ -5,7 +5,7 @@
 
 #include "main.h"
 
-static void	init_sim(t_sim *sim)
+static void	setup_sim(t_sim *sim)
 {
 	sim->start_ms = 0;
 	sim->stopped = 0;
@@ -23,7 +23,7 @@ static void	test_nonpositive_returns_zero(void)
 {
 	t_sim	sim;
 
-	init_sim(&sim);
+	setup_sim(&sim);
 	assert(sleep_ms(&sim, 0) == 0);
 	assert(sleep_ms(&sim, -5) == 0);
 	assert(sleep_ms(&sim, LONG_MIN) == 0);
@@ -39,7 +39,7 @@ static void	test_running_sleep_lasts_duration(void)
 	long	before;
 	long	after;
 
-	init_sim(&sim);
+	setup_sim(&sim);
 	before = get_time_ms();
 	assert(sleep_ms(&sim, 30) == 0);
 	after = get_time_ms();
@@ -52,7 +52,7 @@ static void	test_stopped_returns_minus_one_fast(void)
 	t_sim	sim;
 	long	before;
 
-	init_sim(&sim);
+	setup_sim(&sim);
 	assert(set_stopped(&sim) == 0);
 	before = get_time_ms();
 	assert(sleep_ms(&sim, LONG_MAX) == -1);
