@@ -29,7 +29,7 @@ discipline, not by includes: a core function never calls `write`, `printf`,
 | `init/` | adapters | lifecycle setup for simulation state, including coder mutexes, dongle mutexes, condition variables, and request heaps; `init_simulation` builds the state in dependency order and uses `free_sim` for rollback | core heap and seat-mapping APIs; cleanup lifecycle APIs |
 | `cleanup/` | adapters | lifecycle teardown for simulation resources, including coder mutexes and arrays, dongle arrays and their heaps, condition variables, and mutexes; `free_sim` releases the full simulation in reverse initialisation order | core heap API |
 | `log/` | core | pure construction of serialized log-line bytes (`build_log_line`) | `utils/` |
-| `policy/` | core | pure FIFO/EDF request-key calculation (`get_request_key`) and ordering (`is_request_before`) | nothing |
+| `policy/` | core | pure FIFO/EDF request-key calculation (`get_request_key`), ordering (`is_request_before`), and the read-only dongle readiness predicate (`is_dongle_ready`) | `heap/` request head API |
 | `heap/` | core | caller-owned array storage for the hand-written binary min-heap (`init_heap`, `free_heap`, then push/peek/pop) | `policy/` ordering contract |
 | `dongle/` | orchestration | builds a coder's FIFO/EDF request from synchronized ticket allocation and the pure request-key policy (`build_request`) | `state/`, `policy/` |
 | `main.c` | interfaces | the entry point only: wires the modules together | every module |

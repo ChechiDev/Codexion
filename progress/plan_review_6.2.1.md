@@ -1,0 +1,19 @@
+# Plan review — subtask 6.2.1
+
+**Verdict:** PLAN_APPROVED
+
+## Plan analysis
+
+- Layers: `is_dongle_ready` is a deterministic, read-only policy predicate. The caller supplies elapsed time and holds the dongle mutex; the function needs no platform calls or adapter dependency.
+- Scope: one function in `coders/src/policy/is_dongle_ready.c`, with its public declaration and build registration, matches the three declared files. Dependency 6.1.2 is done and phase 06 is approved.
+- Test strategy: seven black-box C tests use the public dongle and heap APIs, with one test per acceptance criterion. They cover head selection, availability, cooldown boundaries, overflow bounds, unchanged state and invalid inputs. The new symbol is absent, so this is a red plan oracle; no tests were run in this sandbox. The supplied outside-sandbox `make check` exited 0 before this oracle was written.
+
+## Acceptance tests (traceability)
+
+- AC1 → `test_ac1_never_released` (red)
+- AC2 → `test_ac2_head_only` (red)
+- AC3 → `test_ac3_unavailable` (red)
+- AC4 → `test_ac4_cooldown_boundary` (red)
+- AC5 → `test_ac5_large_times` (red)
+- AC6 → `test_ac6_read_only` (red)
+- AC7 → `test_ac7_invalid_input` (red)

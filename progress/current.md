@@ -1,5 +1,7 @@
 # Current session
 
+- **Subtask 6.2.1:** code review is `APPROVED`; close documentation and tracking are prepared. The harness next runs the close check and commits 6.2.1. After that, proceed to 6.2.2 Get deadline.
+
 - **State (2026-11-03):** issue #14 done (ISS-14.1, PR #17 merged). Task 4.3
   done: 4.3.1 Push request, 4.3.2 Get head request, 4.3.3 Pop request; PR #18
   squash-merged into `main` (`f43299e`). **Phase 04 Priority queue is done
@@ -73,7 +75,7 @@ by hand in the PR body). Applies from the task 6.x PRs on.
 
 ## Next step
 
-Harness: run the close check and commit subtask 6.1.2, finishing task 6.1.
+Harness: run the close check and commit subtask 6.2.1.
 
 Note: `make check` does not run ThreadSanitizer or valgrind; CI does. PR #12
 failed CI on `make tsan` (lock-order inversion created by the unit test

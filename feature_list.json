@@ -2665,12 +2665,12 @@
       "phase": "06",
       "layer": "adapters",
       "goal": "decide whether one dongle can be taken by a coder (head of its heap, available, cooldown elapsed on the simulation clock) and build the absolute deadline that bounds a timed wait",
-      "status": "pending",
+      "status": "in_progress",
       "subtasks": [
         {
           "id": "6.2.1",
           "title": "Is dongle ready",
-          "status": "pending",
+          "status": "done",
           "layer": "core",
           "depends": [
             "6.1.2"
