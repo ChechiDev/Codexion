@@ -417,6 +417,15 @@ Entry template (filled in at close):
 - Updated `progress/current.md` and wrote the task 5.1 PR narrative for the harness.
 - **Commit:** feat(init): map coder seats to ordered dongle pairs [5.1.1]
 
+## 2026-11-03 — Subtask 6.1.1: Take ticket
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-06-dongle-arbitration/6.1.1-take-ticket.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/state/take_ticket.c`, `coders/main.h`, and `coders/Makefile` add synchronized allocation of bounded simulation-wide request tickets; `docs/architecture.md` records the counter in the state adapter.
+- **Acceptance:** `tests/acceptance/test_6.1.1.c` — AC1–AC5 cover sequential tickets, bounds and exhaustion, concurrent uniqueness and order, and NULL inputs.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_6.1.1.md`); implementation notes report clean TSan and Valgrind runs.
+- **Documentation:** docs/reference/6.1.1-take-ticket.md
+- **Commit:** feat(state): allocate request tickets [6.1.1]
+
 
 ## 2026-11-02 — Subtask 5.2.2: Destroy dongle
 - **Layer:** adapters

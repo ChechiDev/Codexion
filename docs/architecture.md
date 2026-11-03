@@ -25,7 +25,7 @@ discipline, not by includes: a core function never calls `write`, `printf`,
 | `utils/` | core | generic helpers with no domain knowledge (`is_space`, `is_digit`, `trim_slice`) | nothing |
 | `parsing/` | core | turning `argv` text into a validated `t_config` | `utils/` |
 | `cli/` | interfaces | every user-facing message: the usage text (`print_usage`) and the argument errors | `parsing/` (minimums) |
-| `state/` | adapters | shared simulation state guarded by its mutexes | nothing |
+| `state/` | adapters | shared simulation state guarded by its mutexes, including the synchronized request-ticket counter | nothing |
 | `init/` | adapters | lifecycle setup for simulation state, including coder mutexes, dongle mutexes, condition variables, and request heaps; `init_simulation` builds the state in dependency order and uses `free_sim` for rollback | core heap and seat-mapping APIs; cleanup lifecycle APIs |
 | `cleanup/` | adapters | lifecycle teardown for simulation resources, including coder mutexes and arrays, dongle arrays and their heaps, condition variables, and mutexes; `free_sim` releases the full simulation in reverse initialisation order | core heap API |
 | `log/` | core | pure construction of serialized log-line bytes (`build_log_line`) | `utils/` |

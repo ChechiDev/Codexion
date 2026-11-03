@@ -1,0 +1,10 @@
+8fcd04cba4d40ea6440651f54ddd00f9eb27c236e84773099af058b650be6f8e  docs/plan/phase-06-dongle-arbitration.md
+f29bd40c5616254849bd87937e826b7874c59504995881e5605c4f2e905787f8  docs/plan/phase-06-dongle-arbitration/6.1.1-take-ticket.md
+56d2e002197b319335ee70f38664118dc6189e826c218eddc2a0685b14b897e5  docs/plan/phase-06-dongle-arbitration/6.1.2-build-request.md
+ac3e9fd71b33f0bd98e02b3c3966ff830c724018d0ed36e3cb8ca62e08bbae3b  docs/plan/phase-06-dongle-arbitration/6.2.1-is-dongle-ready.md
+9c605d14827d52ddee3f0991085c9559e4165246810cd3117e2f361025535a7f  docs/plan/phase-06-dongle-arbitration/6.2.2-get-deadline.md
+04308f644613ac568f7addf90f88f5989cdb50a3c361591c84ff2d87653ca9ee  docs/plan/phase-06-dongle-arbitration/6.3.1-wake-dongles.md
+567712e7a7f90c12356f5119e85b2247ea4c4c20d7e79ddc311b1fb71c208ab1  docs/plan/phase-06-dongle-arbitration/6.3.2-wait-for-dongles.md
+2cb80ae2c17afcc34f52deb61c050840d68ef5d3baf393469308f1ed9c7c88f7  docs/plan/phase-06-dongle-arbitration/6.3.3-release-dongles.md
+34125b1e9538121208119842a8e27ea32c6b5436609e58cc0b8d4f40fdb7e1c2  docs/plan/phase-06-dongle-arbitration/6.3.4-take-dongles.md
+bfa47d735e2b25fbce1abc81a3cad41edff59c71598da96fe0ac78ba55bfe33f  docs/plan/phase-06-dongle-arbitration/6.3.5-take-single-dongle.md

@@ -85,8 +85,12 @@
       "title": "Dongle arbitration",
       "goal": "atomic two-dongle acquisition (a coder takes both only when it is the head of both dongle heaps and both are available with cooldown elapsed, mutexes locked lower-index first), release with cooldown, pthread_cond_timedwait waits with no busy-wait and wake-all on stop, with arbiter-level tests (head-of-both rule, fifo/edf ordering, cooldown, stop wake-up) as evidence for the PLAN.md progress argument",
       "file": "docs/plan/phase-06-dongle-arbitration.md",
-      "status": "pending",
-      "tasks": []
+      "status": "in_progress",
+      "tasks": [
+        "6.1",
+        "6.2",
+        "6.3"
+      ]
     },
     {
       "id": "07",
@@ -2550,6 +2554,463 @@
             }
           ],
           "spec": "docs/plan/phase-05-simulation-state/5.4.2-init-sim.md"
+        }
+      ]
+    },
+    {
+      "id": "6.1",
+      "title": "Requests",
+      "phase": "06",
+      "layer": "adapters",
+      "goal": "hand out one simulation-wide, strictly increasing ticket per request under its mutex, and build a coder's `(key, ticket, coder)` request for the configured policy before any dongle is locked",
+      "status": "in_progress",
+      "subtasks": [
+        {
+          "id": "6.1.1",
+          "title": "Take ticket",
+          "status": "done",
+          "layer": "adapters",
+          "depends": [],
+          "files": [
+            "coders/src/state/take_ticket.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "on a simulation built with `init_simulation` (config `4 800 200 200 200 3 50 fifo`), three calls return 0 and write 0, 1, 2 in that order; afterwards `next_ticket == 3` and `ticket_mutex` is unlocked (`pthread_mutex_trylock` succeeds, then unlocked). The test ends with `free_sim`, which returns 0",
+              "test": "tests/acceptance/test_6.1.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "with `next_ticket` set by the test to 41, the call returns 0, writes 41 and leaves `next_ticket == 42`; with `LONG_MAX - 1` it writes `LONG_MAX - 1` and leaves `next_ticket == LONG_MAX`",
+              "test": "tests/acceptance/test_6.1.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "exhaustion: with `next_ticket == LONG_MAX` the call returns -1, leaves the output unchanged (sentinel-prefilled) and `next_ticket == LONG_MAX`, and `ticket_mutex` is unlocked; the same with a corrupted `next_ticket` of -1",
+              "test": "tests/acceptance/test_6.1.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "concurrency: 8 threads each take 1000 tickets on the same simulation; every call returns 0, the 8000 tickets are pairwise distinct and are exactly `0 .. 7999`, each thread's own tickets are strictly increasing, and `next_ticket == 8000` at the end",
+              "test": "tests/acceptance/test_6.1.1.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "`take_ticket(NULL, &out)` returns -1 with the output unchanged; `take_ticket(&sim, NULL)` returns -1 with `next_ticket` unchanged; no crash",
+              "test": "tests/acceptance/test_6.1.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-06-dongle-arbitration/6.1.1-take-ticket.md"
+        },
+        {
+          "id": "6.1.2",
+          "title": "Build request",
+          "status": "pending",
+          "layer": "orchestration",
+          "depends": [
+            "6.1.1"
+          ],
+          "files": [
+            "coders/src/dongle/build_request.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "fifo: on a simulation built with `init_simulation` (config `4 800 200 200 200 3 50 fifo`), `build_request(&sim.coders[0], &req)` returns 0 with `ticket == 0`, `key == 0`, `coder == 1`; then `build_request(&sim.coders[2], &req)` returns 0 with `ticket == 1`, `key == 1`, `coder == 3`; `next_ticket == 2`",
+              "test": "tests/acceptance/test_6.1.2.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "edf: with config `4 800 200 200 200 3 50 edf`, coder 2 (`coders[1]`, `last_compile_start == 0`) gets `key == 800`, `ticket == 0`, `coder == 2`; after the test sets `coders[3].last_compile_start = 1500`, coder 4 gets `key == 2300`, `ticket == 1`, `coder == 4`",
+              "test": "tests/acceptance/test_6.1.2.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "after the calls of AC1 and AC2 the coder mutexes and `ticket_mutex` are unlocked (`pthread_mutex_trylock` succeeds, then unlocked), every dongle heap still has `size == 0` (nothing is queued) and `last_compile_start` / `compile_count` are unchanged",
+              "test": "tests/acceptance/test_6.1.2.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "invalid edf key: with `last_compile_start` set to -5, and to `LONG_MAX - 100` (key would overflow), the call returns -1 and leaves the output byte-for-byte unchanged (sentinel-prefilled, `memcmp`); the coder mutex is unlocked afterwards",
+              "test": "tests/acceptance/test_6.1.2.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "tickets exhausted: with `next_ticket == LONG_MAX` the call returns -1 with the output unchanged (fifo and edf)",
+              "test": "tests/acceptance/test_6.1.2.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "concurrency: 4 threads, one per coder, each build 500 requests for their own coder (fifo); every call returns 0, the 2000 tickets are pairwise distinct, each request's `coder` is its thread's coder id and `key == ticket`",
+              "test": "tests/acceptance/test_6.1.2.c"
+            },
+            {
+              "id": "AC7",
+              "criterion": "`build_request(NULL, &req)`, `build_request(&coder, NULL)` and a coder whose `sim` is NULL return -1 with no crash, the output unchanged",
+              "test": "tests/acceptance/test_6.1.2.c"
+            }
+          ],
+          "spec": "docs/plan/phase-06-dongle-arbitration/6.1.2-build-request.md"
+        }
+      ]
+    },
+    {
+      "id": "6.2",
+      "title": "Readiness",
+      "phase": "06",
+      "layer": "adapters",
+      "goal": "decide whether one dongle can be taken by a coder (head of its heap, available, cooldown elapsed on the simulation clock) and build the absolute deadline that bounds a timed wait",
+      "status": "pending",
+      "subtasks": [
+        {
+          "id": "6.2.1",
+          "title": "Is dongle ready",
+          "status": "pending",
+          "layer": "core",
+          "depends": [
+            "6.1.2"
+          ],
+          "files": [
+            "coders/src/policy/is_dongle_ready.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "on a dongle built with `init_dongle` (`available == 1`, `released_at == -1`) holding one request of coder 3, `is_dongle_ready(&d, 3, 0, 50)` returns 1 (never released: no cooldown before the first take)",
+              "test": "tests/acceptance/test_6.2.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "head of the heap only: with requests of coder 3 (key 10) and coder 1 (key 20) queued, coder 3 gets 1 and coder 1 gets 0; a coder with no request (coder 2) gets 0; an empty heap gives 0 for any coder",
+              "test": "tests/acceptance/test_6.2.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "with the head being the asking coder but `available == 0`, it returns 0",
+              "test": "tests/acceptance/test_6.2.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "cooldown, `released_at == 1000`, `cooldown == 50`: `now` 1049 gives 0, 1050 gives 1, 5000 gives 1; with `cooldown == 0`, `now == 1000` gives 1; `now == 999` (before the release) gives 0",
+              "test": "tests/acceptance/test_6.2.1.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "no overflow at the bounds: `released_at == 0`, `now == LONG_MAX`, `cooldown == INT_MAX` gives 1; `released_at == LONG_MAX - 10`, `now == LONG_MAX`, `cooldown == INT_MAX` gives 0",
+              "test": "tests/acceptance/test_6.2.1.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "read-only: after every call above, the dongle's `available`, `released_at`, `heap.size`, `heap.capacity` and the bytes of `heap.items[0 .. size)` are unchanged",
+              "test": "tests/acceptance/test_6.2.1.c"
+            },
+            {
+              "id": "AC7",
+              "criterion": "invalid input returns 0 with no crash: NULL dongle; `cooldown` -1; `now` -1; `released_at` -7 (neither \"never released\" nor a valid time); `coder` 0 and -1",
+              "test": "tests/acceptance/test_6.2.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-06-dongle-arbitration/6.2.1-is-dongle-ready.md"
+        },
+        {
+          "id": "6.2.2",
+          "title": "Get deadline",
+          "status": "pending",
+          "layer": "adapters",
+          "depends": [
+            "6.2.1"
+          ],
+          "files": [
+            "coders/src/time/get_deadline.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "`get_deadline(0, &ts)` returns 0 and `ts` lies between two `gettimeofday` readings taken by the test just before and just after the call (compared at microsecond precision: `ts.tv_nsec` is a multiple of 1000)",
+              "test": "tests/acceptance/test_6.2.2.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "`get_deadline(1, &ts)`, `(250, &ts)` and `(1500, &ts)` return 0 and `ts` lies between `before + ms` and `after + ms` (same readings as AC1, the 1500 case crossing at least one whole second)",
+              "test": "tests/acceptance/test_6.2.2.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "normalised output: for every call of AC1, AC2 and 200 calls with `ms` from 0 to 1999, `0 <= ts.tv_nsec < 1000000000` and `ts.tv_sec >= 0`",
+              "test": "tests/acceptance/test_6.2.2.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "usable by `pthread_cond_timedwait`: with a mutex and cond initialised by the test and nobody signalling, `pthread_cond_timedwait` on `get_deadline(20, &ts)` returns `ETIMEDOUT`, and the elapsed time measured with `gettimeofday` is at least 20 ms and below 1000 ms (hang guard)",
+              "test": "tests/acceptance/test_6.2.2.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "invalid input returns -1 and leaves the output byte-for-byte unchanged (sentinel-prefilled): `ms` -1 and `LONG_MIN`; `get_deadline(10, NULL)` returns -1 with no crash",
+              "test": "tests/acceptance/test_6.2.2.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "large but representable deadline: `get_deadline(LONG_MAX, &ts)` returns 0 with `ts.tv_nsec` normalised and `ts.tv_sec` between `before_sec + LONG_MAX / 1000` and `after_sec + LONG_MAX / 1000 + 1` (readings as in AC1); no signed overflow (on the 64-bit target `LONG_MAX / 1000` plus the current epoch fits in `tv_sec`)",
+              "test": "tests/acceptance/test_6.2.2.c"
+            }
+          ],
+          "spec": "docs/plan/phase-06-dongle-arbitration/6.2.2-get-deadline.md"
+        }
+      ]
+    },
+    {
+      "id": "6.3",
+      "title": "Acquisition and release",
+      "phase": "06",
+      "layer": "orchestration",
+      "goal": "take both dongles at once (same request in both heaps, lower index locked first, pop both in one critical section) or the single dongle when there is one coder, wait with `pthread_cond_timedwait` and no busy-wait, release with cooldown and wake-up, wake every waiter on stop, and end the run cleanly on any failure after a request is queued",
+      "status": "pending",
+      "subtasks": [
+        {
+          "id": "6.3.1",
+          "title": "Wake dongles",
+          "status": "pending",
+          "layer": "orchestration",
+          "depends": [
+            "6.2.2"
+          ],
+          "files": [
+            "coders/src/dongle/wake_dongles.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "stop wake-up: on a simulation built with `init_simulation` (4 coders), 4 test threads each lock the mutex of dongle `i`, report ready through a test handshake, then loop `while (!is_stopped(&sim)) pthread_cond_wait(&dongle.cond, &dongle.mutex)` and unlock; after every thread is ready the test calls `set_stopped(&sim)` then `wake_dongles(&sim)`, which returns 0, and every thread returns and is joined (hang guard, e.g. `alarm`, fails the test instead of hanging)",
+              "test": "tests/acceptance/test_6.3.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "several waiters on one dongle: 3 threads waiting as in AC1 on dongle 0 are all woken and joined",
+              "test": "tests/acceptance/test_6.3.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "no lost wake-up: 200 rounds, each with fresh state (`init_simulation` / `free_sim`) and one waiter as in AC1 whose ready signal is sent while it still holds the dongle mutex, followed at once by `set_stopped` + `wake_dongles`; every round ends with the waiter joined",
+              "test": "tests/acceptance/test_6.3.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "side effects: after `wake_dongles` every dongle mutex is unlocked (`pthread_mutex_trylock` succeeds, then unlocked), `stopped` is unchanged by the call (it does not set it: called on a running simulation it returns 0 and `is_stopped` stays 0), and every dongle's `available`, `released_at` and `heap.size` are unchanged",
+              "test": "tests/acceptance/test_6.3.1.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "one coder: with `number_of_coders` 1, a waiter on dongle 0 is woken as in AC1",
+              "test": "tests/acceptance/test_6.3.1.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "`wake_dongles(NULL)` returns -1 with no crash; a `t_sim` whose `dongles` is NULL returns -1",
+              "test": "tests/acceptance/test_6.3.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-06-dongle-arbitration/6.3.1-wake-dongles.md"
+        },
+        {
+          "id": "6.3.2",
+          "title": "Wait for dongles",
+          "status": "pending",
+          "layer": "orchestration",
+          "depends": [
+            "6.2.2",
+            "6.3.1"
+          ],
+          "files": [
+            "coders/src/dongle/wait_for_dongles.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "timed slice: on a simulation built with `init_simulation` (4 coders), a thread holding the mutexes of dongles 0 and 1 (coder 1's pair, locked lower index first) calls `wait_for_dongles(&sim.coders[0])` with nobody signalling; it returns 0 after at least 1 ms and below 1000 ms (hang guard), and on return it holds both mutexes again (a helper thread's `pthread_mutex_trylock` on each returns `EBUSY`); the test then unlocks both",
+              "test": "tests/acceptance/test_6.3.2.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "the second mutex is free during the wait: a helper thread blocked in `pthread_mutex_lock` on dongle 1's mutex acquires it while the waiter of AC1 is inside `wait_for_dongles`, sets a flag, holds it for 20 ms and unlocks; the waiter returns 0 only after that (elapsed at least 20 ms), with the flag set and both mutexes held",
+              "test": "tests/acceptance/test_6.3.2.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "repeated use: 300 consecutive calls by the same holder each return 0 with both mutexes held, and valgrind reports no leak",
+              "test": "tests/acceptance/test_6.3.2.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "invalid input returns -1 without locking or unlocking anything: NULL coder; a coder whose `sim` is NULL; a coder with `first_dongle == second_dongle` (one coder: the single dongle is waited for by 6.3.5)",
+              "test": "tests/acceptance/test_6.3.2.c"
+            }
+          ],
+          "spec": "docs/plan/phase-06-dongle-arbitration/6.3.2-wait-for-dongles.md"
+        },
+        {
+          "id": "6.3.3",
+          "title": "Release dongles",
+          "status": "pending",
+          "layer": "orchestration",
+          "depends": [
+            "6.2.1",
+            "6.3.2"
+          ],
+          "files": [
+            "coders/src/dongle/release_dongles.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "on a simulation built with `init_simulation` (4 coders, cooldown 50) with `start_ms` set by the test to `get_time_ms()` and dongles 0 and 1 marked taken by the test (`available = 0`, under their mutexes), `release_dongles(&sim.coders[0])` returns 0; both dongles have `available == 1` and `released_at` between two `get_elapsed_ms(sim.start_ms)` readings taken just before and just after the call; dongles 2 and 3 are unchanged; every dongle mutex is unlocked afterwards (`pthread_mutex_trylock` succeeds, then unlocked)",
+              "test": "tests/acceptance/test_6.3.3.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "wake-up on both conds: one test thread waits on dongle 0's cond and another on dongle 1's cond, each in a `while (available == 0) pthread_cond_wait(...)` loop under its mutex; after both are ready (handshake), `release_dongles(&sim.coders[0])` makes both return and be joined (hang guard, e.g. `alarm`)",
+              "test": "tests/acceptance/test_6.3.3.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "queued requests are kept: with one request of coder 2 queued in dongle 1's heap before the call, the heap still has `size == 1` with the same request afterwards; together with `is_dongle_ready` (6.2.1), the coder at the head is not ready at `released_at + 49` and is ready at `released_at + 50` (cooldown 50)",
+              "test": "tests/acceptance/test_6.3.3.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "one coder: with `number_of_coders` 1 (`first_dongle == second_dongle == 0`) and dongle 0 marked taken, the call returns 0, sets `available == 1` and `released_at` as in AC1 once, wakes a waiter on dongle 0's cond, and leaves the mutex unlocked (it is locked only once, no self-deadlock)",
+              "test": "tests/acceptance/test_6.3.3.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "invalid input returns -1 and changes no dongle field: NULL coder; a coder whose `sim` is NULL; a simulation whose `dongles` is NULL",
+              "test": "tests/acceptance/test_6.3.3.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "release time under contention: with dongles 0 and 1 marked taken (as in AC1), the test locks dongle 1's mutex, starts `release_dongles(&sim.coders[0])` in a thread, waits until that thread is blocked on the lock (it holds dongle 0's mutex: a helper's `pthread_mutex_trylock` on it returns `EBUSY`), sleeps 30 ms, records `t = get_elapsed_ms(sim.start_ms)` and unlocks; the call returns 0 and both dongles have `released_at >= t` (the cooldown starts at the actual release, not before the lock wait)",
+              "test": "tests/acceptance/test_6.3.3.c"
+            }
+          ],
+          "spec": "docs/plan/phase-06-dongle-arbitration/6.3.3-release-dongles.md"
+        },
+        {
+          "id": "6.3.4",
+          "title": "Take dongles",
+          "status": "pending",
+          "layer": "orchestration",
+          "depends": [
+            "6.1.2",
+            "6.2.1",
+            "6.3.1",
+            "6.3.2",
+            "6.3.3"
+          ],
+          "files": [
+            "coders/src/dongle/take_dongles.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "free dongles: on a simulation built with `init_simulation` (config `4 800 200 200 200 3 50 fifo`, `start_ms` set by the test to `get_time_ms()`), `take_dongles(&sim.coders[0], &taken)` returns 0 with `taken == 1`; dongles 0 and 1 have `available == 0` and empty heaps; dongles 2 and 3 are unchanged; every dongle mutex is unlocked afterwards (`pthread_mutex_trylock` succeeds, then unlocked); `next_ticket == 1`",
+              "test": "tests/acceptance/test_6.3.4.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "head-of-both rule (fifo): coder 1 holds dongles 0 and 1 (AC1). Coder 2 (dongles 1, 2) calls `take_dongles` in a thread and blocks; once its request is in the heaps of dongles 1 and 2 (observed by the test under those mutexes), coder 3 (dongles 2, 3) calls `take_dongles` in another thread. Although dongles 2 and 3 are available, coder 3 does not take them while coder 2's earlier request heads dongle 2's heap: after coder 3's request is queued behind it, neither thread has returned. Then `release_dongles(&sim.coders[0])`: coder 2 returns first with `taken == 1`; coder 3 returns only after `release_dongles(&sim.coders[1])` (take order recorded by the threads: 2 then 3)",
+              "test": "tests/acceptance/test_6.3.4.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "fifo vs edf on one contended dongle: coders 2 (dongles 1, 2) and 3 (dongles 2, 3) share dongle 2, which the test marks taken (`available = 0` under its mutex); dongles 1 and 3 are free. Coder 2 calls `take_dongles` first with `last_compile_start` 300 (edf deadline 1100), then, once its request is queued, coder 3 with `last_compile_start` 0 (edf deadline 800). When dongle 2's heap holds both requests, the test frees it (under its mutex: `available = 1`, `released_at = -1`, broadcast). Under `fifo` coder 2 returns first with `taken == 1` (earlier ticket); under `edf` coder 3 returns first (earlier deadline) although it arrived second. The other one stays blocked until the winner calls `release_dongles`, then takes",
+              "test": "tests/acceptance/test_6.3.4.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "cooldown (cooldown 50): coder 1 takes, then `release_dongles(&sim.coders[0])`; coder 2 (sharing dongle 1) then calls `take_dongles`, which returns `taken == 1` no earlier than `released_at + 50` on the simulation clock (measured with `get_elapsed_ms`) and below a 1000 ms hang guard",
+              "test": "tests/acceptance/test_6.3.4.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "stop while waiting: coder 2 blocks as in AC2; the test calls `set_stopped` then `wake_dongles`; the thread returns 0 with `taken == 0`, holds no dongle (every dongle mutex is unlocked, dongle 2 still `available == 1`), within a 1000 ms hang guard. Called on an already stopped simulation, `take_dongles` returns 0 with `taken == 0` without taking anything",
+              "test": "tests/acceptance/test_6.3.4.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "progress (evidence, not proof): 5 coders (fifo, then edf, cooldown 1), one thread per coder loops 50 times `take_dongles` → holds 1 ms → `release_dongles`; no two neighbours ever hold the same dongle at once (checked with per-dongle owner slots set and cleared by the threads), every thread completes its 50 takes, and the run ends within a 10 s hang guard",
+              "test": "tests/acceptance/test_6.3.4.c"
+            },
+            {
+              "id": "AC7",
+              "criterion": "invalid input returns -1 with `taken` unchanged, no lock held and nothing queued: NULL coder; NULL `taken`; a coder whose `sim` is NULL; one coder (`first_dongle == second_dongle`, served by 6.3.5)",
+              "test": "tests/acceptance/test_6.3.4.c"
+            }
+          ],
+          "spec": "docs/plan/phase-06-dongle-arbitration/6.3.4-take-dongles.md"
+        },
+        {
+          "id": "6.3.5",
+          "title": "Take single dongle",
+          "status": "pending",
+          "layer": "orchestration",
+          "depends": [
+            "6.1.2",
+            "6.2.1",
+            "6.2.2",
+            "6.3.1",
+            "6.3.3",
+            "6.3.4"
+          ],
+          "files": [
+            "coders/src/dongle/take_single_dongle.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "one coder: on a simulation built with `init_simulation` (config `1 800 200 200 200 3 50 fifo`, `start_ms` set by the test to `get_time_ms()`), `take_single_dongle(&sim.coders[0], &taken)` returns 0 with `taken == 1`; dongle 0 has `available == 0` and an empty heap; its mutex is unlocked afterwards (`pthread_mutex_trylock` succeeds, then unlocked); `next_ticket == 1`",
+              "test": "tests/acceptance/test_6.3.5.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "cooldown (cooldown 50), fresh simulation as in AC1: `take_single_dongle` returns `taken == 1`, then `release_dongles(&sim.coders[0])` (6.3.3), then `take_single_dongle` again returns `taken == 1` no earlier than `released_at + 50` on the simulation clock (`get_elapsed_ms`) and below a 1000 ms hang guard; the same with `edf`",
+              "test": "tests/acceptance/test_6.3.5.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "waits while taken, exactly one request: on a fresh simulation as in AC1 with dongle 0 marked taken by the test (`available = 0` under its mutex), `take_single_dongle` runs in a thread; once the test observes under the mutex that the request is queued (handshake), the heap holds exactly one request (`size == 1`, `coder == 1`) and `next_ticket == 1`, and the thread has not returned; after the test frees the dongle (`available = 1`, `released_at = -1`, broadcast, under its mutex) the thread returns 0 with `taken == 1` and the heap is empty",
+              "test": "tests/acceptance/test_6.3.5.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "stop: on a fresh simulation set up as in AC3 (dongle taken, request queued, thread blocked), the test calls `set_stopped` + `wake_dongles`; the thread returns 0 with `taken == 0` within a 1000 ms hang guard, the mutex is unlocked and dongle 0 still `available == 0`. On another fresh, already stopped simulation the call returns 0 with `taken == 0` without taking the dongle",
+              "test": "tests/acceptance/test_6.3.5.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "invalid input returns -1 with `taken` unchanged, no lock held and nothing queued: NULL coder; NULL `taken`; a coder whose `sim` is NULL; a coder of a 4-coder simulation (`first_dongle != second_dongle`, served by 6.3.4)",
+              "test": "tests/acceptance/test_6.3.5.c"
+            }
+          ],
+          "spec": "docs/plan/phase-06-dongle-arbitration/6.3.5-take-single-dongle.md"
         }
       ]
     }
