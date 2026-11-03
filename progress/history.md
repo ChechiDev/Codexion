@@ -517,3 +517,12 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_6.2.1.md`); implementation notes report clean TSan and Valgrind runs.
 - **Documentation:** docs/reference/6.2.1-is-dongle-ready.md
 - **Commit:** feat(policy): add dongle readiness predicate [6.2.1]
+
+## 2026-11-03 — Subtask 6.2.2: Get deadline
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-06-dongle-arbitration/6.2.2-get-deadline.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/time/get_deadline.c`, `coders/main.h`, and `coders/Makefile` add absolute deadline calculation for condition waits; `docs/architecture.md` maps elapsed clock and deadline helpers in `time/`.
+- **Acceptance:** `tests/acceptance/test_6.2.2.c` — AC1–AC6 cover zero and positive delays, normalization, timed-wait compatibility, invalid inputs, and a large representable deadline.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_6.2.2.md`); implementation notes report clean TSan and Valgrind runs.
+- **Documentation:** docs/reference/6.2.2-get-deadline.md; task narrative: progress/pr_6.2.md
+- **Commit:** feat(time): calculate condition deadline [6.2.2]

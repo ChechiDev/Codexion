@@ -2665,7 +2665,7 @@
       "phase": "06",
       "layer": "adapters",
       "goal": "decide whether one dongle can be taken by a coder (head of its heap, available, cooldown elapsed on the simulation clock) and build the absolute deadline that bounds a timed wait",
-      "status": "in_progress",
+      "status": "done",
       "subtasks": [
         {
           "id": "6.2.1",
@@ -2722,7 +2722,7 @@
         {
           "id": "6.2.2",
           "title": "Get deadline",
-          "status": "pending",
+          "status": "done",
           "layer": "adapters",
           "depends": [
             "6.2.1"

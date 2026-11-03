@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/11/03 21:15:00 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/11/03 22:03:26 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,7 @@ int		parse_config(char **argv, t_config *config, int *invalid);
 
 long	get_time_ms(void);
 long	get_elapsed_ms(long start_ms);
+int		get_deadline(long ms, struct timespec *out);
 int		sleep_ms(t_sim *sim, long ms);
 
 /* ---- State ---- */

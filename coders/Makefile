@@ -6,7 +6,7 @@
 #    By: sperez-l@student.42barcelona.com           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/10/26 16:47:34 by sperez-l          #+#    #+#              #
-#    Updated: 2026/11/03 21:15:00 by sperez-l         ###   ########.fr        #
+#    Updated: 2026/11/03 22:03:26 by sperez-l         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,6 +48,7 @@ SRC = main.c \
 	src/state/is_stopped.c \
 	src/state/set_stopped.c \
 	src/state/take_ticket.c \
+	src/time/get_deadline.c \
 	src/time/get_elapsed_ms.c \
 	src/time/get_time_ms.c \
 	src/time/sleep_ms.c \
