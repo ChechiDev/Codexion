@@ -463,3 +463,12 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.3.3.md`); implementation notes report clean TSan, memcheck, and acceptance Valgrind runs.
 - **Documentation:** docs/reference/5.3.3-free-coders.md
 - **Commit:** feat(cleanup): release coder array [5.3.3]
+
+## 2026-11-03 — Subtask 5.3.4: Init coders
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-05-simulation-state/5.3.4-init-coders.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/init/init_coders.c`, `coders/main.h`, and `coders/Makefile` add overflow-checked coder-array construction, ordered per-coder initialization, and prefix rollback through `free_coders`.
+- **Acceptance:** `tests/acceptance/test_5.3.4.c` — AC1–AC4 cover initial state and ring mapping, one and large arrays, independent mutexes, cleanup, and invalid-input output preservation.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.3.4.md`); implementation notes record clean TSan and Valgrind runs, including the acceptance binary.
+- **Documentation:** docs/reference/5.3.4-init-coders.md; task narrative: progress/pr_5.3.md
+- **Commit:** feat(init): initialize coder array [5.3.4]
