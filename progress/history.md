@@ -472,3 +472,21 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.3.4.md`); implementation notes record clean TSan and Valgrind runs, including the acceptance binary.
 - **Documentation:** docs/reference/5.3.4-init-coders.md; task narrative: progress/pr_5.3.md
 - **Commit:** feat(init): initialize coder array [5.3.4]
+
+## 2026-11-03 — Subtask 5.4.1: Free sim
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-05-simulation-state/5.4.1-free-sim.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/cleanup/free_sim.c`, `coders/main.h`, and `coders/Makefile` add full simulation teardown; `docs/architecture.md` records the cleanup contract.
+- **Acceptance:** `tests/acceptance/test_5.4.1.c` — AC1–AC6 cover full and partial resources, retained state, reuse, one coder, and NULL input.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.4.1.md`); implementation notes report clean TSan, memcheck, and acceptance Valgrind runs.
+- **Documentation:** docs/reference/5.4.1-free-sim.md
+- **Commit:** feat(cleanup): release simulation resources [5.4.1]
+
+## 2026-11-03 — Subtask 5.4.2: Init simulation
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-05-simulation-state/5.4.2-init-sim.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/init/init_simulation.c`, `coders/main.h`, and `coders/Makefile` build the complete simulation state in dependency order; failures use reverse rollback through `free_sim`. `docs/architecture.md` records the initialization contract.
+- **Acceptance:** `tests/acceptance/test_5.4.2.c` — AC1–AC6 cover complete state, boundary counts, state API integration, sentinel storage, invalid input, and reuse.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.4.2.md`); implementation notes report clean TSan and memcheck. The review record notes no evidence for the separate acceptance-binary Valgrind run.
+- **Documentation:** docs/reference/5.4.2-init-sim.md; task narrative: progress/pr_5.4.md
+- **Commit:** feat(init): initialize simulation state [5.4.2]

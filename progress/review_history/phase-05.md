@@ -110,3 +110,57 @@
 - 5.3.4: ok — array construction with prefix rollback.
 - 5.4.1: ok — whole-simulation teardown, including partial arrays.
 - 5.4.2: ok — whole-simulation construction with reverse rollback.
+
+## Round 5: phase gate, CHANGES_REQUESTED (2026-11-03 16:34)
+
+### Phase review — phase 05
+
+**Verdict:** CHANGES_REQUESTED
+
+#### Analysis
+- Coverage / scope: tasks 5.1–5.4 and all 11 specs cover seat mapping, dongle and coder construction and teardown, and whole-simulation rollback. Each subtask owns one public function and declares its source file plus the living header and Makefile. Shared files are sequenced by explicit dependencies.
+- Dependencies / acceptance: the graph is acyclic and follows the core-to-adapter order. Every spec has observable public-API criteria and one distinct `tests/acceptance/test_<id>.c` path. No baseline is claimed; later phases remain unbroken.
+- Gate state: the supplied outside-sandbox `make check` exited 2. `tests/acceptance/test_3.4.5.c:13` defines `static init_sim`, conflicting with the current declaration in `coders/main.h:168`. The harness also reports `coders/src/init/init_sim.c` outside 5.4.2's declared files and changed seals for 5.4.1 and 5.4.2. The revised 5.4.2 spec names `init_simulation`, but the current header, source, Makefile and `tests/acceptance/test_5.4.2.c` still name `init_sim`. A red check cannot receive approval under the reviewer contract.
+
+#### Per subtask
+- 5.1.1: ok — pure, overflow-safe ordered seat mapping.
+- 5.2.1: ok — one dongle with reverse rollback; depends on 5.1.1.
+- 5.2.2: ok — teardown of one fully initialised dongle.
+- 5.2.3: ok — reverse teardown of a successful prefix.
+- 5.2.4: ok — array construction with prefix rollback.
+- 5.3.1: ok — one coder and its mutex; depends on the completed dongle branch.
+- 5.3.2: ok — teardown of one fully initialised coder.
+- 5.3.3: ok — reverse teardown of a successful prefix.
+- 5.3.4: ok — array construction with prefix rollback.
+- 5.4.1: ok — whole-simulation teardown, including partial arrays; its changed description must be resealed by this gate once the check is healthy.
+- 5.4.2: the revised spec is coherent, but its public name and declared source disagree with the current code and acceptance oracle; the check fails.
+
+#### Requested changes
+1. Complete the `init_simulation` rename in the declared source, `coders/main.h`, and `coders/Makefile`; remove the stale `coders/src/init/init_sim.c`. This must eliminate the existing phase 03 acceptance-test declaration conflict and the source-scope failure.
+2. Update and reseal `tests/acceptance/test_5.4.2.c` for `init_simulation` through the 5.4.2 plan gate, and renew the changed phase-plan seals through the project gate workflow. Re-invoke this phase review with a successful outside-sandbox preflight after the implementation and oracle agree.
+
+## Round 6: phase gate, PHASE_APPROVED (2026-11-03 16:48)
+
+### Phase review — phase 05
+
+**Verdict:** PHASE_APPROVED
+
+#### Analysis
+- Coverage: tasks 5.1–5.4 and all 11 specs cover ordered seat mapping, dongle and coder lifecycle, full simulation setup and reverse teardown, the single-coder case, and rollback after partial initialisation.
+- Scope and dependencies: each subtask owns one public function and declares its source, `coders/main.h`, and `coders/Makefile`. Explicit dependencies sequence the shared files and the teardown helpers needed for rollback. The graph is acyclic and follows core-to-adapter prerequisites.
+- Acceptance: each spec has observable public-API criteria and one distinct `tests/acceptance/test_<id>.c` path. Failure paths that cannot be forced portably are stated as code-review checks. No baseline is claimed, and later phases remain unbroken.
+- Subject and architecture: per-dongle mutexes, conditions and heaps, per-coder mutexes, and simulation stop, log and ticket mutexes have explicit ownership and teardown. The one-coder case uses one dongle. The revised `init_simulation` name avoids the seven existing phase 03 oracle helpers named `init_sim`.
+- Gate sequencing: the supplied outside-sandbox `make check` exited 2. Its remaining acceptance build failure is `test_5.4.2.c` calling the old `init_sim` name; that oracle must be updated and resealed at the 5.4.2 plan gate. Changed phase-plan seals are the reason for this phase re-review. Phase approval covers the breakdown; the 5.4.2 code gate and close still require a green check.
+
+#### Per subtask
+- 5.1.1: ok — pure, overflow-safe ordered seat mapping.
+- 5.2.1: ok — one dongle with reverse rollback; depends on 5.1.1.
+- 5.2.2: ok — teardown of one fully initialised dongle.
+- 5.2.3: ok — reverse teardown of a successful prefix.
+- 5.2.4: ok — array construction with prefix rollback.
+- 5.3.1: ok — one coder and its mutex; depends on the completed dongle branch.
+- 5.3.2: ok — teardown of one fully initialised coder.
+- 5.3.3: ok — reverse teardown of a successful prefix.
+- 5.3.4: ok — array construction with prefix rollback.
+- 5.4.1: ok — whole-simulation teardown, including partial arrays.
+- 5.4.2: ok — whole-simulation construction with reverse rollback; `init_simulation` is the public name.

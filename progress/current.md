@@ -11,7 +11,7 @@
   (`progress/phase_review_05.md`; rounds asked to drop the `nm` and build/Norm
   ACs, now in "Code review check", and to add depends 5.2.1→5.1.1,
   5.3.1→5.2.4). User OK given.
-- **Now:** tasks 5.1 (PR #19) and 5.2 (PR #20) merged. 5.3.1 (`0350ecf`), 5.3.2 (`32dcd42`), 5.3.3 (`83bbdb4`) closed. Subtask 5.3.4 Init coders closed on `feat/5.3-coders`; task 5.3 is complete and its PR narrative is ready for the harness.
+- **Task 5.4 complete (2026-11-03):** 5.4.1 Free sim and 5.4.2 Init simulation are closed on `feat/5.4-simulation`. The public initializer is `init_simulation`; phase review and plan review re-sealed this name after resolving conflicts with seven sealed phase 03 acceptance helpers. Subtask close documentation and task PR narrative are ready; the harness will perform the final close check and commit. See `progress/review_5.4.2.md`, `docs/reference/5.4.2-init-sim.md`, and `progress/pr_5.4.md`.
 - **Merge style:** the user squash-merged #18; recommended default is a merge
   commit (keeps one approved `[N.M.K]` commit per subtask on `main`), squash
   only when the branch carries noise. User's call per PR.
@@ -54,7 +54,7 @@ section points to the task's spec folder. Applies from the task 2.3 PR on.
 
 ## Next step
 
-Harness: run the close check, commit task 5.3, and open its pull request.
+Harness: run the close check and commit subtask 5.4.2, then open the task 5.4 pull request.
 
 Note: `make check` does not run ThreadSanitizer or valgrind; CI does. PR #12
 failed CI on `make tsan` (lock-order inversion created by the unit test
@@ -102,3 +102,7 @@ without the `planning/execution/problems/files` section anchors; the pre-commit
 ("already closed"). With the user's OK, Codex (documenter role) added only the
 anchors and `./harness/review_with_codex.sh close 5.3.3` committed `83bbdb4`.
 If it happens again: same fix, never hand-edit `docs/reference/`.
+Same class again on 5.4.1 (2026-11-03): reference doc frontmatter had ` date:`
+with a leading space ("missing frontmatter key 'date'"); Codex fixed only that
+line and `close 5.4.1` committed `d1d83ab`. Codex's reference-doc formatting
+slips recur: check anchors and frontmatter right after each `doc` step.

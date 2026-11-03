@@ -9,7 +9,7 @@
 
 #include "main.h"
 
-static void	init_sim(t_sim *sim)
+static void	setup_sim(t_sim *sim)
 {
 	pthread_mutexattr_t	attr;
 
@@ -44,7 +44,7 @@ static void	test_first_and_second_call(void)
 	char	buf[64];
 	ssize_t	n;
 
-	init_sim(&sim);
+	setup_sim(&sim);
 	assert(pipe(fds) == 0 && fcntl(fds[0], F_SETFL, O_NONBLOCK) == 0);
 	saved = dup(STDOUT_FILENO);
 	assert(dup2(fds[1], STDOUT_FILENO) >= 0);
@@ -68,7 +68,7 @@ static void	test_bad_coder(void)
 {
 	t_sim	sim;
 
-	init_sim(&sim);
+	setup_sim(&sim);
 	assert(print_burnout(&sim, 0) == -1);
 	assert(sim.stopped == 1);
 	check_unlocked(&sim);

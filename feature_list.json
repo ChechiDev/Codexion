@@ -72,7 +72,7 @@
       "title": "Simulation state init and teardown",
       "goal": "build the `t_sim` (coders, dongles with mutex/cond/heap, stop and log mutexes, seat-to-dongle mapping with 1 dongle for 1 coder) and tear it down completely, cleaning up partial initialisation on any malloc or pthread init failure without leaks",
       "file": "docs/plan/phase-05-simulation-state.md",
-      "status": "in_progress",
+      "status": "done",
       "tasks": [
         "5.1",
         "5.2",
@@ -2454,12 +2454,12 @@
       "phase": "05",
       "layer": "adapters",
       "goal": "build the whole `t_sim` (config, stop/log/ticket mutexes, dongles, coders) in a fixed order with a full reverse rollback on any failure, and free all of it; threads are not started here (phase 09)",
-      "status": "pending",
+      "status": "done",
       "subtasks": [
         {
           "id": "5.4.1",
           "title": "Free sim",
-          "status": "pending",
+          "status": "done",
           "layer": "adapters",
           "depends": [
             "5.2.4",
@@ -2506,21 +2506,21 @@
         },
         {
           "id": "5.4.2",
-          "title": "Init sim",
-          "status": "pending",
+          "title": "Init simulation",
+          "status": "done",
           "layer": "adapters",
           "depends": [
             "5.4.1"
           ],
           "files": [
-            "coders/src/init/init_sim.c",
+            "coders/src/init/init_simulation.c",
             "coders/main.h",
             "coders/Makefile"
           ],
           "acceptance": [
             {
               "id": "AC1",
-              "criterion": "with the config `4 800 200 200 200 3 50 edf`, `init_sim(&sim, &config)` returns 0; `sim.config` equals the input field by field; `start_ms == 0`, `stopped == 0`, `next_ticket == 0`; the 4 dongles have `available == 1`, `released_at == -1`, `heap.size == 0`, `heap.capacity == 2`; coder `i` has `id == i + 1`, the dongle pair of seat `i`, `last_compile_start == 0`, `compile_count == 0` and `sim == &sim`; `stop_mutex`, `log_mutex`, `ticket_mutex`, every dongle mutex and every coder mutex are unlocked (`pthread_mutex_trylock` succeeds, then unlocked). The test then calls `free_sim(&sim)`, which returns 0",
+              "criterion": "with the config `4 800 200 200 200 3 50 edf`, `init_simulation(&sim, &config)` returns 0; `sim.config` equals the input field by field; `start_ms == 0`, `stopped == 0`, `next_ticket == 0`; the 4 dongles have `available == 1`, `released_at == -1`, `heap.size == 0`, `heap.capacity == 2`; coder `i` has `id == i + 1`, the dongle pair of seat `i`, `last_compile_start == 0`, `compile_count == 0` and `sim == &sim`; `stop_mutex`, `log_mutex`, `ticket_mutex`, every dongle mutex and every coder mutex are unlocked (`pthread_mutex_trylock` succeeds, then unlocked). The test then calls `free_sim(&sim)`, which returns 0",
               "test": "tests/acceptance/test_5.4.2.c"
             },
             {
@@ -2540,12 +2540,12 @@
             },
             {
               "id": "AC5",
-              "criterion": "invalid input returns -1 and leaves the whole `t_sim` byte-for-byte unchanged (sentinel-prefilled, compared with `memcmp`): `config` NULL; `number_of_coders` 0 and -1. `init_sim(NULL, &config)` returns -1 with no crash",
+              "criterion": "invalid input returns -1 and leaves the whole `t_sim` byte-for-byte unchanged (sentinel-prefilled, compared with `memcmp`): `config` NULL; `number_of_coders` 0 and -1. `init_simulation(NULL, &config)` returns -1 with no crash",
               "test": "tests/acceptance/test_5.4.2.c"
             },
             {
               "id": "AC6",
-              "criterion": "reuse: `init_sim`, `free_sim`, `init_sim` again on the same struct (with a different `number_of_coders`, 3 then 5), `free_sim`: every call returns 0",
+              "criterion": "reuse: `init_simulation`, `free_sim`, `init_simulation` again on the same struct (with a different `number_of_coders`, 3 then 5), `free_sim`: every call returns 0",
               "test": "tests/acceptance/test_5.4.2.c"
             }
           ],
