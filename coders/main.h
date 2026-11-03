@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/11/02 17:51:31 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/11/03 11:00:00 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,15 @@ typedef struct s_heap
 	int			capacity;
 }	t_heap;
 
+typedef struct s_dongle
+{
+	pthread_mutex_t	mutex;
+	pthread_cond_t	cond;
+	t_heap			heap;
+	int				available;
+	long			released_at;
+}	t_dongle;
+
 /* ---- Utils ---- */
 
 int		is_digit(char c);
@@ -135,6 +144,13 @@ int		pop_request(t_heap *heap, t_request *out);
 /* ---- Init ---- */
 
 int		get_dongle_pair(int seat, int n, int *first, int *second);
+int		init_dongle(t_dongle *dongle);
+int		init_dongles(t_dongle **out, int n);
+
+/* ---- Cleanup ---- */
+
+int		destroy_dongle(t_dongle *dongle);
+int		free_dongles(t_dongle *dongles, int count);
 
 /* ---- CLI ---- */
 

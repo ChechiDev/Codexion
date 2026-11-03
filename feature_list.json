@@ -2104,12 +2104,12 @@
       "phase": "05",
       "layer": "adapters",
       "goal": "initialise one dongle (mutex, cond, capacity-2 request heap, available, never released) and the array of N dongles, rolling back exactly what succeeded on any failure, and tear them down in reverse",
-      "status": "pending",
+      "status": "done",
       "subtasks": [
         {
           "id": "5.2.1",
           "title": "Init dongle",
-          "status": "pending",
+          "status": "done",
           "layer": "adapters",
           "depends": [
             "4.2.2",
@@ -2157,7 +2157,7 @@
         {
           "id": "5.2.2",
           "title": "Destroy dongle",
-          "status": "pending",
+          "status": "done",
           "layer": "adapters",
           "depends": [
             "5.2.1"
@@ -2199,7 +2199,7 @@
         {
           "id": "5.2.3",
           "title": "Free dongles",
-          "status": "pending",
+          "status": "done",
           "layer": "adapters",
           "depends": [
             "5.2.2"
@@ -2241,7 +2241,7 @@
         {
           "id": "5.2.4",
           "title": "Init dongles",
-          "status": "pending",
+          "status": "done",
           "layer": "adapters",
           "depends": [
             "5.2.1",

@@ -1,6 +1,6 @@
 # Current session
 
-- **State (2026-11-02):** issue #14 done (ISS-14.1, PR #17 merged). Task 4.3
+- **State (2026-11-03):** issue #14 done (ISS-14.1, PR #17 merged). Task 4.3
   done: 4.3.1 Push request, 4.3.2 Get head request, 4.3.3 Pop request; PR #18
   squash-merged into `main` (`f43299e`). **Phase 04 Priority queue is done
   (7/7).** On `main`, `make check` green, tree clean.
@@ -11,7 +11,10 @@
   (`progress/phase_review_05.md`; rounds asked to drop the `nm` and build/Norm
   ACs, now in "Code review check", and to add depends 5.2.1→5.1.1,
   5.3.1→5.2.4). User OK given.
-- **Now:** task 5.1 Get dongle pair is closed locally on `feat/5.1-seat-mapping`; its close message and task PR narrative are ready for the harness. After the harness commits and opens the PR, review and merge it to finish task 5.1.
+- **Now:** task 5.2 complete on `feat/5.2-dongles`: subtasks 5.2.1–5.2.4
+  closed; PR narrative is in `progress/pr_5.2.md`, and the harness will open the
+  task PR after committing this close. The supplied outside-sandbox close
+  `make check` exited 0.
 - **Merge style:** the user squash-merged #18; recommended default is a merge
   commit (keeps one approved `[N.M.K]` commit per subtask on `main`), squash
   only when the branch carries noise. User's call per PR.
@@ -26,9 +29,10 @@
 - **Start:** 2026-10-28
 - **Engine/role:** leader → phase gate (Codex) → user OK → per-subtask cycle
 
-- **4.3.1 gates:** plan `PLAN_APPROVED` (`progress/plan_review_4.3.1.md`);
-  code `APPROVED` (`progress/review_4.3.1.md`); close documentation and tracking
-  complete. Supplied outside-sandbox `make check` exited 0.
+- **5.2.4 gates:** plan `PLAN_APPROVED` (`progress/plan_review_5.2.4.md`);
+  code `APPROVED` (`progress/review_5.2.4.md`); close documentation, PR
+  narrative, and tracking complete. Supplied outside-sandbox `make check`
+  exited 0.
 
 ## Decisions taken during the phase 03 breakdown (2026-10-28)
 
@@ -53,9 +57,8 @@ section points to the task's spec folder. Applies from the task 2.3 PR on.
 
 ## Next step
 
-Task 5.1 is closed locally; the close message and task PR narrative are ready
-for the harness. After the harness commits and opens the PR, review and merge it
-to finish the task. Then continue with the next approved subtask, 5.2.1.
+After the harness opens the task 5.2 PR, proceed to task 5.3 (coder lifecycle)
+according to the approved Phase 05 plan.
 
 Note: `make check` does not run ThreadSanitizer or valgrind; CI does. PR #12
 failed CI on `make tsan` (lock-order inversion created by the unit test
@@ -83,11 +86,11 @@ simulation start, `last_compile_start` 0 before the first compile; one coder
 
 Note: isolated, non-reproducible test failures (3.3.1 run, `test_3.1.2.c`
 after the 3.4.5 plan gate, `test_1.1.1.c` "coders/codexion missing" during
-3.4.5) are explained by concurrent `make` runs: the stop hook runs
-`make check` at the end of each leader turn while a background implementer
-is building, and `test_1.1.1.c` runs `make -C coders fclean`. None reproduced
-in sequential runs (200 direct runs of 3.1.2, repeated full `make check`).
-Always re-run `make check` sequentially before trusting a red result.
+3.4.5) are explained by concurrent `make` runs: the stop hook runs `make check`
+at the end of each leader turn while a background implementer is building, and
+`test_1.1.1.c` runs `make -C coders fclean`. None reproduced in sequential runs
+(200 direct runs of 3.1.2, repeated full `make check`). Always re-run `make check`
+sequentially before trusting a red result.
 
 Note: avoid running two `make` processes at once; acceptance tests call
 `make -C coders` themselves and a concurrent build can make them fail

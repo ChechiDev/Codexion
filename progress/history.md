@@ -393,9 +393,45 @@ Entry template (filled in at close):
 - **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.1.1.md`); implementation notes report clean TSan and Valgrind runs.
 - **Documentation:** docs/reference/5.1.1-get-dongle-pair.md; task narrative: progress/pr_5.1.md
 - **Commit:** feat(init): map coder seats to ordered dongle pairs [5.1.1]
+
+## 2026-11-02 — Subtask 5.2.1: Init dongle
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-05-simulation-state/5.2.1-init-dongle.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/init/init_dongle.c`, `coders/main.h`, and `coders/Makefile` initialize each dongle's mutex, condition variable, capacity-two request heap, and initial state with reverse rollback.
+- **Acceptance:** `tests/acceptance/test_5.2.1.c` — AC1–AC6 cover defaults, synchronization, capacity/order, independent dongles, and NULL rejection.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.2.1.md`); implementation notes report clean ThreadSanitizer and Valgrind runs.
+- **Documentation:** docs/reference/5.2.1-init-dongle.md
+- **Commit:** feat(init): initialize dongle state [5.2.1]
 # 2026-11-02 — Close 5.1.1 Get dongle pair
 
 - Closed 5.1.1: added the reference note, marked the approved spec done, and refreshed the generated plan index.
 - Updated `progress/current.md` and wrote the task 5.1 PR narrative for the harness.
 - **Commit:** feat(init): map coder seats to ordered dongle pairs [5.1.1]
 
+
+## 2026-11-02 — Subtask 5.2.2: Destroy dongle
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-05-simulation-state/5.2.2-destroy-dongle.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/cleanup/destroy_dongle.c`, `coders/main.h`, and `coders/Makefile` add best-effort reverse-order teardown for a dongle's heap, condition variable, and mutex; `docs/architecture.md` documents the `cleanup/` adapter.
+- **Acceptance:** `tests/acceptance/test_5.2.2.c` — AC1–AC5 cover teardown state, queued requests, used synchronization objects, reinitialization, and NULL rejection.
+- **Verification:** supplied pre-session `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.2.2.md`); implementation review records clean TSan, memcheck, and direct acceptance Valgrind runs.
+- **Documentation:** docs/reference/5.2.2-destroy-dongle.md
+- **Commit:** feat(cleanup): destroy dongle resources [5.2.2]
+
+## 2026-11-03 — Subtask 5.2.3: Free dongles
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-05-simulation-state/5.2.3-free-dongles.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/cleanup/free_dongles.c`, `coders/main.h`, and `coders/Makefile` add reverse-order teardown of the initialized dongle prefix and release its array; `docs/architecture.md` documents array ownership in cleanup.
+- **Acceptance:** `tests/acceptance/test_5.2.3.c` — AC1–AC5 covered and green in the supplied close check.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.2.3.md`); implementation notes record clean TSan, memcheck, and acceptance Valgrind runs.
+- **Documentation:** docs/reference/5.2.3-free-dongles.md
+- **Commit:** feat(cleanup): release dongle array [5.2.3]
+
+## 2026-11-03 — Subtask 5.2.4: Init dongles
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-05-simulation-state/5.2.4-init-dongles.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/init/init_dongles.c`, `coders/main.h`, and `coders/Makefile` add overflow-checked array allocation, ordered element initialization, and prefix rollback through `free_dongles`; acceptance and unit coverage exercise valid sizes, independence, and invalid inputs.
+- **Acceptance:** `tests/acceptance/test_5.2.4.c` — AC1–AC4 covered and green in the supplied close check.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.2.4.md`); implementation notes record clean TSan, memcheck, and acceptance Valgrind runs.
+- **Documentation:** docs/reference/5.2.4-init-dongles.md; task narrative: progress/pr_5.2.md
+- **Commit:** feat(init): initialize dongle array [5.2.4]
