@@ -16,6 +16,15 @@ Entry template (filled in at close):
 - **Commit:** <type>(<scope>): <what> [N.M.K]   (subject only: the hash is in git log)
 -->
 
+## 2026-11-03 — Subtask 5.3.1: Init coder
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-05-simulation-state/5.3.1-init-coder.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/init/init_coder.c`, `coders/main.h`, and `coders/Makefile` add coder initialization with validated seat mapping, an owned mutex, zeroed compile state, and a borrowed simulation pointer.
+- **Acceptance:** `tests/acceptance/test_5.3.1.c` — AC1–AC5 cover initialized fields, untouched thread storage, the one-coder mapping, invalid-input preservation, and mutex independence.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.3.1.md`); implementation notes report clean TSan, memcheck, and acceptance Valgrind runs.
+- **Documentation:** docs/reference/5.3.1-init-coder.md
+- **Commit:** feat(init): initialize coder state [5.3.1]
+
 ## 2026-10-26 — Subtask 1.1.1: Deliverable Makefile
 - **Layer:** interfaces
 - **Plan:** docs/plan/phase-01-build-skeleton/1.1.1-deliverable-makefile.md (plan_review: PLAN_APPROVED)
@@ -435,3 +444,31 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.2.4.md`); implementation notes record clean TSan, memcheck, and acceptance Valgrind runs.
 - **Documentation:** docs/reference/5.2.4-init-dongles.md; task narrative: progress/pr_5.2.md
 - **Commit:** feat(init): initialize dongle array [5.2.4]
+
+## 2026-11-03 — Subtask 5.3.2: Destroy coder
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-05-simulation-state/5.3.2-destroy-coder.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/cleanup/destroy_coder.c`, `coders/main.h`, and `coders/Makefile` add coder mutex teardown; `docs/architecture.md` records it in the cleanup adapter map.
+- **Acceptance:** `tests/acceptance/test_5.3.2.c` — AC1–AC4 cover destruction, preservation of other fields, reinitialization, and NULL rejection.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.3.2.md`); implementation notes report clean TSan, memcheck, and acceptance Valgrind runs.
+- **Documentation:** docs/reference/5.3.2-destroy-coder.md
+- **Commit:** feat(cleanup): destroy coder mutex [5.3.2]
+
+
+## 2026-11-03 — Subtask 5.3.3: Free coders
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-05-simulation-state/5.3.3-free-coders.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/cleanup/free_coders.c`, `coders/main.h`, and `coders/Makefile` add reverse-order teardown of the initialized coder prefix and release its array; `docs/architecture.md` records coder arrays in cleanup ownership.
+- **Acceptance:** `tests/acceptance/test_5.3.3.c` — AC1–AC5 cover full and partial arrays, zero count, NULL input, and negative-count preservation.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.3.3.md`); implementation notes report clean TSan, memcheck, and acceptance Valgrind runs.
+- **Documentation:** docs/reference/5.3.3-free-coders.md
+- **Commit:** feat(cleanup): release coder array [5.3.3]
+
+## 2026-11-03 — Subtask 5.3.4: Init coders
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-05-simulation-state/5.3.4-init-coders.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/init/init_coders.c`, `coders/main.h`, and `coders/Makefile` add overflow-checked coder-array construction, ordered per-coder initialization, and prefix rollback through `free_coders`.
+- **Acceptance:** `tests/acceptance/test_5.3.4.c` — AC1–AC4 cover initial state and ring mapping, one and large arrays, independent mutexes, cleanup, and invalid-input output preservation.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.3.4.md`); implementation notes record clean TSan and Valgrind runs, including the acceptance binary.
+- **Documentation:** docs/reference/5.3.4-init-coders.md; task narrative: progress/pr_5.3.md
+- **Commit:** feat(init): initialize coder array [5.3.4]

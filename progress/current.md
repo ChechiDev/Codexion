@@ -11,10 +11,7 @@
   (`progress/phase_review_05.md`; rounds asked to drop the `nm` and build/Norm
   ACs, now in "Code review check", and to add depends 5.2.1→5.1.1,
   5.3.1→5.2.4). User OK given.
-- **Now:** task 5.2 complete on `feat/5.2-dongles`: subtasks 5.2.1–5.2.4
-  closed; PR narrative is in `progress/pr_5.2.md`, and the harness will open the
-  task PR after committing this close. The supplied outside-sandbox close
-  `make check` exited 0.
+- **Now:** tasks 5.1 (PR #19) and 5.2 (PR #20) merged. 5.3.1 (`0350ecf`), 5.3.2 (`32dcd42`), 5.3.3 (`83bbdb4`) closed. Subtask 5.3.4 Init coders closed on `feat/5.3-coders`; task 5.3 is complete and its PR narrative is ready for the harness.
 - **Merge style:** the user squash-merged #18; recommended default is a merge
   commit (keeps one approved `[N.M.K]` commit per subtask on `main`), squash
   only when the branch carries noise. User's call per PR.
@@ -57,8 +54,7 @@ section points to the task's spec folder. Applies from the task 2.3 PR on.
 
 ## Next step
 
-After the harness opens the task 5.2 PR, proceed to task 5.3 (coder lifecycle)
-according to the approved Phase 05 plan.
+Harness: run the close check, commit task 5.3, and open its pull request.
 
 Note: `make check` does not run ThreadSanitizer or valgrind; CI does. PR #12
 failed CI on `make tsan` (lock-order inversion created by the unit test
@@ -99,3 +95,10 @@ spuriously (seen once during 3.3.1).
 Note: agents cannot delete files under `coders/` (the guard blocks shell `rm`
 and there is no delete tool). Deletions declared by a spec and stale build
 objects of moved sources are done by the user by hand.
+
+Note (2026-11-03): the 5.3.3 close wrote `docs/reference/5.3.3-free-coders.md`
+without the `planning/execution/problems/files` section anchors; the pre-commit
+`make check` caught it (nothing committed) and `doc 5.3.3` then refused
+("already closed"). With the user's OK, Codex (documenter role) added only the
+anchors and `./harness/review_with_codex.sh close 5.3.3` committed `83bbdb4`.
+If it happens again: same fix, never hand-edit `docs/reference/`.

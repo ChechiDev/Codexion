@@ -26,8 +26,8 @@ discipline, not by includes: a core function never calls `write`, `printf`,
 | `parsing/` | core | turning `argv` text into a validated `t_config` | `utils/` |
 | `cli/` | interfaces | every user-facing message: the usage text (`print_usage`) and the argument errors | `parsing/` (minimums) |
 | `state/` | adapters | shared simulation state guarded by its mutexes | nothing |
-| `init/` | adapters | lifecycle setup for simulation state, including dongle mutexes, condition variables, and request heaps | core heap and seat-mapping APIs |
-| `cleanup/` | adapters | lifecycle teardown for simulation resources, including dongle arrays and their heaps, condition variables, and mutexes | core heap API |
+| `init/` | adapters | lifecycle setup for simulation state, including coder mutexes, dongle mutexes, condition variables, and request heaps | core heap and seat-mapping APIs |
+| `cleanup/` | adapters | lifecycle teardown for simulation resources, including coder mutexes and arrays, dongle arrays and their heaps, condition variables, and mutexes | core heap API |
 | `log/` | core | pure construction of serialized log-line bytes (`build_log_line`) | `utils/` |
 | `policy/` | core | pure FIFO/EDF request-key calculation (`get_request_key`) and ordering (`is_request_before`) | nothing |
 | `heap/` | core | caller-owned array storage for the hand-written binary min-heap (`init_heap`, `free_heap`, then push/peek/pop) | `policy/` ordering contract |
