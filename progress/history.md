@@ -453,3 +453,13 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.3.2.md`); implementation notes report clean TSan, memcheck, and acceptance Valgrind runs.
 - **Documentation:** docs/reference/5.3.2-destroy-coder.md
 - **Commit:** feat(cleanup): destroy coder mutex [5.3.2]
+
+
+## 2026-11-03 — Subtask 5.3.3: Free coders
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-05-simulation-state/5.3.3-free-coders.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/cleanup/free_coders.c`, `coders/main.h`, and `coders/Makefile` add reverse-order teardown of the initialized coder prefix and release its array; `docs/architecture.md` records coder arrays in cleanup ownership.
+- **Acceptance:** `tests/acceptance/test_5.3.3.c` — AC1–AC5 cover full and partial arrays, zero count, NULL input, and negative-count preservation.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.3.3.md`); implementation notes report clean TSan, memcheck, and acceptance Valgrind runs.
+- **Documentation:** docs/reference/5.3.3-free-coders.md
+- **Commit:** feat(cleanup): release coder array [5.3.3]
