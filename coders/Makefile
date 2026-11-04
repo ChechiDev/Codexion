@@ -6,7 +6,7 @@
 #    By: sperez-l@student.42barcelona.com           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/10/26 16:47:34 by sperez-l          #+#    #+#              #
-#    Updated: 2026/11/04 11:17:00 by sperez-l         ###   ########.fr        #
+#    Updated: 2026/11/04 12:00:00 by sperez-l         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,6 +24,7 @@ SRC = main.c \
 	src/cli/print_usage.c \
 	src/dongle/build_request.c \
 	src/dongle/wake_dongles.c \
+	src/dongle/wait_for_dongles.c \
 	src/heap/free_heap.c \
 	src/heap/get_head_request.c \
 	src/heap/init_heap.c \

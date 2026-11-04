@@ -2826,7 +2826,7 @@
         {
           "id": "6.3.2",
           "title": "Wait for dongles",
-          "status": "pending",
+          "status": "done",
           "layer": "orchestration",
           "depends": [
             "6.2.2",

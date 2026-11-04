@@ -527,7 +527,6 @@ Entry template (filled in at close):
 - **Documentation:** docs/reference/6.2.2-get-deadline.md; task narrative: progress/pr_6.2.md
 - **Commit:** feat(time): calculate condition deadline [6.2.2]
 
-
 ## 2026-11-04 — Subtask 6.3.1: Wake dongles
 - **Layer:** orchestration
 - **Plan:** docs/plan/phase-06-dongle-arbitration/6.3.1-wake-dongles.md (plan_review: PLAN_APPROVED)
@@ -536,3 +535,12 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_6.3.1.md`); implementation notes report clean TSan and acceptance Valgrind runs.
 - **Documentation:** docs/reference/6.3.1-wake-dongles.md
 - **Commit:** feat(dongle): wake dongle waiters [6.3.1]
+
+## 2026-11-04 — Subtask 6.3.2: Wait for dongles
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-06-dongle-arbitration/6.3.2-wait-for-dongles.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/dongle/wait_for_dongles.c`, `coders/main.h`, and `coders/Makefile` add a bounded condition wait that releases the second dongle mutex, waits on the first, and restores lock ownership in index order.
+- **Acceptance:** `tests/acceptance/test_6.3.2.c` — AC1–AC4 cover timed waiting, availability of the second mutex during the wait, repeated use, and invalid inputs.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_6.3.2.md`); implementation notes report clean Valgrind and TSan runs.
+- **Documentation:** docs/reference/6.3.2-wait-for-dongles.md
+- **Commit:** feat(dongle): wait for dongles [6.3.2]
