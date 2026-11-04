@@ -1,6 +1,6 @@
 # Current session
 
-- **State (2026-11-04):** task 6.2 Readiness closed (6.2.1 `283fc72`, 6.2.2 `5640838`), PR #25 merged into `main` (`efe2d32`), branch deleted. On `feat/6.3-acquisition-and-release`: 6.3.1 Wake dongles (`0be9980`), 6.3.2 Wait for dongles (`7800023`), 6.3.3 Release dongles (`26fd3e2`), and 6.3.4 Take dongles are closed. For 6.3.4, the code review is `APPROVED`, the reference note is written, the spec status is `done`, the generated plan index is synced, and the supplied outside-sandbox `make check` exited 0. The close message is in `progress/close_6.3.4.msg`; the harness performs the final check and commit. Next is 6.3.5 Take single dongle, whose close opens the task 6.3 PR.
+- **State (2026-11-04):** task 6.2 Readiness closed (6.2.1 `283fc72`, 6.2.2 `5640838`), PR #25 merged into `main` (`efe2d32`), branch deleted. On `feat/6.3-acquisition-and-release`: 6.3.1 Wake dongles (`0be9980`), 6.3.2 Wait for dongles (`7800023`), 6.3.3 Release dongles (`26fd3e2`), 6.3.4 Take dongles (`6bc2d1d`), and 6.3.5 Take single dongle are closed in the plan; the task 6.3 PR narrative is ready. The supplied close check exited 0. Code gate APPROVED (`progress/review_6.3.5.md`); the implementation report records clean Valgrind and TSan runs. Close message is in `progress/close_6.3.5.msg`; the harness performs the commit and opens the task PR.
 
 - **State (2026-11-03):** issue #14 done (ISS-14.1, PR #17 merged). Task 4.3
   done: 4.3.1 Push request, 4.3.2 Get head request, 4.3.3 Pop request; PR #18
@@ -43,6 +43,10 @@
   narrative, and tracking complete. Supplied outside-sandbox `make check`
   exited 0.
 
+- **6.3.5 gates:** plan `PLAN_APPROVED` (`progress/review_history/6.3.5.md`);
+  code `APPROVED` (`progress/review_6.3.5.md`); close documentation and task
+  PR narrative are prepared. The supplied outside-sandbox close check exited 0.
+
 ## Decisions taken during the phase 03 breakdown (2026-10-28)
 
 - PR #8 (`style/threading-conventions`, merged `4d569c5`): `main.h` may include
@@ -75,7 +79,7 @@ by hand in the PR body). Applies from the task 6.x PRs on.
 
 ## Next step
 
-6.3.5 Take single dongle: begin its plan gate.
+Task 6.3 Acquisition and release: close artifacts prepared; harness commit and task PR open are next.
 
 Note: `make check` does not run ThreadSanitizer or valgrind; CI does. PR #12
 failed CI on `make tsan` (lock-order inversion created by the unit test

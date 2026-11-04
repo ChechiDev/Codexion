@@ -563,3 +563,12 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_6.3.4.md`); implementation notes report clean acceptance Valgrind and corrected-oracle TSan runs.
 - **Documentation:** docs/reference/6.3.4-take-dongles.md
 - **Commit:** feat(dongle): acquire both dongles atomically [6.3.4]
+
+## 2026-11-04 — Subtask 6.3.5: Take single dongle
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-06-dongle-arbitration/6.3.5-take-single-dongle.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/dongle/take_single_dongle.c`, `coders/main.h`, and `coders/Makefile` add one-coder acquisition through a single queued request, mutex, and cooldown check; `docs/architecture.md` records the single-dongle orchestration path.
+- **Acceptance:** `tests/acceptance/test_6.3.5.c` — AC1–AC5 cover acquisition, FIFO/EDF cooldown, one queued waiter, stop, and invalid input.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_6.3.5.md`); implementation notes report clean acceptance Valgrind and TSan runs.
+- **Documentation:** docs/reference/6.3.5-take-single-dongle.md; task narrative: progress/pr_6.3.md
+- **Commit:** feat(dongle): acquire single dongle [6.3.5]
