@@ -508,3 +508,21 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_5.4.2.md`); implementation notes report clean TSan and memcheck. The review record notes no evidence for the separate acceptance-binary Valgrind run.
 - **Documentation:** docs/reference/5.4.2-init-sim.md; task narrative: progress/pr_5.4.md
 - **Commit:** feat(init): initialize simulation state [5.4.2]
+
+## 2026-11-03 — Subtask 6.2.1: Is dongle ready
+- **Layer:** core
+- **Plan:** docs/plan/phase-06-dongle-arbitration/6.2.1-is-dongle-ready.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/policy/is_dongle_ready.c`, `coders/main.h`, and `coders/Makefile` add the pure per-dongle readiness predicate; `docs/architecture.md` maps it in `policy/`.
+- **Acceptance:** `tests/acceptance/test_6.2.1.c` — AC1–AC7 cover queue-head eligibility, availability, cooldown boundaries and overflow, immutability, and invalid inputs.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_6.2.1.md`); implementation notes report clean TSan and Valgrind runs.
+- **Documentation:** docs/reference/6.2.1-is-dongle-ready.md
+- **Commit:** feat(policy): add dongle readiness predicate [6.2.1]
+
+## 2026-11-03 — Subtask 6.2.2: Get deadline
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-06-dongle-arbitration/6.2.2-get-deadline.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/time/get_deadline.c`, `coders/main.h`, and `coders/Makefile` add absolute deadline calculation for condition waits; `docs/architecture.md` maps elapsed clock and deadline helpers in `time/`.
+- **Acceptance:** `tests/acceptance/test_6.2.2.c` — AC1–AC6 cover zero and positive delays, normalization, timed-wait compatibility, invalid inputs, and a large representable deadline.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_6.2.2.md`); implementation notes report clean TSan and Valgrind runs.
+- **Documentation:** docs/reference/6.2.2-get-deadline.md; task narrative: progress/pr_6.2.md
+- **Commit:** feat(time): calculate condition deadline [6.2.2]
