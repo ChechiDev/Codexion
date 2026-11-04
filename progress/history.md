@@ -526,3 +526,13 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_6.2.2.md`); implementation notes report clean TSan and Valgrind runs.
 - **Documentation:** docs/reference/6.2.2-get-deadline.md; task narrative: progress/pr_6.2.md
 - **Commit:** feat(time): calculate condition deadline [6.2.2]
+
+
+## 2026-11-04 — Subtask 6.3.1: Wake dongles
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-06-dongle-arbitration/6.3.1-wake-dongles.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/dongle/wake_dongles.c`, `coders/main.h`, and `coders/Makefile` add a best-effort broadcast across each dongle condition variable; `docs/architecture.md` records the stop wake-up responsibility.
+- **Acceptance:** `tests/acceptance/test_6.3.1.c` — AC1–AC6 cover waking all dongles, multiple waiters, stop wake-up races, preserved state, the one-coder case, and invalid input.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_6.3.1.md`); implementation notes report clean TSan and acceptance Valgrind runs.
+- **Documentation:** docs/reference/6.3.1-wake-dongles.md
+- **Commit:** feat(dongle): wake dongle waiters [6.3.1]
