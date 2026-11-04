@@ -32,7 +32,7 @@ discipline, not by includes: a core function never calls `write`, `printf`,
 | `log/` | core | pure construction of serialized log-line bytes (`build_log_line`) | `utils/` |
 | `policy/` | core | pure FIFO/EDF request-key calculation (`get_request_key`), ordering (`is_request_before`), and the read-only dongle readiness predicate (`is_dongle_ready`) | `heap/` request head API |
 | `heap/` | core | caller-owned array storage for the hand-written binary min-heap (`init_heap`, `free_heap`, then push/peek/pop) | `policy/` ordering contract |
-| `dongle/` | orchestration | builds a coder's FIFO/EDF request from synchronized ticket allocation and the pure request-key policy (`build_request`) | `state/`, `policy/` |
+| `dongle/` | orchestration | builds a coder's FIFO/EDF request from synchronized ticket allocation and the pure request-key policy (`build_request`); acquires a pair atomically or the single dongle for one coder (`take_dongles`, `take_single_dongle`); releases a coder's dongles at the actual release time, starts their cooldown, and wakes waiters (`release_dongles`); broadcasts stop wake-ups across dongle condition variables (`wake_dongles`) | `state/`, `policy/`, `time/` |
 | `main.c` | interfaces | the entry point only: wires the modules together | every module |
 
 Later phases add their own folders (time and log, queue, simulation, ...) and

@@ -526,3 +526,49 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_6.2.2.md`); implementation notes report clean TSan and Valgrind runs.
 - **Documentation:** docs/reference/6.2.2-get-deadline.md; task narrative: progress/pr_6.2.md
 - **Commit:** feat(time): calculate condition deadline [6.2.2]
+
+## 2026-11-04 — Subtask 6.3.1: Wake dongles
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-06-dongle-arbitration/6.3.1-wake-dongles.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/dongle/wake_dongles.c`, `coders/main.h`, and `coders/Makefile` add a best-effort broadcast across each dongle condition variable; `docs/architecture.md` records the stop wake-up responsibility.
+- **Acceptance:** `tests/acceptance/test_6.3.1.c` — AC1–AC6 cover waking all dongles, multiple waiters, stop wake-up races, preserved state, the one-coder case, and invalid input.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_6.3.1.md`); implementation notes report clean TSan and acceptance Valgrind runs.
+- **Documentation:** docs/reference/6.3.1-wake-dongles.md
+- **Commit:** feat(dongle): wake dongle waiters [6.3.1]
+
+## 2026-11-04 — Subtask 6.3.2: Wait for dongles
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-06-dongle-arbitration/6.3.2-wait-for-dongles.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/dongle/wait_for_dongles.c`, `coders/main.h`, and `coders/Makefile` add a bounded condition wait that releases the second dongle mutex, waits on the first, and restores lock ownership in index order.
+- **Acceptance:** `tests/acceptance/test_6.3.2.c` — AC1–AC4 cover timed waiting, availability of the second mutex during the wait, repeated use, and invalid inputs.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_6.3.2.md`); implementation notes report clean Valgrind and TSan runs.
+- **Documentation:** docs/reference/6.3.2-wait-for-dongles.md
+- **Commit:** feat(dongle): wait for dongles [6.3.2]
+
+
+## 2026-11-04 — Subtask 6.3.3: Release dongles
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-06-dongle-arbitration/6.3.3-release-dongles.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/dongle/release_dongles.c`, `coders/main.h`, and `coders/Makefile` release a coder's pair under ordered locks, timestamp cooldown after lock acquisition, notify waiters, and handle the single-dongle case; `docs/architecture.md` records the module contract.
+- **Acceptance:** `tests/acceptance/test_6.3.3.c` — AC1–AC6 cover release timing, both wakeups, queue preservation and cooldown, one coder, invalid inputs, and lock contention.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_6.3.3.md`); implementation notes report clean Valgrind and TSan runs for the acceptance binary and clean Valgrind for the unit binary.
+- **Documentation:** docs/reference/6.3.3-release-dongles.md
+- **Commit:** feat(dongle): release dongles with cooldown [6.3.3]
+
+## 2026-11-04 — Subtask 6.3.4: Take dongles
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-06-dongle-arbitration/6.3.4-take-dongles.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/dongle/take_dongles.c`, `coders/main.h`, and `coders/Makefile` add atomic two-dongle acquisition using the same scheduled request in both heaps; queued fatal failures stop the simulation and wake waiters.
+- **Acceptance:** `tests/acceptance/test_6.3.4.c` — AC1–AC7 cover acquisition, head-of-both ordering, FIFO/EDF priority, cooldown, stop, progress evidence, and invalid inputs.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_6.3.4.md`); implementation notes report clean acceptance Valgrind and corrected-oracle TSan runs.
+- **Documentation:** docs/reference/6.3.4-take-dongles.md
+- **Commit:** feat(dongle): acquire both dongles atomically [6.3.4]
+
+## 2026-11-04 — Subtask 6.3.5: Take single dongle
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-06-dongle-arbitration/6.3.5-take-single-dongle.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/dongle/take_single_dongle.c`, `coders/main.h`, and `coders/Makefile` add one-coder acquisition through a single queued request, mutex, and cooldown check; `docs/architecture.md` records the single-dongle orchestration path.
+- **Acceptance:** `tests/acceptance/test_6.3.5.c` — AC1–AC5 cover acquisition, FIFO/EDF cooldown, one queued waiter, stop, and invalid input.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_6.3.5.md`); implementation notes report clean acceptance Valgrind and TSan runs.
+- **Documentation:** docs/reference/6.3.5-take-single-dongle.md; task narrative: progress/pr_6.3.md
+- **Commit:** feat(dongle): acquire single dongle [6.3.5]

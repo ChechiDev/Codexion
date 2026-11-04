@@ -1,6 +1,6 @@
 # Current session
 
-- **Subtask 6.2.2:** code review is `APPROVED`; close documentation and tracking are prepared. The harness next runs the close check and commits 6.2.2. Task 6.2 Readiness is then complete; proceed to 6.3.1 Wake dongles.
+- **State (2026-11-04):** task 6.2 Readiness closed (6.2.1 `283fc72`, 6.2.2 `5640838`), PR #25 merged into `main` (`efe2d32`), branch deleted. On `feat/6.3-acquisition-and-release`: 6.3.1 Wake dongles (`0be9980`), 6.3.2 Wait for dongles (`7800023`), 6.3.3 Release dongles (`26fd3e2`), 6.3.4 Take dongles (`6bc2d1d`), and 6.3.5 Take single dongle are closed in the plan; the task 6.3 PR narrative is ready. The supplied close check exited 0. Code gate APPROVED (`progress/review_6.3.5.md`); the implementation report records clean Valgrind and TSan runs. Close message is in `progress/close_6.3.5.msg`; the harness performs the commit and opens the task PR.
 
 - **State (2026-11-03):** issue #14 done (ISS-14.1, PR #17 merged). Task 4.3
   done: 4.3.1 Push request, 4.3.2 Get head request, 4.3.3 Pop request; PR #18
@@ -43,6 +43,10 @@
   narrative, and tracking complete. Supplied outside-sandbox `make check`
   exited 0.
 
+- **6.3.5 gates:** plan `PLAN_APPROVED` (`progress/review_history/6.3.5.md`);
+  code `APPROVED` (`progress/review_6.3.5.md`); close documentation and task
+  PR narrative are prepared. The supplied outside-sandbox close check exited 0.
+
 ## Decisions taken during the phase 03 breakdown (2026-10-28)
 
 - PR #8 (`style/threading-conventions`, merged `4d569c5`): `main.h` may include
@@ -75,7 +79,7 @@ by hand in the PR body). Applies from the task 6.x PRs on.
 
 ## Next step
 
-Harness: run the close check and commit subtask 6.2.2; then continue with 6.3.1.
+Task 6.3 Acquisition and release: close artifacts prepared; harness commit and task PR open are next.
 
 Note: `make check` does not run ThreadSanitizer or valgrind; CI does. PR #12
 failed CI on `make tsan` (lock-order inversion created by the unit test
@@ -127,3 +131,14 @@ Same class again on 5.4.1 (2026-11-03): reference doc frontmatter had ` date:`
 with a leading space ("missing frontmatter key 'date'"); Codex fixed only that
 line and `close 5.4.1` committed `d1d83ab`. Codex's reference-doc formatting
 slips recur: check anchors and frontmatter right after each `doc` step.
+
+## 6.3.4 plan gate re-run: oracle data race (2026-11-04)
+
+The sealed oracle `tests/acceptance/test_6.3.4.c` has a data race that makes
+the spec's TSan gate fail (confirmed by the leader, TSan under `setarch -R`):
+`run_progress_mode` (line 345) reads `owners[i]` without `owners_mutex` right
+after joining only thread `i`, while threads `i+1..` still write `owners[]`
+under `owners_mutex` in `run_progress` (line 304). No frame is in `coders/`.
+Requested fix: assert `owners[]` only after every thread is joined (or read it
+under `owners_mutex`), keeping AC6's intent; then re-seal. The implementation
+(`take_dongles`) is otherwise done: `make check` 0, valgrind clean.
