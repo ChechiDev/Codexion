@@ -572,3 +572,13 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_6.3.5.md`); implementation notes report clean acceptance Valgrind and TSan runs.
 - **Documentation:** docs/reference/6.3.5-take-single-dongle.md; task narrative: progress/pr_6.3.md
 - **Commit:** feat(dongle): acquire single dongle [6.3.5]
+
+
+## 2026-11-04 — Subtask 7.1.1: Set compile start
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-07-coder-thread/7.1.1-set-compile-start.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/coder/set_compile_start.c`, `coders/main.h`, and `coders/Makefile` add the per-coder timestamp update under its mutex; `docs/architecture.md` records the coder module.
+- **Acceptance:** `tests/acceptance/test_7.1.1.c` — AC1–AC5 cover elapsed timestamp storage, overwrite, future-start clamp, mutex contention, and invalid inputs.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_7.1.1.md`); implementation notes report clean Valgrind and TSan runs.
+- **Documentation:** docs/reference/7.1.1-set-compile-start.md
+- **Commit:** feat(coder): set compile start [7.1.1]

@@ -97,7 +97,7 @@
       "title": "Coder thread",
       "goal": "the coder routine loops take dongles, compiling, release, debugging, refactoring with correct logs, updates last_compile_start and compile_count under its own mutex, and exits promptly on stop (single coder takes its only dongle and waits to burn out)",
       "file": "docs/plan/phase-07-coder-thread.md",
-      "status": "pending",
+      "status": "in_progress",
       "tasks": [
         "7.1",
         "7.2",
@@ -3024,12 +3024,12 @@
       "phase": "07",
       "layer": "orchestration",
       "goal": "record a coder's compile start on the simulation clock and count its completed compiles, each under the coder's own mutex and without holding it across a log or a sleep",
-      "status": "pending",
+      "status": "in_progress",
       "subtasks": [
         {
           "id": "7.1.1",
           "title": "Set compile start",
-          "status": "pending",
+          "status": "done",
           "layer": "orchestration",
           "depends": [],
           "files": [
