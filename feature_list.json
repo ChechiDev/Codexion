@@ -2864,7 +2864,7 @@
         {
           "id": "6.3.3",
           "title": "Release dongles",
-          "status": "pending",
+          "status": "done",
           "layer": "orchestration",
           "depends": [
             "6.2.1",

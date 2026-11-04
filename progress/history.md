@@ -544,3 +544,13 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_6.3.2.md`); implementation notes report clean Valgrind and TSan runs.
 - **Documentation:** docs/reference/6.3.2-wait-for-dongles.md
 - **Commit:** feat(dongle): wait for dongles [6.3.2]
+
+
+## 2026-11-04 — Subtask 6.3.3: Release dongles
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-06-dongle-arbitration/6.3.3-release-dongles.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/dongle/release_dongles.c`, `coders/main.h`, and `coders/Makefile` release a coder's pair under ordered locks, timestamp cooldown after lock acquisition, notify waiters, and handle the single-dongle case; `docs/architecture.md` records the module contract.
+- **Acceptance:** `tests/acceptance/test_6.3.3.c` — AC1–AC6 cover release timing, both wakeups, queue preservation and cooldown, one coder, invalid inputs, and lock contention.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_6.3.3.md`); implementation notes report clean Valgrind and TSan runs for the acceptance binary and clean Valgrind for the unit binary.
+- **Documentation:** docs/reference/6.3.3-release-dongles.md
+- **Commit:** feat(dongle): release dongles with cooldown [6.3.3]

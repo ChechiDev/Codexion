@@ -1,6 +1,6 @@
 # Current session
 
-- **State (2026-11-04):** task 6.2 Readiness closed (6.2.1 `283fc72`, 6.2.2 `5640838`), PR #25 merged into `main` (`efe2d32`), branch deleted. Subtask 6.3.1 Wake dongles is closed. Subtask 6.3.2 Wait for dongles has plan `PLAN_APPROVED`, code `APPROVED`, and close artifacts prepared; the supplied outside-sandbox `make check` exited 0. The harness close check and commit are pending. Next: implement 6.3.3 Release dongles.
+- **State (2026-11-04):** task 6.2 Readiness closed (6.2.1 `283fc72`, 6.2.2 `5640838`), PR #25 merged into `main` (`efe2d32`), branch deleted. Subtasks 6.3.1 Wake dongles and 6.3.2 Wait for dongles are closed. Subtask 6.3.3 Release dongles has plan `PLAN_APPROVED`, code `APPROVED`, and close artifacts prepared; the supplied outside-sandbox `make check` exited 0. The harness close check and commit are pending. Next: continue task 6.3 with subtask 6.3.4 Take dongles.
 
 - **State (2026-11-03):** issue #14 done (ISS-14.1, PR #17 merged). Task 4.3
   done: 4.3.1 Push request, 4.3.2 Get head request, 4.3.3 Pop request; PR #18
@@ -75,7 +75,7 @@ by hand in the PR body). Applies from the task 6.x PRs on.
 
 ## Next step
 
-Continue task 6.3 Acquisition and release with subtask 6.3.3 Release dongles after the harness completes the 6.3.2 close check and commit.
+Continue task 6.3 Acquisition and release with subtask 6.3.4 Take dongles after the harness completes the 6.3.3 close check and commit.
 
 Note: `make check` does not run ThreadSanitizer or valgrind; CI does. PR #12
 failed CI on `make tsan` (lock-order inversion created by the unit test
