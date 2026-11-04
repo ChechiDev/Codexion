@@ -582,3 +582,12 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_7.1.1.md`); implementation notes report clean Valgrind and TSan runs.
 - **Documentation:** docs/reference/7.1.1-set-compile-start.md
 - **Commit:** feat(coder): set compile start [7.1.1]
+
+## 2026-11-04 — Subtask 7.1.2: Set compile count
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-07-coder-thread/7.1.2-set-compile-count.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/coder/set_compile_count.c`, `coders/main.h`, and `coders/Makefile` add a bounded completed-compile increment protected by the coder mutex; `docs/architecture.md` documents both coder state updates.
+- **Acceptance:** `tests/acceptance/test_7.1.2.c` — AC1–AC5 cover increments, bounds, concurrency, mutex contention, and NULL input.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_7.1.2.md`); implementation notes report clean acceptance Valgrind and ThreadSanitizer runs.
+- **Documentation:** docs/reference/7.1.2-set-compile-count.md; task narrative: progress/pr_7.1.md
+- **Commit:** feat(coder): set compile count [7.1.2]

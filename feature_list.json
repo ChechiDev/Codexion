@@ -3024,7 +3024,7 @@
       "phase": "07",
       "layer": "orchestration",
       "goal": "record a coder's compile start on the simulation clock and count its completed compiles, each under the coder's own mutex and without holding it across a log or a sleep",
-      "status": "in_progress",
+      "status": "done",
       "subtasks": [
         {
           "id": "7.1.1",
@@ -3069,7 +3069,7 @@
         {
           "id": "7.1.2",
           "title": "Set compile count",
-          "status": "pending",
+          "status": "done",
           "layer": "orchestration",
           "depends": [
             "7.1.1"
