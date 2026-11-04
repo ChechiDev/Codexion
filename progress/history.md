@@ -554,3 +554,12 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_6.3.3.md`); implementation notes report clean Valgrind and TSan runs for the acceptance binary and clean Valgrind for the unit binary.
 - **Documentation:** docs/reference/6.3.3-release-dongles.md
 - **Commit:** feat(dongle): release dongles with cooldown [6.3.3]
+
+## 2026-11-04 — Subtask 6.3.4: Take dongles
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-06-dongle-arbitration/6.3.4-take-dongles.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/dongle/take_dongles.c`, `coders/main.h`, and `coders/Makefile` add atomic two-dongle acquisition using the same scheduled request in both heaps; queued fatal failures stop the simulation and wake waiters.
+- **Acceptance:** `tests/acceptance/test_6.3.4.c` — AC1–AC7 cover acquisition, head-of-both ordering, FIFO/EDF priority, cooldown, stop, progress evidence, and invalid inputs.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_6.3.4.md`); implementation notes report clean acceptance Valgrind and corrected-oracle TSan runs.
+- **Documentation:** docs/reference/6.3.4-take-dongles.md
+- **Commit:** feat(dongle): acquire both dongles atomically [6.3.4]

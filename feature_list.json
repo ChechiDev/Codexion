@@ -2912,7 +2912,7 @@
         {
           "id": "6.3.4",
           "title": "Take dongles",
-          "status": "pending",
+          "status": "done",
           "layer": "orchestration",
           "depends": [
             "6.1.2",
