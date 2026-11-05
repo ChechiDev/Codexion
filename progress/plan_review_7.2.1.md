@@ -1,0 +1,16 @@
+# Plan review — subtask 7.2.1
+
+**Verdict:** PLAN_APPROVED
+
+## Plan analysis
+- Layers: `take_coder_dongles` belongs in coder orchestration. It composes the existing dongle acquisition, release, stop, and logging APIs without moving resource arbitration or I/O into the core.
+- Scope: one public acquisition-and-log operation; the spec declares its source file, `coders/main.h`, and `coders/Makefile` (three files). Its dependencies are complete and the phase gate is approved.
+- Test strategy: `tests/acceptance/test_7.2.1.c` has one black-box test for each criterion. It exercises the public API, captures stdout with a concurrent reader, bounds calls with watchdogs, and checks resource state and mutex release. The new function and prototype do not exist yet, so the oracle is intentionally red. The supplied outside-sandbox `make check` exited 0 before this oracle was written; no suite was run here.
+
+## Acceptance tests (traceability)
+- AC1 → `test_ac1_pair_acquisition_and_logs` (red)
+- AC2 → `test_ac2_single_acquisition_and_log` (red)
+- AC3 → `test_ac3_stopped_before_acquisition` (red)
+- AC4 → `test_ac4_log_failure_releases_dongles` (red)
+- AC5 → `test_ac5_invalid_input` (red)
+- AC6 → `test_ac6_ticket_exhaustion` (red)

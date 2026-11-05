@@ -6,7 +6,7 @@
 #    By: sperez-l@student.42barcelona.com           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/10/26 16:47:34 by sperez-l          #+#    #+#              #
-#    Updated: 2026/11/04 18:51:00 by sperez-l         ###   ########.fr        #
+#    Updated: 2026/11/05 11:15:00 by sperez-l         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,6 +24,7 @@ SRC = main.c \
 	src/cli/print_usage.c \
 	src/coder/set_compile_count.c \
 	src/coder/set_compile_start.c \
+	src/coder/take_coder_dongles.c \
 	src/dongle/build_request.c \
 	src/dongle/release_dongles.c \
 	src/dongle/take_dongles.c \
