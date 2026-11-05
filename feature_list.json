@@ -109,8 +109,11 @@
       "title": "Monitor thread",
       "goal": "a separate monitor thread that detects a burnout and logs it within 10 ms, or detects that every coder reached number_of_compiles_required, then sets stop and wakes all waiting threads",
       "file": "docs/plan/phase-08-monitor.md",
-      "status": "pending",
-      "tasks": []
+      "status": "in_progress",
+      "tasks": [
+        "8.1",
+        "8.2"
+      ]
     },
     {
       "id": "09",
@@ -3231,6 +3234,195 @@
             }
           ],
           "spec": "docs/plan/phase-07-coder-thread/7.3.1-run-coder.md"
+        }
+      ]
+    },
+    {
+      "id": "8.1",
+      "title": "Monitor checks",
+      "phase": "08",
+      "layer": "orchestration",
+      "goal": "tell whether one coder has burned out (clock and `last_compile_start` read under the coder's own mutex, `>=` deadline) and whether every coder reached `number_of_compiles_required` (0 required is met at once), without logging and with outputs untouched on any failure",
+      "status": "in_progress",
+      "subtasks": [
+        {
+          "id": "8.1.1",
+          "title": "Get burned out",
+          "status": "done",
+          "layer": "orchestration",
+          "depends": [],
+          "files": [
+            "coders/src/monitor/get_burned_out.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "deadline boundary, deterministic clock: on a simulation built with `init_simulation` (config `4 800 200 200 200 3 50 fifo`) with `start_ms = LONG_MAX` (so `get_elapsed_ms` clamps to 0), the coder at index 2 with `last_compile_start` set to `0`, `-799`, `-800` and `-801` in turn: `get_burned_out(&sim.coders[2], &burned)` returns 0 each time with `burned` (prefilled with 7 before each call) equal to 0, 0, 1 and 1 respectively; after each call the coder's `id`, `first_dongle`, `second_dongle`, `last_compile_start` and `compile_count` are unchanged, every other coder's `last_compile_start` and `compile_count` are unchanged, `sim.start_ms` and `sim.stopped` are unchanged, and the coder mutex is unlocked (`pthread_mutex_trylock` succeeds, then unlocked). Nothing is written to stdout: stdout is redirected to a pipe during the calls, then restored and the write end closed before the pipe is drained to EOF under a 1000 ms hang guard, and 0 bytes are read. The test ends with `free_sim`, which returns 0",
+              "test": "tests/acceptance/test_8.1.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "another duration (no hardcoded 800): with config `4 300 200 200 200 3 50 fifo` and the AC1 clock setup, `last_compile_start = -299` gives return 0 and `burned == 0`, and `-300` gives return 0 and `burned == 1`",
+              "test": "tests/acceptance/test_8.1.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "real clock: with config `4 800 200 200 200 3 50 fifo`, `start_ms = get_time_ms() - 1000` and `last_compile_start = 0` on the coder at index 0, the call returns 0 with `burned == 1` (assumes the wall clock is not set backwards during the test, as in the phase 03 clock specs)",
+              "test": "tests/acceptance/test_8.1.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "a satisfied coder still burns: with the AC1 setup, the coder at index 1 with `compile_count = 3` (the target) and `last_compile_start = -800`, while every other coder keeps `compile_count = 0`: the call returns 0 with `burned == 1`",
+              "test": "tests/acceptance/test_8.1.1.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "extreme starts: with the AC1 setup, `last_compile_start = LONG_MIN` gives return 0 and `burned == 1`; `LONG_MAX` gives return 0 and `burned == 0`",
+              "test": "tests/acceptance/test_8.1.1.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "contention: with the AC1 setup and `last_compile_start = -800` on the coder at index 1, the test locks that coder's mutex, starts a thread that signals (handshake under a test mutex) right before calling `get_burned_out(&sim.coders[1], &burned)` and sets a `done` flag under the test mutex right after it returns; once the handshake is seen and 50 ms have passed, `done` is still 0; while still holding the coder mutex the test stores `last_compile_start = 0` (renewed), unlocks and joins the thread within a 2000 ms hang guard; the thread's call returned 0 with `burned == 0` (it read the renewed start; deterministic because elapsed is clamped to 0). The thread is joined before `free_sim`",
+              "test": "tests/acceptance/test_8.1.1.c"
+            },
+            {
+              "id": "AC7",
+              "criterion": "invalid input returns -1 with nothing changed and no crash: NULL coder; an initialised coder whose `sim` the test sets to NULL (restored before `free_sim`); NULL `burned`; in every case a non-NULL `burned` keeps its prefilled 7 and the coder's named fields (`id`, `first_dongle`, `second_dongle`, `last_compile_start`, `compile_count`) are unchanged (compared field by field, never whole structs)",
+              "test": "tests/acceptance/test_8.1.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-08-monitor/8.1.1-get-burned-out.md"
+        },
+        {
+          "id": "8.1.2",
+          "title": "Get target met",
+          "status": "pending",
+          "layer": "orchestration",
+          "depends": [
+            "8.1.1"
+          ],
+          "files": [
+            "coders/src/monitor/get_target_met.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "one coder below target: on a simulation built with `init_simulation` (config `4 800 200 200 200 3 50 fifo`) with coders at indices 0, 1, 3 holding `compile_count = 3` and index 2 holding `2`: `get_target_met(&sim, &met)` returns 0 with `met` (prefilled with 7) equal to 0; every coder's named fields (`id`, `first_dongle`, `second_dongle`, `last_compile_start`, `compile_count`; compared field by field, never whole structs) are unchanged, `sim.stopped` and `sim.start_ms` are unchanged, every coder mutex is unlocked afterwards (`pthread_mutex_trylock` succeeds, then unlocked). These preservation and unlocked checks are repeated after every successful call of AC2-AC4. Nothing is written to stdout: stdout is redirected to a pipe during the calls (the calls themselves run under a 1000 ms hang guard, so output filling the pipe cannot block the test), then restored and the write end closed before draining to EOF, 0 bytes read. The test ends with `free_sim`, which returns 0",
+              "test": "tests/acceptance/test_8.1.2.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "scan coverage: with counts `3, 4, 3, INT_MAX` the call returns 0 with `met == 1`; all 0 gives `met == 0`; only the first below target (`2, 3, 3, 3`) gives `met == 0`; only the last below target (`3, 3, 3, 2`) gives `met == 0`; every call returns 0",
+              "test": "tests/acceptance/test_8.1.2.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "other targets (no hardcoded 3): with config `4 800 200 200 200 2147483647 50 fifo`, counts `INT_MAX` on every coder give `met == 1` and `INT_MAX, INT_MAX, INT_MAX - 1, INT_MAX` give `met == 0`; with config `1 800 200 200 200 2 50 edf` (synthetic state test without worker threads: a live single coder never compiles), count 1 gives `met == 0` and count 2 gives `met == 1`; every call returns 0",
+              "test": "tests/acceptance/test_8.1.2.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "zero required: with config `4 800 200 200 200 0 50 fifo` and every count 0, the call returns 0 with `met == 1`; the same with config `1 800 200 200 200 0 50 edf`",
+              "test": "tests/acceptance/test_8.1.2.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "contention: with the AC1 setup (index 2 at 2), the test locks the mutex of the coder at index 2, starts a thread that signals (handshake under a test mutex) right before calling `get_target_met(&sim, &met)` and sets a `done` flag under the test mutex right after it returns; once the handshake is seen and 50 ms have passed, `done` is still 0; while still holding that mutex the test stores `compile_count = 3` on index 2, unlocks and joins the thread within a 2000 ms hang guard (the handshake wait is bounded by the same guard; limits are liveness budgets sized for valgrind and TSan runs); the thread's call returned 0 with `met == 1` (it read the updated count under the lock). The thread is joined before `free_sim`",
+              "test": "tests/acceptance/test_8.1.2.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "invalid input returns -1 with nothing changed and no crash (guaranteed rejections even though they break the preconditions on purpose): NULL `sim`; NULL `met`; an initialised simulation whose `coders` the test sets to NULL; an initialised simulation whose `config.number_of_coders` the test sets to 0, then to -1 (every mutated field restored before `free_sim`); in every case a non-NULL `met` keeps its prefilled 7 and every coder's `compile_count` is unchanged. NULL `coders` and 0 coders also return -1 when `number_of_compiles_required` is 0 (validation comes first)",
+              "test": "tests/acceptance/test_8.1.2.c"
+            }
+          ],
+          "spec": "docs/plan/phase-08-monitor/8.1.2-get-target-met.md"
+        }
+      ]
+    },
+    {
+      "id": "8.2",
+      "title": "Monitor routine",
+      "phase": "08",
+      "layer": "orchestration",
+      "goal": "the monitor thread scans about every 1 ms; on the first burnout it prints it at once through `print_burnout` and wakes every waiter; when the compile target is met (0 required wins) it sets stop and wakes every waiter; it leaves silently when someone else stopped, and any failure sets stop and wakes every waiter",
+      "status": "pending",
+      "subtasks": [
+        {
+          "id": "8.2.1",
+          "title": "Run monitor",
+          "status": "pending",
+          "layer": "orchestration",
+          "depends": [
+            "8.1.2"
+          ],
+          "files": [
+            "coders/src/monitor/run_monitor.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "burnout of a non-first coder, on time: on a simulation built with `init_simulation` (config `4 300 200 200 200 3 50 fifo`), no coder thread running, coders at indices 0, 1, 3 with `last_compile_start = LONG_MAX` (never due) and index 2 with `last_compile_start = 0`; stdout is redirected to a pipe drained concurrently by a reader thread, started and ready (handshake) before the clock starts, that records the `get_time_ms()` reception time of each complete line (when its `\\n` is read); the test sets `start_ms = get_time_ms()` and starts `run_monitor(&sim)` in a thread; after the join every write end of the pipe is closed and stdout restored before waiting for the reader's EOF. The monitor thread returns NULL and is joined within a 2000 ms hang guard; the whole captured output is exactly one line `<ts> 3 burned out\\n` with `300 <= ts <= 310 + slack`; the line is received at most `310 + slack` ms after `start_ms` (slack = `CODEXION_TIME_SLACK_MS`, default 0, as in the phase 03 clock tests); `sim.stopped == 1`; every coder mutex, `stop_mutex` and `log_mutex` are unlocked afterwards (`pthread_mutex_trylock` succeeds, then unlocked). The test restores stdout and ends with `free_sim`, which returns 0",
+              "test": "tests/acceptance/test_8.2.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "several due at once: same as AC1 but with every coder at `last_compile_start = 0`: exactly one line is captured, of the form `<ts> <id> burned out\\n` with `id` in 1..4 and `ts` within the AC1 bounds (no particular winner is required, on purpose: the tie-break may be changed during the defense, see \"Defense note\", without breaking this sealed oracle)",
+              "test": "tests/acceptance/test_8.2.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "target met: config `4 800 200 200 200 3 50 fifo`, every coder with `compile_count = 3` and `last_compile_start = LONG_MAX`: the monitor returns within the hang guard, nothing is captured (0 bytes), `sim.stopped == 1`",
+              "test": "tests/acceptance/test_8.2.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "target met later: as AC3 but index 1 starts with `compile_count = 2`; once 100 ms have passed since the monitor started (and the monitor has not returned, checked through a `done` flag under a test mutex), the test stores `compile_count = 3` on index 1 under its coder mutex; the monitor then returns within the hang guard with nothing captured and `sim.stopped == 1`",
+              "test": "tests/acceptance/test_8.2.1.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "zero required wins over a due deadline (a case of the AC6 rule): config `4 800 200 200 200 0 50 fifo`, every coder at `last_compile_start = 0` and `start_ms = get_time_ms() - 1000` (every deadline already passed): the monitor returns within the hang guard, nothing is captured, `sim.stopped == 1`",
+              "test": "tests/acceptance/test_8.2.1.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "target before burnout in the same scan (user decision 2026-11-05): synthetic state (no coder thread), deterministic: config `4 300 200 200 200 3 50 fifo`, every coder with `compile_count = 3` (global target met), index 0 with `last_compile_start = 0` and the others at `LONG_MAX`, `start_ms = get_time_ms() - 1000` (index 0 overdue): the monitor returns within the hang guard, nothing is captured (0 bytes) and `sim.stopped == 1`. Counter-case: same state but index 3 at `compile_count = 2` (target not met): exactly one line `<ts> 1 burned out\\n` is captured",
+              "test": "tests/acceptance/test_8.2.1.c"
+            },
+            {
+              "id": "AC7",
+              "criterion": "stop by someone else: (a) `set_stopped(&sim)` before the monitor starts, every coder due (`last_compile_start = 0`, `start_ms = get_time_ms() - 1000`): the monitor returns within the hang guard, nothing is captured, `sim.stopped` stays 1; (b) config AC3 but counts 0 and every coder at `LONG_MAX`: after 100 ms of monitor run (not returned yet, `done` flag) the test records `t0 = get_time_ms()` right before `set_stopped(&sim)`, which returns 0; the monitor thread wrapper records `t1 = get_time_ms()` right after `run_monitor` returns (under the test mutex); `t1 - t0 <= 200 + slack` (a liveness budget; the ~1 ms cadence itself is code review), nothing is captured",
+              "test": "tests/acceptance/test_8.2.1.c"
+            },
+            {
+              "id": "AC8",
+              "criterion": "wakes every waiter, on both ending causes: (a) with the AC3 setup (target met) and (b) with the AC1 setup (burnout of index 2), before the monitor starts the test starts one waiter thread per dongle that locks that dongle's mutex, publishes readiness while still holding it, and loops `pthread_cond_wait(&dongle->cond, &dongle->mutex)` until `is_stopped(&sim)` (read under the dongle mutex, as the dongle waiters do), then unlocks; once every waiter is in its wait (readiness seen and the dongle mutex acquired by the test, then released) the monitor starts; readiness, every waiter thread and the monitor are joined within one global 2000 ms hang guard; in (b) exactly one burnout line is captured",
+              "test": "tests/acceptance/test_8.2.1.c"
+            },
+            {
+              "id": "AC9",
+              "criterion": "NULL argument: `run_monitor(NULL)` returns NULL with no crash and nothing written (the call runs under the capture and the hang guard)",
+              "test": "tests/acceptance/test_8.2.1.c"
+            },
+            {
+              "id": "AC10",
+              "criterion": "one coder: config `1 300 200 200 200 3 50 edf`, `compile_count = 0`, `last_compile_start = 0`, `start_ms = get_time_ms()`: exactly one line `<ts> 1 burned out\\n` within the AC1 bounds, `sim.stopped == 1`",
+              "test": "tests/acceptance/test_8.2.1.c"
+            },
+            {
+              "id": "AC11",
+              "criterion": "output failure: with the AC1 setup but stdout redirected to `/dev/full` (as in `test_7.3.1.c`), the burnout `write` fails: the monitor still returns within the hang guard and `sim.stopped == 1` (the stop committed by `print_burnout` or by the fallback `set_stopped`)",
+              "test": "tests/acceptance/test_8.2.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-08-monitor/8.2.1-run-monitor.md"
         }
       ]
     }

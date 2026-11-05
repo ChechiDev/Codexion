@@ -609,3 +609,12 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_7.3.1.md`); implementation notes report clean acceptance Valgrind and ThreadSanitizer runs.
 - **Documentation:** docs/reference/7.3.1-run-coder.md; task narrative: progress/pr_7.3.md
 - **Commit:** feat(coder): run coder cycle [7.3.1]
+
+## 2026-11-05 — Subtask 8.1.1: Get burned out
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-08-monitor/8.1.1-get-burned-out.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/monitor/get_burned_out.c`, `coders/main.h`, and `coders/Makefile` add a synchronized burnout-deadline check; `docs/architecture.md` documents the monitor module.
+- **Acceptance:** `tests/acceptance/test_8.1.1.c` — AC1–AC7 cover deadline boundaries, timing, satisfied coders, extreme starts, contention, and invalid input.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_8.1.1.md`); implementation notes report clean acceptance Valgrind and ThreadSanitizer runs.
+- **Documentation:** docs/reference/8.1.1-get-burned-out.md
+- **Commit:** feat(monitor): check coder burnout deadline [8.1.1]
