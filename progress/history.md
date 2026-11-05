@@ -627,3 +627,12 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_8.1.2.md`); implementation notes report clean TSan, memcheck, and acceptance Valgrind runs.
 - **Documentation:** docs/reference/8.1.2-get-target-met.md; task narrative: progress/pr_8.1.md
 - **Commit:** feat(monitor): check compile target [8.1.2]
+
+## 2026-11-05 — Subtask 8.2.1: Run monitor
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-08-monitor/8.2.1-run-monitor.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/monitor/run_monitor.c`, `coders/main.h`, and `coders/Makefile` add the monitor thread loop, target-first completion policy, serialized burnout reporting, and dongle waiter wake-up; `docs/architecture.md` already maps the monitor module.
+- **Acceptance:** `tests/acceptance/test_8.2.1.c` — AC1–AC11 cover timely burnout, target precedence and completion, external stop, waiter wake-up, NULL, one coder, and output failure.
+- **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_8.2.1.md`); implementation notes report clean Valgrind and ThreadSanitizer runs.
+- **Documentation:** docs/reference/8.2.1-run-monitor.md; task narrative: progress/pr_8.2.md
+- **Commit:** feat(monitor): run monitor thread [8.2.1]

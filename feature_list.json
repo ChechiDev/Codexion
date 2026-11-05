@@ -109,7 +109,7 @@
       "title": "Monitor thread",
       "goal": "a separate monitor thread that detects a burnout and logs it within 10 ms, or detects that every coder reached number_of_compiles_required, then sets stop and wakes all waiting threads",
       "file": "docs/plan/phase-08-monitor.md",
-      "status": "in_progress",
+      "status": "done",
       "tasks": [
         "8.1",
         "8.2"
@@ -3350,12 +3350,12 @@
       "phase": "08",
       "layer": "orchestration",
       "goal": "the monitor thread scans about every 1 ms; on the first burnout it prints it at once through `print_burnout` and wakes every waiter; when the compile target is met (0 required wins) it sets stop and wakes every waiter; it leaves silently when someone else stopped, and any failure sets stop and wakes every waiter",
-      "status": "pending",
+      "status": "done",
       "subtasks": [
         {
           "id": "8.2.1",
           "title": "Run monitor",
-          "status": "pending",
+          "status": "done",
           "layer": "orchestration",
           "depends": [
             "8.1.2"
