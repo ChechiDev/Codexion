@@ -600,3 +600,12 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_7.2.1.md`); implementation notes report clean acceptance Valgrind and ThreadSanitizer runs.
 - **Documentation:** docs/reference/7.2.1-take-coder-dongles.md
 - **Commit:** feat(coder): take and log coder dongles [7.2.1]
+
+## 2026-11-05 — Subtask 7.3.1: Run coder
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-07-coder-thread/7.3.1-run-coder.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/coder/run_coder.c`, `coders/main.h`, and `coders/Makefile` add the coder thread cycle, one-dongle wait, and common stop/wake cleanup; `docs/architecture.md` records the coder module's responsibilities.
+- **Acceptance:** `tests/acceptance/test_7.3.1.c` — AC1–AC8 cover cycle order, shared-pair state, one-coder waiting, prompt stop, interrupted compiles, pre-stopped state, failure cleanup, and invalid inputs.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_7.3.1.md`); implementation notes report clean acceptance Valgrind and ThreadSanitizer runs.
+- **Documentation:** docs/reference/7.3.1-run-coder.md; task narrative: progress/pr_7.3.md
+- **Commit:** feat(coder): run coder cycle [7.3.1]

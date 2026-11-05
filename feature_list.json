@@ -97,7 +97,7 @@
       "title": "Coder thread",
       "goal": "the coder routine loops take dongles, compiling, release, debugging, refactoring with correct logs, updates last_compile_start and compile_count under its own mutex, and exits promptly on stop (single coder takes its only dongle and waits to burn out)",
       "file": "docs/plan/phase-07-coder-thread.md",
-      "status": "in_progress",
+      "status": "done",
       "tasks": [
         "7.1",
         "7.2",
@@ -3173,12 +3173,12 @@
       "phase": "07",
       "layer": "orchestration",
       "goal": "the thread routine loops take, compiling, release, debugging, refactoring until stop; one coder takes its only dongle and waits for the stop; any failure releases what is held once, sets stop and wakes every waiter",
-      "status": "pending",
+      "status": "done",
       "subtasks": [
         {
           "id": "7.3.1",
           "title": "Run coder",
-          "status": "pending",
+          "status": "done",
           "layer": "orchestration",
           "depends": [
             "7.2.1"
