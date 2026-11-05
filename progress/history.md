@@ -618,3 +618,12 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_8.1.1.md`); implementation notes report clean acceptance Valgrind and ThreadSanitizer runs.
 - **Documentation:** docs/reference/8.1.1-get-burned-out.md
 - **Commit:** feat(monitor): check coder burnout deadline [8.1.1]
+
+## 2026-11-05 — Subtask 8.1.2: Get target met
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-08-monitor/8.1.2-get-target-met.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/monitor/get_target_met.c`, `coders/main.h`, and `coders/Makefile` add the synchronized read-only compile-target check.
+- **Acceptance:** `tests/acceptance/test_8.1.2.c` — AC1–AC6 cover target scans, alternate and zero targets, preservation, contention, and invalid input.
+- **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_8.1.2.md`); implementation notes report clean TSan, memcheck, and acceptance Valgrind runs.
+- **Documentation:** docs/reference/8.1.2-get-target-met.md; task narrative: progress/pr_8.1.md
+- **Commit:** feat(monitor): check compile target [8.1.2]

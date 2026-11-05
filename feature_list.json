@@ -3243,7 +3243,7 @@
       "phase": "08",
       "layer": "orchestration",
       "goal": "tell whether one coder has burned out (clock and `last_compile_start` read under the coder's own mutex, `>=` deadline) and whether every coder reached `number_of_compiles_required` (0 required is met at once), without logging and with outputs untouched on any failure",
-      "status": "in_progress",
+      "status": "done",
       "subtasks": [
         {
           "id": "8.1.1",
@@ -3298,7 +3298,7 @@
         {
           "id": "8.1.2",
           "title": "Get target met",
-          "status": "pending",
+          "status": "done",
           "layer": "orchestration",
           "depends": [
             "8.1.1"
