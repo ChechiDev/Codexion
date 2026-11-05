@@ -591,3 +591,12 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_7.1.2.md`); implementation notes report clean acceptance Valgrind and ThreadSanitizer runs.
 - **Documentation:** docs/reference/7.1.2-set-compile-count.md; task narrative: progress/pr_7.1.md
 - **Commit:** feat(coder): set compile count [7.1.2]
+
+## 2026-11-05 — Subtask 7.2.1: Take coder dongles
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-07-coder-thread/7.2.1-take-coder-dongles.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/coder/take_coder_dongles.c`, `coders/main.h`, and `coders/Makefile` add pair/single acquisition orchestration, per-dongle acquisition logs, and one release attempt after a log failure; `docs/architecture.md` records the coder module's responsibility and dependencies.
+- **Acceptance:** `tests/acceptance/test_7.2.1.c` — AC1–AC6 cover pair and single acquisition, stop, log failure, invalid input, and ticket exhaustion.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_7.2.1.md`); implementation notes report clean acceptance Valgrind and ThreadSanitizer runs.
+- **Documentation:** docs/reference/7.2.1-take-coder-dongles.md
+- **Commit:** feat(coder): take and log coder dongles [7.2.1]

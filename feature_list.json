@@ -3116,12 +3116,12 @@
       "phase": "07",
       "layer": "orchestration",
       "goal": "take the coder's dongles (the pair, or the single dongle when there is one coder) and log `has taken a dongle` once per distinct dongle, releasing them once if the log fails",
-      "status": "pending",
+      "status": "done",
       "subtasks": [
         {
           "id": "7.2.1",
           "title": "Take coder dongles",
-          "status": "pending",
+          "status": "done",
           "layer": "orchestration",
           "depends": [
             "7.1.2"
