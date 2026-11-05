@@ -1,9 +1,9 @@
 # Current session
 
-- **State (2026-11-05):** task 7.1 merged (PR #27, `458fe9b`); subtask 7.2.1 Take coder dongles `in_progress` on `feat/7.2-coder-acquisition`; next: plan gate.
+- **State (2026-11-05):** task 7.3 Coder routine is complete on `feat/7.3-coder-routine`; subtask 7.3.1 has plan `PLAN_APPROVED`, code `APPROVED`, and the supplied outside-sandbox close check exited 0. Reference docs, plan status, task PR narrative, and commit message are prepared for the harness close.
 
 - **State (2026-11-04, end of session):** **Phase 06 Dongle arbitration is done (9/9).** Task 6.3 Acquisition and release closed (6.3.1 `0be9980`, 6.3.2 `7800023`, 6.3.3 `26fd3e2`, 6.3.4 `6bc2d1d`, 6.3.5 `1d0de26`); PR #26 merged into `main` (merge commit `cc3dd5a`), branch deleted locally and on origin. On `main`, tree clean. PR #26's "Issues" section was expanded by Codex to 13 resolved problems (documenter rule: every problem met), applied with `gh pr edit`; the local `progress/pr_6.3.md` edit was discarded.
-- **Pending (in order):** (1) DONE 2026-11-04: `docs/implementer-checklist.md` written (pass it to every implementer prompt); with the task 6.3 lessons: closed-list verbs for static helpers too; check every unlock on failure paths and release whatever is held; single-dongle / same-pointer case without double updates; Norm (25 lines, line length); no background `make check`; confirm the acceptance binary is newer than the source. Pass it to every implementer prompt. (2) Break down phase 07 Coder thread. (3) Global-harness ideas, user's call only (`.claude/agents` and `harness/` are symlinks to `~/.claude-codex-harness`, never edit them): implementer warnings, sealed-oracle fix procedure in leader.md (note in current.md + re-run plan gate), a mode to regenerate an open PR's body, `flock` around `make check`, anti-attribution hook false positive on paths containing "claude".
+- **Pending (in order):** (1) After the task 7.3 PR is merged and the user approves the phase transition, break down phase 08 Monitor thread. (2) Global-harness ideas, user's call only (`.claude/agents` and `harness/` are symlinks to `~/.claude-codex-harness`, never edit them): implementer warnings, sealed-oracle fix procedure in leader.md (note in current.md + re-run plan gate), a mode to regenerate an open PR's body, `flock` around `make check`, anti-attribution hook false positive on paths containing "claude".
 
 - **State (2026-11-03):** issue #14 done (ISS-14.1, PR #17 merged). Task 4.3
   done: 4.3.1 Push request, 4.3.2 Get head request, 4.3.3 Pop request; PR #18
@@ -82,7 +82,7 @@ by hand in the PR body). Applies from the task 6.x PRs on.
 
 ## Next step
 
-**Phase 07 (2026-11-04):** tasks 7.1 Coder state, 7.2 Coder acquisition, 7.3 Coder routine approved by the user after a Codex advisory (`progress/phase07_tasks_proposal.md`, `..._advisory.md`); 4 specs 7.1.1-7.3.1 validated one by one, each with Codex advisory rounds (`progress/advisory_7.x.x_spec.md`). Key decisions: clock read under the coder mutex (7.1.1); count only completed compiles (7.1.2); `take_coder_dongles` releases itself on a log -1, stop precedence (7.2.1); single exit policy in `run_coder`, lifecycle error reporting open for phase 09 (7.3.1). Phase gate `PHASE_APPROVED` on round 1 (`progress/phase_review_07.md`), sealed. Task 7.1 is closed; next: 7.2.1 (pass `docs/implementer-checklist.md` to the implementer).
+**Phase 07 (2026-11-05):** tasks 7.1 Coder state, 7.2 Coder acquisition, and 7.3 Coder routine are complete; all four subtasks are closed or in the current harness close. The phase gate remains `PHASE_APPROVED` (`progress/phase_review_07.md`). Key contracts include reading compile start under the coder mutex, counting only completed compiles, resolving log failure in `take_coder_dongles`, and one cleanup/stop/wake exit policy in `run_coder`; lifecycle error reporting remains for phase 09. Next: phase 08 breakdown after the task 7.3 PR is merged and the user approves the transition.
 
 Note: `make check` does not run ThreadSanitizer or valgrind; CI does. PR #12
 failed CI on `make tsan` (lock-order inversion created by the unit test
