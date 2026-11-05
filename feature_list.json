@@ -97,8 +97,12 @@
       "title": "Coder thread",
       "goal": "the coder routine loops take dongles, compiling, release, debugging, refactoring with correct logs, updates last_compile_start and compile_count under its own mutex, and exits promptly on stop (single coder takes its only dongle and waits to burn out)",
       "file": "docs/plan/phase-07-coder-thread.md",
-      "status": "pending",
-      "tasks": []
+      "status": "in_progress",
+      "tasks": [
+        "7.1",
+        "7.2",
+        "7.3"
+      ]
     },
     {
       "id": "08",
@@ -3011,6 +3015,222 @@
             }
           ],
           "spec": "docs/plan/phase-06-dongle-arbitration/6.3.5-take-single-dongle.md"
+        }
+      ]
+    },
+    {
+      "id": "7.1",
+      "title": "Coder state",
+      "phase": "07",
+      "layer": "orchestration",
+      "goal": "record a coder's compile start on the simulation clock and count its completed compiles, each under the coder's own mutex and without holding it across a log or a sleep",
+      "status": "done",
+      "subtasks": [
+        {
+          "id": "7.1.1",
+          "title": "Set compile start",
+          "status": "done",
+          "layer": "orchestration",
+          "depends": [],
+          "files": [
+            "coders/src/coder/set_compile_start.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "on a simulation built with `init_simulation` (config `4 800 200 200 200 3 50 fifo`) whose `start_ms` the test sets to `get_time_ms() - 500`, with the coder at index 1 (id 2) prefilled with `compile_count = 7` and `last_compile_start = -12345`: `set_compile_start(&sim.coders[1])` returns 0 and its `last_compile_start` lies between `get_elapsed_ms(start_ms)` read right before and right after the call; its `id`, `first_dongle`, `second_dongle` and `compile_count` (7) are unchanged, every other coder's `last_compile_start` is still 0, `sim.start_ms` is unchanged, and its mutex is unlocked afterwards (`pthread_mutex_trylock` succeeds, then unlocked). The test ends with `free_sim`, which returns 0",
+              "test": "tests/acceptance/test_7.1.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "overwrite: after a first successful call the test waits until `get_time_ms()` has advanced at least 20 ms past its value read right after that call (loop around the sleep, so an interrupted sleep cannot shorten it); a second call returns 0 and stores a value at least 20 greater than the first (assumes the wall clock is not set backwards during the test, as in the phase 03 clock specs)",
+              "test": "tests/acceptance/test_7.1.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "clamp: with `start_ms = LONG_MAX` and the field prefilled with -12345, the call returns 0 and stores 0 (`get_elapsed_ms` clamps a future start)",
+              "test": "tests/acceptance/test_7.1.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "contention: the test locks the mutex of the coder at index 1, then starts a thread that signals (handshake under a test mutex) right before calling `set_compile_start(&sim.coders[1])` and sets a `done` flag under the test mutex right after it returns; once the handshake is seen and 50 ms have passed, `done` is still 0 and the field still holds its prefilled -12345 (read while the test holds the coder mutex); the test reads `t0 = get_elapsed_ms(start_ms)`, unlocks, joins the thread within a 1000 ms hang guard, reads `t1`; the thread's call returned 0 and the field, read after the join, lies in `[t0, t1]`. The thread is joined before `free_sim`",
+              "test": "tests/acceptance/test_7.1.1.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "invalid input returns -1 with nothing changed and no crash: NULL coder; a coder whose `sim` is NULL (its `last_compile_start` sentinel-prefilled stays unchanged)",
+              "test": "tests/acceptance/test_7.1.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-07-coder-thread/7.1.1-set-compile-start.md"
+        },
+        {
+          "id": "7.1.2",
+          "title": "Set compile count",
+          "status": "done",
+          "layer": "orchestration",
+          "depends": [
+            "7.1.1"
+          ],
+          "files": [
+            "coders/src/coder/set_compile_count.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "on a simulation built with `init_simulation` (config `4 800 200 200 200 3 50 fifo`), with the coder at index 1 (id 2) prefilled with `last_compile_start = -12345`: three calls to `set_compile_count(&sim.coders[1])` each return 0 and leave `compile_count` at 1, 2, 3; its `id`, `first_dongle`, `second_dongle` and `last_compile_start` (-12345) are unchanged, every other coder's `compile_count` is still 0, and its mutex is unlocked afterwards (`pthread_mutex_trylock` succeeds, then unlocked). The test ends with `free_sim`, which returns 0",
+              "test": "tests/acceptance/test_7.1.2.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "bounds: with `compile_count` set by the test to `INT_MAX - 1` the call returns 0 and leaves `INT_MAX`; a further call returns -1 and leaves `INT_MAX` (no wrap); with a corrupted `compile_count` of -1 the call returns -1 and leaves -1; the mutex is unlocked after each call",
+              "test": "tests/acceptance/test_7.1.2.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "concurrency: on a fresh simulation built as in AC1 (`compile_count` 0), 8 threads each call `set_compile_count(&sim.coders[1])` 1000 times on the same coder; every call returns 0 and `compile_count == 8000` at the end (threads joined before reading and before `free_sim`)",
+              "test": "tests/acceptance/test_7.1.2.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "contention: the test locks the mutex of the coder at index 1, then starts a thread that signals (handshake under a test mutex) right before calling `set_compile_count(&sim.coders[1])` and sets a `done` flag under the test mutex right after it returns; once the handshake is seen and at least 50 ms have passed on `get_time_ms()` (loop around the sleep), `done` is still 0 and `compile_count` is still 0 (read while the test holds the coder mutex); after the test unlocks, the thread is joined within a 1000 ms hang guard, its call returned 0 and `compile_count == 1`",
+              "test": "tests/acceptance/test_7.1.2.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "invalid input: `set_compile_count(NULL)` returns -1 with no crash",
+              "test": "tests/acceptance/test_7.1.2.c"
+            }
+          ],
+          "spec": "docs/plan/phase-07-coder-thread/7.1.2-set-compile-count.md"
+        }
+      ]
+    },
+    {
+      "id": "7.2",
+      "title": "Coder acquisition",
+      "phase": "07",
+      "layer": "orchestration",
+      "goal": "take the coder's dongles (the pair, or the single dongle when there is one coder) and log `has taken a dongle` once per distinct dongle, releasing them once if the log fails",
+      "status": "pending",
+      "subtasks": [
+        {
+          "id": "7.2.1",
+          "title": "Take coder dongles",
+          "status": "pending",
+          "layer": "orchestration",
+          "depends": [
+            "7.1.2"
+          ],
+          "files": [
+            "coders/src/coder/take_coder_dongles.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "pair: on a simulation built with `init_simulation` (config `4 800 200 200 200 3 50 fifo`, `start_ms` set by the test to `get_time_ms()`), with stdout redirected to a pipe drained concurrently, with the coder at index 2 (id 3) prefilled with `compile_count = 7` and `last_compile_start = 12345` (sentinels), `take_coder_dongles(&sim.coders[2], &taken)` returns 0 with `taken == 1`; the output is exactly two complete lines, each `<ts> 3 has taken a dongle` with `ts` a non-negative decimal; both dongles of that coder have `available == 0` and empty heaps, the two other dongles still have `available == 1`, `released_at == -1` and empty heaps; every dongle mutex and the coder mutex are unlocked afterwards (`pthread_mutex_trylock` succeeds, then unlocked); `compile_count` (7) and `last_compile_start` (12345) are unchanged. The test restores stdout and ends with `free_sim`, which returns 0",
+              "test": "tests/acceptance/test_7.2.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "one coder: as AC1 with config `1 800 200 200 200 3 50 fifo`: returns 0 with `taken == 1`, the output is exactly one line `<ts> 1 has taken a dongle`, dongle 0 has `available == 0` and an empty heap, its mutex is unlocked",
+              "test": "tests/acceptance/test_7.2.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "stopped: on a simulation built as in AC1 and stopped with `set_stopped` before the call, `take_coder_dongles(&sim.coders[0], &taken)` returns 0 with `taken == 0` (sentinel-prefilled before), nothing is written, every dongle still has `available == 1`, every mutex is unlocked; the same with the one-coder config of AC2",
+              "test": "tests/acceptance/test_7.2.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "log failure: in a child process whose stdout is redirected to `/dev/full`, on a simulation built as in AC1, the call returns -1 with `taken` unchanged (sentinel), `stopped` is still 0, both dongles of the coder at index 0 are available again (`available == 1`, `released_at >= 0`), and every mutex is unlocked; the same with the one-coder config of AC2 (dongle 0 available again); the child reports through its exit status and the parent asserts it",
+              "test": "tests/acceptance/test_7.2.1.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "invalid input returns -1 with nothing written, `taken` unchanged when non-NULL, no dongle taken and no crash: NULL coder; NULL `taken`; a coder whose `sim` is NULL",
+              "test": "tests/acceptance/test_7.2.1.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "acquisition failure: on a simulation built as in AC1 with `next_ticket` set by the test to `LONG_MAX` (tickets exhausted, 6.1.1), the call returns -1 with `taken` unchanged (sentinel), nothing written, every dongle still `available == 1` with an empty heap, every mutex unlocked; the same with the one-coder config of AC2 (both acquisition branches)",
+              "test": "tests/acceptance/test_7.2.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-07-coder-thread/7.2.1-take-coder-dongles.md"
+        }
+      ]
+    },
+    {
+      "id": "7.3",
+      "title": "Coder routine",
+      "phase": "07",
+      "layer": "orchestration",
+      "goal": "the thread routine loops take, compiling, release, debugging, refactoring until stop; one coder takes its only dongle and waits for the stop; any failure releases what is held once, sets stop and wakes every waiter",
+      "status": "pending",
+      "subtasks": [
+        {
+          "id": "7.3.1",
+          "title": "Run coder",
+          "status": "pending",
+          "layer": "orchestration",
+          "depends": [
+            "7.2.1"
+          ],
+          "files": [
+            "coders/src/coder/run_coder.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "cycle and order: on a simulation built with `init_simulation` (config `2 10000 50 30 40 0 0 fifo`, `start_ms` set by the test to `get_time_ms()` before any thread starts), stdout redirected to a pipe drained concurrently, the test starts both coders with `pthread_create(&t, NULL, run_coder, &sim.coders[i])` and waits until each coder has logged at least two `is refactoring` lines (observed progress, no fixed run time); then it calls `set_stopped` and `wake_dongles` and joins both. Every output line is complete and matches `<ts> <id> <text>` with `id` in {1, 2} and one of the four state texts; timestamps are non-decreasing in output order; for each coder its lines form repetitions of the cycle `has taken a dongle`, `has taken a dongle`, `is compiling`, `is debugging`, `is refactoring`, where a cycle is complete once its `is refactoring` line is printed and only the last cycle may be cut short; within a cycle `is debugging` comes at least 50 ms after `is compiling` and `is refactoring` at least 30 ms after `is debugging`, and the next cycle's first `has taken a dongle` comes at least 40 ms after `is refactoring` (distinct debug/refactor times catch swapped fields). The test ends with `free_sim`, which returns 0",
+              "test": "tests/acceptance/test_7.3.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "shared pair and state: in the run of AC1 (both coders share both dongles, cooldown 0), any two consecutive `is compiling` lines in the output are at least 50 ms apart (a coder logs `is compiling` only after taking the pair, which the other gives back only after its 50 ms compile); after the joins each coder's `compile_count` is between its number of `is debugging` lines and its number of `is compiling` lines, its `last_compile_start` is greater than 0 and at most `get_elapsed_ms(start_ms)` read after the joins; both dongles have `available == 1` and every mutex is unlocked",
+              "test": "tests/acceptance/test_7.3.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "one coder: config `1 10000 50 30 40 0 0 fifo`, one thread on coder index 0; once the test has read the line `<ts> 1 has taken a dongle`, it waits at least 200 ms on `get_time_ms()`; then, under the dongle mutex, dongle 0 has `available == 0` (still held), a `done` flag the thread sets under a test mutex after `run_coder` returns (wrapper start routine) is still 0, and nothing else was printed (no `is compiling`); after `set_stopped` + `wake_dongles` the thread is joined; then dongle 0 has `available == 1` (released), `compile_count == 0`, and the whole output is exactly that one line",
+              "test": "tests/acceptance/test_7.3.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "prompt stop: config `4 10000 1000 1000 1000 0 0 fifo` (long sleeps), all four coders started; once the test has read at least one `is compiling` line it calls `set_stopped` + `wake_dongles`, and every thread is joined within `100 + CODEXION_TIME_SLACK_MS` ms of that call (earlier completed compiles are allowed); with config `4 10000 0 0 0 0 0 fifo` (zero-length sleeps), once at least 20 lines were read the test stops the run the same way and all four are joined within the same bound; in both runs every dongle ends `available == 1` and every mutex is unlocked",
+              "test": "tests/acceptance/test_7.3.1.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "interrupted compile: config `2 100000 60000 10 10 0 0 fifo` (a compile far longer than the whole watchdog budget), both coders started; once the test has read the first `is compiling` line it calls `set_stopped` + `wake_dongles` and joins both within `100 + CODEXION_TIME_SLACK_MS` ms; no `is debugging` line was printed, both `compile_count` are 0 (an interrupted compile never counts), both dongles `available == 1` and every mutex unlocked",
+              "test": "tests/acceptance/test_7.3.1.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "already stopped: on a simulation built as in AC1 and stopped with `set_stopped` before the call, `run_coder(&sim.coders[0])` (called directly) returns NULL under the watchdog, nothing is printed, every dongle still `available == 1`, `compile_count == 0`",
+              "test": "tests/acceptance/test_7.3.1.c"
+            },
+            {
+              "id": "AC7",
+              "criterion": "failure exit policy, three fresh simulations built as in AC1 (not stopped), `run_coder(&sim.coders[0])` called directly, each returning NULL under the watchdog with `stopped == 1` afterwards (the routine set it), both dongles of that coder `available == 1` and every mutex unlocked: (a) after a successful take: `compile_count` prefilled with `INT_MAX`, stdout to a pipe drained concurrently; the output is that coder's two `has taken a dongle` lines and one `is compiling` line, then nothing more, and `compile_count` is still `INT_MAX`; (b) acquisition failure: `next_ticket` set to `LONG_MAX`; nothing is printed; (c) log failure: in a child process whose stdout is redirected to `/dev/full`; the child reports through its exit status and the parent asserts it",
+              "test": "tests/acceptance/test_7.3.1.c"
+            },
+            {
+              "id": "AC8",
+              "criterion": "invalid input returns NULL with no crash, nothing printed and no dongle taken: `run_coder(NULL)`; a coder whose `sim` is NULL",
+              "test": "tests/acceptance/test_7.3.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-07-coder-thread/7.3.1-run-coder.md"
         }
       ]
     }

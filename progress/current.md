@@ -1,6 +1,9 @@
 # Current session
 
-- **State (2026-11-04):** task 6.2 Readiness closed (6.2.1 `283fc72`, 6.2.2 `5640838`), PR #25 merged into `main` (`efe2d32`), branch deleted. On `feat/6.3-acquisition-and-release`: 6.3.1 Wake dongles (`0be9980`), 6.3.2 Wait for dongles (`7800023`), 6.3.3 Release dongles (`26fd3e2`), 6.3.4 Take dongles (`6bc2d1d`), and 6.3.5 Take single dongle are closed in the plan; the task 6.3 PR narrative is ready. The supplied close check exited 0. Code gate APPROVED (`progress/review_6.3.5.md`); the implementation report records clean Valgrind and TSan runs. Close message is in `progress/close_6.3.5.msg`; the harness performs the commit and opens the task PR.
+- **State (2026-11-04):** Task 7.1 Coder state is closed on `feat/7.1-coder-state`: 7.1.1 Set compile start (`385e52c`) and 7.1.2 Set compile count (close message in `progress/close_7.1.2.msg`). Both plan and code gates are approved; close documentation and task PR narrative are prepared. Supplied outside-sandbox close `make check` exited 0; harness will run the final check and commit.
+
+- **State (2026-11-04, end of session):** **Phase 06 Dongle arbitration is done (9/9).** Task 6.3 Acquisition and release closed (6.3.1 `0be9980`, 6.3.2 `7800023`, 6.3.3 `26fd3e2`, 6.3.4 `6bc2d1d`, 6.3.5 `1d0de26`); PR #26 merged into `main` (merge commit `cc3dd5a`), branch deleted locally and on origin. On `main`, tree clean. PR #26's "Issues" section was expanded by Codex to 13 resolved problems (documenter rule: every problem met), applied with `gh pr edit`; the local `progress/pr_6.3.md` edit was discarded.
+- **Pending (in order):** (1) DONE 2026-11-04: `docs/implementer-checklist.md` written (pass it to every implementer prompt); with the task 6.3 lessons: closed-list verbs for static helpers too; check every unlock on failure paths and release whatever is held; single-dongle / same-pointer case without double updates; Norm (25 lines, line length); no background `make check`; confirm the acceptance binary is newer than the source. Pass it to every implementer prompt. (2) Break down phase 07 Coder thread. (3) Global-harness ideas, user's call only (`.claude/agents` and `harness/` are symlinks to `~/.claude-codex-harness`, never edit them): implementer warnings, sealed-oracle fix procedure in leader.md (note in current.md + re-run plan gate), a mode to regenerate an open PR's body, `flock` around `make check`, anti-attribution hook false positive on paths containing "claude".
 
 - **State (2026-11-03):** issue #14 done (ISS-14.1, PR #17 merged). Task 4.3
   done: 4.3.1 Push request, 4.3.2 Get head request, 4.3.3 Pop request; PR #18
@@ -79,7 +82,7 @@ by hand in the PR body). Applies from the task 6.x PRs on.
 
 ## Next step
 
-Task 6.3 Acquisition and release: close artifacts prepared; harness commit and task PR open are next.
+**Phase 07 (2026-11-04):** tasks 7.1 Coder state, 7.2 Coder acquisition, 7.3 Coder routine approved by the user after a Codex advisory (`progress/phase07_tasks_proposal.md`, `..._advisory.md`); 4 specs 7.1.1-7.3.1 validated one by one, each with Codex advisory rounds (`progress/advisory_7.x.x_spec.md`). Key decisions: clock read under the coder mutex (7.1.1); count only completed compiles (7.1.2); `take_coder_dongles` releases itself on a log -1, stop precedence (7.2.1); single exit policy in `run_coder`, lifecycle error reporting open for phase 09 (7.3.1). Phase gate `PHASE_APPROVED` on round 1 (`progress/phase_review_07.md`), sealed. Task 7.1 is closed; next: 7.2.1 (pass `docs/implementer-checklist.md` to the implementer).
 
 Note: `make check` does not run ThreadSanitizer or valgrind; CI does. PR #12
 failed CI on `make tsan` (lock-order inversion created by the unit test

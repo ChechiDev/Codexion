@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/11/04 14:10:00 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/11/04 18:51:00 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,6 +187,11 @@ int		wait_for_dongles(t_coder *coder);
 int		release_dongles(t_coder *coder);
 int		take_dongles(t_coder *coder, int *taken);
 int		take_single_dongle(t_coder *coder, int *taken);
+
+/* ---- Coder ---- */
+
+int		set_compile_start(t_coder *coder);
+int		set_compile_count(t_coder *coder);
 
 /* ---- CLI ---- */
 
