@@ -45,3 +45,31 @@
 - Template: every section of `harness/issue_template.md` is present. Intended work is described in future tense; the existing behavior is stated in present tense.
 - Labels: exactly one type label (`refactor`); `priority: now` is valid.
 - Size: the return-contract change, caller handling, unit test update, and migration of one sealed acceptance oracle fit one issue. The draft leaves the sealed 3.3.1 spec unchanged and identifies the superseded criteria. It explicitly retains the existing `is_stopped` mutex-failure limitation. No agent attribution appears.
+
+## Round 4: issue-draft gate, CHANGES_REQUESTED (2026-11-06 12:43)
+
+### Issue draft review
+
+**Verdict:** CHANGES_REQUESTED
+
+#### Analysis
+- Problem: concrete and supported by the current `print_state` return path and the planned phase 09 failure flag.
+- Template: all required sections are present and describe intended work.
+- Labels: exactly one type label (`refactor`); priority `now` is valid.
+- Size: one production function and its affected tests fit one issue. No agent attribution appears in the draft.
+- The sealed-oracle migration list is incomplete. The draft names the post-stop assertion in AC7 of `test_3.4.3.c`, but misses the loop condition that also depends on a stop returning -1.
+
+#### Requested changes
+1. In `progress/issue_draft.md:51-56`, include `tests/acceptance/test_3.4.3.c:436` in the AC7 migration and describe changing that loop's stop condition to recognize result 1. With only the listed assertion at line 445 changed, the loop keeps treating 1 as a successful write, increments its count, and does not terminate after the stop.
+
+## Round 5: issue-draft gate, DRAFT_APPROVED (2026-11-06 12:48)
+
+### Issue draft review
+
+**Verdict:** DRAFT_APPROVED
+
+#### Analysis
+- Problem: the existing `print_state` stop path returns -1, as do real failures. The draft explains the resulting ambiguity for phase 09's planned failure flag and identifies the current callers.
+- Template: every section of `harness/issue_template.md` is present. Intended changes use future tense; statements about current behaviour use present tense.
+- Labels: exactly one type label (`refactor`); priority `now` is valid.
+- Size: one production function, its unit test, and four affected sealed oracles fit one issue. The migration list includes both stop-sensitive worker loops and their post-stop assertions. No agent attribution appears in the draft.

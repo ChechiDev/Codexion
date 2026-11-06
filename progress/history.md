@@ -645,3 +645,11 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_8.2.1.md`); implementation notes report clean Valgrind and ThreadSanitizer runs.
 - **Documentation:** docs/reference/8.2.1-run-monitor.md; task narrative: progress/pr_8.2.md
 - **Commit:** feat(monitor): run monitor thread [8.2.1]
+
+## 2026-11-06 — Subtask ISS-34.1: Print stop result
+
+- **Plan:** docs/plan/issues/ISS-34-refactor-print-state-returns-1-on-stop-1-only-on-error-3-4/ISS-34.1-print-stop-result.md (plan_review: PLAN_APPROVED)
+- **Acceptance:** `tests/acceptance/test_ISS-34.1.c` — AC1–AC7 cover output, stop and failure results, concurrency, caller behavior, and the deliverable; four sealed 3.4.x oracles migrate their post-stop expectations.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_ISS-34.1.md`).
+- **Documentation:** docs/reference/ISS-34.1-print-stop-result.md; task narrative: progress/pr_ISS-34.md
+- **Commit:** refactor(log): distinguish print stop result [ISS-34.1]
