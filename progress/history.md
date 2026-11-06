@@ -1,5 +1,14 @@
 # Historical log (append-only)
 
+## 2026-11-06 — Subtask ISS-32.1: Sleep stop result
+- **Layer:** adapters
+- **Plan:** docs/plan/issues/ISS-32-refactor-sleep-ms-returns-1-on-stop-1-only-on-error-3-3/ISS-32.1-sleep-stop-result.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/time/sleep_ms.c` now returns 1 when it observes a stop and keeps -1 for clock failures; existing `run_coder` behavior is unchanged.
+- **Acceptance:** `tests/acceptance/test_ISS-32.1.c` — AC1–AC6 cover duration and stop results, coder behavior, and build integration; `tests/acceptance/test_3.3.1.c` migrates the prior stop-result assertions.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_ISS-32.1.md`).
+- **Documentation:** docs/reference/ISS-32.1-sleep-stop-result.md; task narrative: progress/pr_ISS-32.md
+- **Commit:** refactor(time): distinguish sleep stop result [ISS-32.1]
+
 > When each subtask closes, Codex appends its summary here as part of the close.
 > Do not edit previous entries. Only append at the end.
 
