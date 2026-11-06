@@ -372,9 +372,11 @@ main wires parse, init, start the coder and monitor threads, join and teardown e
 ### Phase 10 — Hardening and README · not broken down yet
 prove the whole program against the subject with full-binary simulation tests (fifo/edf ordering, cooldown, no burnout under edf at and above the PLAN.md viability boundary including the N = 6 interleaved case, typical evaluation runs, valgrind leak-free, TSan race-free, Norm-clean) and complete the README with its mandatory sections, real outputs and didactic tone
 
-### Issues · 1/1 done
+### Issues · 2/2 done
 
 - **ISS-14 refactor: replace parse_config bit mask with invalid flags [2.3]** — done · refactor · priority next
   - [x] [ISS-14.1 Report invalid arguments as flags](issues/ISS-14-refactor-replace-parse-config-bit-mask-with-invalid-flags-2-3/ISS-14.1-invalid-flags.md) · [plan review](../../progress/plan_review_ISS-14.1.md) · [code review](../../progress/review_ISS-14.1.md) · [reference](../reference/ISS-14.1-invalid-flags.md)
+- **ISS-32 "refactor: sleep_ms returns 1 on stop, -1 only on error [3.3]"** — done · refactor · priority now
+  - [x] [ISS-32.1 Sleep stop result](issues/ISS-32-refactor-sleep-ms-returns-1-on-stop-1-only-on-error-3-3/ISS-32.1-sleep-stop-result.md) · [plan review](../../progress/plan_review_ISS-32.1.md) · [code review](../../progress/review_ISS-32.1.md) · [reference](../reference/ISS-32.1-sleep-stop-result.md)
 
 <!-- plan:index:end -->

@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/28 18:18:36 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/10/28 18:18:36 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/11/06 12:00:00 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	sleep_ms(t_sim *sim, long ms)
 	while (1)
 	{
 		if (is_stopped(sim))
-			return (-1);
+			return (1);
 		elapsed = get_elapsed_ms(start);
 		if (elapsed < 0)
 			return (-1);

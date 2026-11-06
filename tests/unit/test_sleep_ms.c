@@ -47,7 +47,7 @@ static void	test_running_sleep_lasts_duration(void)
 	destroy_sim(&sim);
 }
 
-static void	test_stopped_returns_minus_one_fast(void)
+static void	test_stopped_returns_one_fast(void)
 {
 	t_sim	sim;
 	long	before;
@@ -55,7 +55,8 @@ static void	test_stopped_returns_minus_one_fast(void)
 	setup_sim(&sim);
 	assert(set_stopped(&sim) == 0);
 	before = get_time_ms();
-	assert(sleep_ms(&sim, LONG_MAX) == -1);
+	assert(sleep_ms(&sim, LONG_MAX) == 1);
+	assert(sleep_ms(&sim, 1000) == 1);
 	assert(get_time_ms() - before < 100);
 	destroy_sim(&sim);
 }
@@ -64,6 +65,6 @@ int	main(void)
 {
 	test_nonpositive_returns_zero();
 	test_running_sleep_lasts_duration();
-	test_stopped_returns_minus_one_fast();
+	test_stopped_returns_one_fast();
 	return (0);
 }

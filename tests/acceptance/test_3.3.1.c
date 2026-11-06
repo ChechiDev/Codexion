@@ -100,7 +100,7 @@ static void test_ac3_stopped_sleep_returns_immediately(void)
 	assert(set_stopped(&sim) == 0);
 	before = get_time_ms();
 	assert(before >= 0);
-	assert(sleep_ms(&sim, 1000) == -1);
+	assert(sleep_ms(&sim, 1000) == 1);
 	after = get_time_ms();
 	assert(after >= before && after - before < 2 + get_timing_slack_ms());
 	destroy_sim(&sim);
@@ -145,7 +145,7 @@ static void test_ac4_concurrent_stop_interrupts_sleep(void)
 	assert(set_stopped(&sim) == 0);
 	assert(pthread_join(thread, NULL) == 0);
 	assert(alarm(0) != 0);
-	assert(worker.result == -1);
+	assert(worker.result == 1);
 	assert(worker.returned_ms >= stop_ms);
 	assert(worker.returned_ms <= stop_ms + 10 + get_timing_slack_ms());
 	assert(pthread_cond_destroy(&worker.cond) == 0);
