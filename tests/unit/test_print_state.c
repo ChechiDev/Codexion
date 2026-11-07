@@ -1,4 +1,4 @@
-/* Unit tests for print_state: line format, rejections, lock failures. */
+/* Unit tests for print_state: line format, stop result, rejections, failures. */
 
 #define _POSIX_C_SOURCE 200809L
 
@@ -98,7 +98,10 @@ static void	test_rejections_write_nothing(void)
 	assert(print_state(&sim, 0, STATE_COMPILING) == -1);
 	assert(print_state(&sim, -3, STATE_COMPILING) == -1);
 	assert(set_stopped(&sim) == 0);
-	assert(print_state(&sim, 1, STATE_COMPILING) == -1);
+	assert(print_state(&sim, 1, STATE_COMPILING) == 1);
+	assert(print_state(&sim, 0, STATE_COMPILING) == -1);
+	assert(print_state(&sim, -3, STATE_COMPILING) == -1);
+	assert(print_state(&sim, 1, (t_state)4) == -1);
 	assert(restore_stdout(saved, fds, buf) == 0);
 	destroy_sim(&sim);
 }

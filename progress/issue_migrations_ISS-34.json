@@ -1,0 +1,8 @@
+{
+  "ISS-34.1": [
+    "tests/acceptance/test_3.4.3.c",
+    "tests/acceptance/test_3.4.4.c",
+    "tests/acceptance/test_3.4.5.c",
+    "tests/acceptance/test_3.4.6.c"
+  ]
+}

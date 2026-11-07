@@ -66,7 +66,7 @@ static void test_ac1_print_state_regression(void)
 	state = 0;
 	while (state < 4)
 	{
-		assert(print_state(&sim, 7, (t_state)state) == -1);
+		assert(print_state(&sim, 7, (t_state)state) == 1);
 		state++;
 	}
 	assert(dup2(saved, STDOUT_FILENO) >= 0 && close(saved) == 0);

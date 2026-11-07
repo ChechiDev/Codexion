@@ -275,7 +275,7 @@ static void test_ac7_print_state_regression(void)
 	assert_line(line, len, 7, "is compiling");
 	assert(set_stopped(&sim) == 0);
 	start_capture(&cap, 0);
-	assert(print_state(&sim, 7, STATE_COMPILING) == -1);
+	assert(print_state(&sim, 7, STATE_COMPILING) == 1);
 	stop_capture(&cap);
 	assert(read_all(&cap, line, sizeof(line)) == 0);
 	destroy_sim(&sim);

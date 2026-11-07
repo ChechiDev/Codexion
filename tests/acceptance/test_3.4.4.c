@@ -291,7 +291,7 @@ static void test_ac6_no_states_after_burnout(void)
 	start_capture(&cap);
 	state = 0;
 	while (state < 4)
-		assert(print_state(&sim, 2, (t_state)state++) == -1);
+		assert(print_state(&sim, 2, (t_state)state++) == 1);
 	stop_capture(&cap);
 	assert(cap.len == 0);
 	destroy_sim(&sim);
@@ -407,7 +407,7 @@ static void *write_until_burnout(void *arg)
 	while (1)
 	{
 		result = print_state(&run->sim, index + 1, STATE_DEBUGGING);
-		if (result == -1)
+		if (result == 1)
 			break;
 		assert(result == 0);
 		assert(pthread_mutex_lock(&run->mutex) == 0);
@@ -417,7 +417,7 @@ static void *write_until_burnout(void *arg)
 	}
 	result = pthread_barrier_wait(&run->after_burn);
 	assert(result == 0 || result == PTHREAD_BARRIER_SERIAL_THREAD);
-	assert(print_state(&run->sim, index + 1, STATE_REFACTORING) == -1);
+	assert(print_state(&run->sim, index + 1, STATE_REFACTORING) == 1);
 	return (NULL);
 }
 
