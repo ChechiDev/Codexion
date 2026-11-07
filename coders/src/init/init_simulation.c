@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 16:00:00 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/11/03 17:00:00 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/11/07 12:00:00 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ int	init_simulation(t_sim *sim, const t_config *config)
 	sim->config = *config;
 	sim->start_ms = 0;
 	sim->stopped = 0;
+	sim->failed = 0;
 	sim->next_ticket = 0;
 	sim->dongles = NULL;
 	sim->coders = NULL;

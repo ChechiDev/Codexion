@@ -120,12 +120,13 @@
       "title": "Simulation lifecycle",
       "goal": "main wires parse, init, start the coder and monitor threads, join and teardown end to end, with clean shutdown on pthread_create failure and the edge cases (1 coder, zero compiles required) behaving as specified",
       "file": "docs/plan/phase-09-lifecycle.md",
-      "status": "pending",
+      "status": "in_progress",
       "tasks": [
         "9.1",
         "9.2",
         "9.3",
-        "9.4"
+        "9.4",
+        "9.5"
       ]
     },
     {
@@ -3437,12 +3438,12 @@
       "phase": "09",
       "layer": "adapters",
       "goal": "`t_sim` gains a `failed` flag (cleared by `init_simulation`) and the monitor thread handle; `set_failed` marks a runtime failure under `stop_mutex` without stopping the run (stopping stays `set_stopped`'s job), so the lifecycle can tell a normal end (burnout or target met) from an internal error",
-      "status": "pending",
+      "status": "in_progress",
       "subtasks": [
         {
           "id": "9.1.1",
           "title": "Failure fields",
-          "status": "pending",
+          "status": "done",
           "layer": "adapters",
           "depends": [
             "5.4.2"
@@ -3454,7 +3455,7 @@
           "acceptance": [
             {
               "id": "AC1",
-              "criterion": "four coders on dirty storage: before the call the test does `memset(&sim, 0x5A, sizeof sim)` (so `failed` starts non-zero); `init_simulation(&sim, &config)` with config `4 800 200 200 200 3 50 fifo` returns 0 and leaves `sim.failed == 0`, `sim.stopped == 0`, `sim.next_ticket == 0`, `sim.start_ms == 0`, the eight config fields equal to the input compared field by field (no `memcmp`, padding), `sim.coders` and `sim.dongles` non-NULL, and for each of the 4 elements the initial state checked by the sealed 5.4.2 oracle (dongle `available == 1`, `released_at == 0`, empty heap of capacity 2, coder `id == i + 1`, seat pair from `get_dongle_pair`, `last_compile_start == 0`, `compile_count == 0`, `coder.sim == &sim`); no mutex or thread handle of the prefilled storage is read before `init_simulation` initialises it; `free_sim(&sim)` then returns 0",
+              "criterion": "four coders on dirty storage: before the call the test does `memset(&sim, 0x5A, sizeof sim)` (so `failed` starts non-zero); `init_simulation(&sim, &config)` with config `4 800 200 200 200 3 50 fifo` returns 0 and leaves `sim.failed == 0`, `sim.stopped == 0`, `sim.next_ticket == 0`, `sim.start_ms == 0`, the eight config fields equal to the input compared field by field (no `memcmp`, padding), `sim.coders` and `sim.dongles` non-NULL, and for each of the 4 elements the initial state checked by the sealed 5.4.2 oracle (dongle `available == 1`, `released_at == -1`, empty heap of capacity 2, coder `id == i + 1`, seat pair from `get_dongle_pair`, `last_compile_start == 0`, `compile_count == 0`, `coder.sim == &sim`); no mutex or thread handle of the prefilled storage is read before `init_simulation` initialises it; `free_sim(&sim)` then returns 0",
               "test": "tests/acceptance/test_9.1.1.c"
             },
             {
@@ -3539,9 +3540,155 @@
       "title": "Report runtime failures",
       "phase": "09",
       "layer": "orchestration",
-      "goal": "a coder marks `failed` only on a real error (a -1, never on the `sleep_ms` stop result 1 from ISS-32), and the monitor separates a clean target-met stop from an error exit (failed check, burnout line, `set_stopped`, `wake_dongles` or `usleep` failure) that marks `failed`, stops and wakes every waiter; a logged burnout stays a normal end",
+      "goal": "`take_coder_dongles` keeps the `print_state` cause (1 stop, -1 error) instead of guessing it, a coder marks `failed` only on a real error (a -1, never on the stop result 1 of `sleep_ms` or `print_state`, ISS-32 and ISS-34), and the monitor separates a clean target-met stop from an error exit (failed check, burnout line, `set_stopped`, `wake_dongles` or `usleep` failure) that marks `failed`, stops and wakes every waiter; a logged burnout stays a normal end",
       "status": "pending",
-      "subtasks": []
+      "subtasks": [
+        {
+          "id": "9.2.1",
+          "title": "Take keeps print result",
+          "status": "pending",
+          "layer": "orchestration",
+          "depends": [
+            "7.2.1",
+            "ISS-34.1"
+          ],
+          "files": [
+            "coders/src/coder/take_coder_dongles.c"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "taken on a running simulation (regression): on a simulation built with `init_simulation` (config `4 800 200 200 200 3 50 fifo`, `start_ms = get_time_ms()`), stdout to a pipe drained concurrently, `take_coder_dongles(&sim.coders[2], &taken)` returns 0 with `taken == 1`, exactly two `<ts> 3 has taken a dongle` lines are written, both dongles of coder 3 are `available == 0`, and their mutexes are unlocked; the test then releases them with `release_dongles` (0) and `free_sim` returns 0",
+              "test": "tests/acceptance/test_9.2.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "stop seen while printing is a normal \"not taken\": on a simulation stopped with `set_stopped` before the call (the take itself returns \"not taken\" there, sealed 6.3.4), `take_coder_dongles(&sim.coders[0], &taken)` returns 0 with `taken == 0` (sentinel-prefilled before), writes nothing, and leaves both dongles of coder 1 `available == 1`",
+              "test": "tests/acceptance/test_9.2.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "a real print error is -1: in a child process (forked while no test thread is alive, `open(\"/dev/full\")` and `dup2` onto stdout checked) on a running simulation, `take_coder_dongles(&sim.coders[0], &taken)` returns -1 with `taken` unchanged (sentinel), both dongles of coder 1 `available == 1` again (released once), every dongle mutex unlocked, and `sim.stopped` still 0; the child exits 0 only if every check held; the parent requires normal termination with status 0",
+              "test": "tests/acceptance/test_9.2.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "one coder: config `1 800 200 200 200 3 50 fifo`: returns 0 with `taken == 1`, exactly one `<ts> 1 has taken a dongle` line, dongle 0 `available == 0`; and in a `/dev/full` child, -1 with dongle 0 `available == 1` again",
+              "test": "tests/acceptance/test_9.2.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-09-lifecycle/9.2.1-take-keeps-print-result.md"
+        },
+        {
+          "id": "9.2.2",
+          "title": "Coder reports failure",
+          "status": "pending",
+          "layer": "orchestration",
+          "depends": [
+            "9.1.2",
+            "9.2.1",
+            "ISS-32.1",
+            "ISS-34.1"
+          ],
+          "files": [
+            "coders/src/coder/run_coder.c"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "normal stop of a running group: simulation built with `init_simulation` (config `4 800 200 100 100 50 50 fifo`), stdout to a pipe drained concurrently, `start_ms = get_time_ms()`, four `run_coder` threads; after 700 ms the test calls `set_stopped` (0) and `wake_dongles`; every thread returns NULL and every `pthread_join` succeeds within the hang guard; only then: `sim.failed == 0`, `sim.stopped == 1`, every dongle `available == 1`, every coder mutex, dongle mutex, `stop_mutex`, `log_mutex` and `ticket_mutex` unlocked (`pthread_mutex_trylock` succeeds, then unlocked); the sum of `compile_count` is at least 2; `free_sim` returns 0",
+              "test": "tests/acceptance/test_9.2.2.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "stop during a long compile: config `2 100000 60000 10 10 0 0 fifo`, both coders started; once the test has read the first `is compiling` line it calls `set_stopped` and `wake_dongles`; both joins succeed within the hang guard; `sim.failed == 0`; both dongles `available == 1`",
+              "test": "tests/acceptance/test_9.2.2.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "stop during a long rest: config `2 100000 10 60000 60000 0 0 fifo`, both coders started; once the test has read the first `is debugging` line it calls `set_stopped` and `wake_dongles`; both joins succeed within the hang guard; `sim.failed == 0`; both dongles `available == 1`",
+              "test": "tests/acceptance/test_9.2.2.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "zero-length phases: config `2 10000 0 0 0 0 0 fifo`, both coders started; after 100 ms the test calls `set_stopped` and `wake_dongles`; both joins succeed within the hang guard; `sim.failed == 0`; both dongles `available == 1`",
+              "test": "tests/acceptance/test_9.2.2.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "one coder, normal stop: config `1 10000 50 30 40 3 0 fifo`, one thread on coder index 0; once the test has read `<ts> 1 has taken a dongle` and waited 200 ms, it calls `set_stopped` and `wake_dongles`; the join succeeds within the hang guard; `sim.failed == 0`, the single dongle `available == 1`",
+              "test": "tests/acceptance/test_9.2.2.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "already stopped: on a simulation stopped with `set_stopped` before the call, `run_coder(&sim.coders[0])` called directly returns NULL, prints nothing, leaves every dongle `available == 1` and `sim.failed == 0`",
+              "test": "tests/acceptance/test_9.2.2.c"
+            },
+            {
+              "id": "AC7",
+              "criterion": "real failures mark `failed`: three fresh simulations (config `2 10000 50 30 40 0 0 fifo`, not stopped), `run_coder(&sim.coders[0])` called directly, each returning NULL within the hang guard with `sim.failed == 1`, `sim.stopped == 1`, both dongles of that coder `available == 1` and every mutex unlocked afterwards: (a) compile-count failure after a successful take: `compile_count` prefilled with `INT_MAX`, stdout to a pipe drained concurrently; (b) acquisition failure: `next_ticket` set to `LONG_MAX`, nothing printed; (c) log failure: in a child process (created while no test reader thread is running) whose stdout is redirected to `/dev/full`, the child checks `failed == 1` and `stopped == 1` and reports through its exit status, which the parent asserts under the watchdog",
+              "test": "tests/acceptance/test_9.2.2.c"
+            },
+            {
+              "id": "AC8",
+              "criterion": "invalid input: `run_coder(NULL)` and a coder whose `sim` is NULL return NULL with no crash and nothing printed",
+              "test": "tests/acceptance/test_9.2.2.c"
+            }
+          ],
+          "spec": "docs/plan/phase-09-lifecycle/9.2.2-coder-reports-failure.md"
+        },
+        {
+          "id": "9.2.3",
+          "title": "Monitor reports failure",
+          "status": "pending",
+          "layer": "orchestration",
+          "depends": [
+            "9.1.2",
+            "8.2.1"
+          ],
+          "files": [
+            "coders/src/monitor/run_monitor.c"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "target met is a clean end: config `4 800 200 200 200 3 50 fifo` built with `init_simulation`, no coder thread, every coder with `compile_count = 3` and `last_compile_start = LONG_MAX`, `start_ms = get_time_ms()`, stdout captured; `run_monitor` in a thread returns NULL and is joined within a 2000 ms hang guard; nothing captured, `sim.stopped == 1`, `sim.failed == 0`",
+              "test": "tests/acceptance/test_9.2.3.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "zero required is a clean end: config `4 800 200 200 200 0 50 fifo`, every coder at `last_compile_start = 0`, `start_ms = get_time_ms() - 1000` (every deadline passed): the monitor returns within the hang guard, nothing captured, `sim.stopped == 1`, `sim.failed == 0`",
+              "test": "tests/acceptance/test_9.2.3.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "a logged burnout is a normal end: config `4 300 200 200 200 3 50 fifo`, coders at indices 0, 1, 3 with `last_compile_start = LONG_MAX`, index 2 with `last_compile_start = 0`, `compile_count = 0` for all, `start_ms = get_time_ms()`, stdout to a pipe drained concurrently; the monitor returns within the hang guard; exactly one line `<ts> 3 burned out\\n` is captured, `sim.stopped == 1`, `sim.failed == 0`",
+              "test": "tests/acceptance/test_9.2.3.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "burnout line write failure marks `failed`: in a child process (forked while no test thread is alive, the simulation built inside the child) whose stdout is redirected to `/dev/full` (the redirection result checked), the AC3 setup; the monitor returns and is joined within the hang guard; the child checks `sim.stopped == 1` and `sim.failed == 1`, frees the simulation (`free_sim` returns 0) and exits 0 only if every check passed; the parent requires normal termination with status 0, under the watchdog",
+              "test": "tests/acceptance/test_9.2.3.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "stopped by someone else, silent and untouched (synthetic isolated check, outside the lifecycle invariant: a test stops the run without marking `failed`): (a) `set_stopped(&sim)` before the monitor starts, every coder due (`last_compile_start = 0`, `start_ms = get_time_ms() - 1000`), `failed` left at 0: the monitor returns within the hang guard, nothing captured, `sim.stopped == 1`, `sim.failed == 0` (it leaves by the silent exit and never calls `print_burnout`); (b) as (a) but `set_failed(&sim)` and `set_stopped(&sim)` before the start: `sim.stopped == 1` and `sim.failed` stays 1",
+              "test": "tests/acceptance/test_9.2.3.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "lock state afterwards: in AC1, AC3 and AC5(a), after the join, every coder mutex, `stop_mutex` and `log_mutex` are unlocked (`pthread_mutex_trylock` succeeds, then unlocked) and `free_sim` returns 0",
+              "test": "tests/acceptance/test_9.2.3.c"
+            },
+            {
+              "id": "AC7",
+              "criterion": "wakes every waiter on the error exit too: the AC4 child additionally starts, before the monitor, one waiter thread per dongle that locks that dongle's mutex, publishes readiness while holding it and loops `pthread_cond_wait(&dongle->cond, &dongle->mutex)` until `is_stopped(&sim)`; after seeing a waiter's readiness the child locks and unlocks that dongle's mutex (so the waiter is inside its wait, as in the 8.2.1 AC8 handshake); then the monitor starts; preparation, readiness, every waiter and the monitor are covered by one hang guard (2000 ms, wider under valgrind/TSan); the child exits 0 only if every join succeeded; the parent requires normal termination with status 0. A spurious wake-up cannot be told from the broadcast: that the error exit calls `wake_dongles` is code review",
+              "test": "tests/acceptance/test_9.2.3.c"
+            }
+          ],
+          "spec": "docs/plan/phase-09-lifecycle/9.2.3-monitor-reports-failure.md"
+        }
+      ]
     },
     {
       "id": "9.3",
@@ -3550,16 +3697,233 @@
       "layer": "orchestration",
       "goal": "start the monitor first and then the N coders right after setting `start_ms` (no start barrier, user decision 2026-11-06); on any `pthread_create` failure mark `failed`, stop, wake every waiter and join exactly the threads created (none when the monitor itself failed, or when the clock read fails before any creation); join the monitor and the coders trying every join and reporting any failure",
       "status": "pending",
-      "subtasks": []
+      "subtasks": [
+        {
+          "id": "9.3.1",
+          "title": "Join threads",
+          "status": "pending",
+          "layer": "orchestration",
+          "depends": [
+            "9.1.1",
+            "9.1.2"
+          ],
+          "files": [
+            "coders/src/lifecycle/join_threads.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "waits for every thread: on a simulation built by `init_simulation` (config `4 800 200 200 200 3 50 fifo`), the test creates one held worker per coder into `sim.coders[i].thread` and one into `sim.monitor`; each worker signals readiness and then blocks on a test gate (mutex + cond) until the test opens it, then returns NULL; once all five are ready, a caller thread runs `join_threads(&sim, 4)` and records, under the test mutex, that it returned and its result; after 100 ms the test checks the call has **not** returned (it is waiting on held threads), then opens the gate; the call returns 0 within the watchdog; `free_sim` returns 0 after the caller thread was joined",
+              "test": "tests/acceptance/test_9.3.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "partial join (the failed-start case of 9.3.2): same protocol with the monitor and only coder workers 0 and 1 created; `join_threads(&sim, 2)` has not returned after 100 ms while they are held, and returns 0 once the gate opens; coder slots 2 and 3 hold no thread and are never touched",
+              "test": "tests/acceptance/test_9.3.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "monitor only: same protocol with only the monitor worker; `join_threads(&sim, 0)` has not returned after 100 ms while it is held, and returns 0 once the gate opens",
+              "test": "tests/acceptance/test_9.3.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "invalid input joins nothing: `join_threads(NULL, 0)` returns -1; then two separate fixtures (one for `-1`, one for `5`, more than `number_of_coders`), each with the monitor and four coder workers created and **held** at the gate: `join_threads(&sim, -1)` (resp. `5`) called from the main thread returns -1 within 100 ms while every worker is still held (a join attempt on a held thread would block, so a prompt return shows none was attempted); the test then opens the gate and joins all five workers itself with `pthread_join`",
+              "test": "tests/acceptance/test_9.3.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-09-lifecycle/9.3.1-join-threads.md"
+        },
+        {
+          "id": "9.3.2",
+          "title": "Start threads",
+          "status": "pending",
+          "layer": "orchestration",
+          "depends": [
+            "9.3.1",
+            "9.2.2",
+            "9.2.3"
+          ],
+          "files": [
+            "coders/src/lifecycle/start_threads.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "normal start, run to the target: on a simulation built by `init_simulation` (config `4 5000 200 200 200 3 50 fifo`, burnout far above the run length), stdout to a pipe drained concurrently, `before = get_time_ms()`, `start_threads(&sim)` returns 0, `after = get_time_ms()`; `before <= sim.start_ms <= after`; then `join_threads(&sim, 4)` returns 0 within the watchdog (the monitor ends the run when every coder reached 3 compiles); `sim.failed == 0`, `sim.stopped == 1`, every coder `compile_count >= 3`; the captured output is non-empty and every line is `<ts> <id> <text>` with `ts >= 0`, `id` in 1..4, one of the four state texts, timestamps non-decreasing, no `burned out` line; `free_sim` returns 0",
+              "test": "tests/acceptance/test_9.3.2.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "one coder: config `1 300 200 200 200 3 50 edf`: `start_threads` returns 0; `join_threads(&sim, 1)` returns 0 within the watchdog; the output is exactly `<ts> 1 has taken a dongle` then `<ts> 1 burned out` with the burnout `ts` in `300 .. 310 + S` (assumes the coder thread gets CPU before its deadline, normal scheduling); `sim.failed == 0`; `free_sim` returns 0",
+              "test": "tests/acceptance/test_9.3.2.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "thread creation failure, opportunistic (native build only: skipped when built with a sanitizer, detected for GCC and Clang, e.g. `__SANITIZE_THREAD__` / `__has_feature(thread_sanitizer)` and the address equivalents; skipped under valgrind, detected with `RUNNING_ON_VALGRIND` when `<valgrind/valgrind.h>` is available (`__has_include`), otherwise through `CODEXION_UNDER_VALGRIND=1` set by the runner; a skip prints a diagnostic to stderr): in a child process (forked while no test thread is alive) the test builds a simulation with config `200 800 200 200 200 3 50 fifo`, saves both `RLIMIT_AS` limits with `getrlimit`, and lowers only the soft limit (`rlim_cur`, `rlim_max` unchanged, every call and the size arithmetic checked for overflow) to the current address-space use plus room for a few thread stacks; it calls `start_threads` and classifies the outcome: (exercised) it returned -1: then `sim.failed == 1`, every dongle `available == 1`, and `free_sim` returns 0 (which branch failed — monitor or a coder — is not inferred from the output; `stopped == 1` on a coder failure, even the first one, is code review); (not exercised) it returned 0: the child restores the saved soft limit (the restore is checked), stops the run (`set_stopped` + `wake_dongles`), requires `join_threads(&sim, 200) == 0` and then `free_sim` to return 0, prints a \"not exercised\" diagnostic to stderr and exits with a distinct status; any other result (-2, a failed restore, a failed setup or cleanup step, an assert) is a real failure, and after a failed join the simulation is neither read nor freed; the parent accepts exit 0 (exercised and passed) or the distinct status (not exercised, every cleanup verified), and fails on any other status, a signal or the watchdog",
+              "test": "tests/acceptance/test_9.3.2.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "invalid input: `start_threads(NULL)` returns -1 and creates no thread",
+              "test": "tests/acceptance/test_9.3.2.c"
+            }
+          ],
+          "spec": "docs/plan/phase-09-lifecycle/9.3.2-start-threads.md"
+        }
+      ]
     },
     {
       "id": "9.4",
-      "title": "Lifecycle",
+      "title": "Run simulation",
+      "phase": "09",
+      "layer": "orchestration",
+      "goal": "`run_simulation` drives one whole run on caller-owned storage: it returns 0 at once with no threads and no output when `number_of_compiles_required` is 0 (user decision 2026-11-06), otherwise init → start → join → read `failed` → `free_sim` (no `free_sim` after a failed init, nothing freed or re-joined after a failed recovery or final join), 0 on a normal end (target met or burnout) and -1 on any failure",
+      "status": "pending",
+      "subtasks": [
+        {
+          "id": "9.4.1",
+          "title": "Run simulation",
+          "status": "pending",
+          "layer": "orchestration",
+          "depends": [
+            "9.3.2"
+          ],
+          "files": [
+            "coders/src/lifecycle/run_simulation.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "zero compiles required ends at once (user decision 2026-11-06): with config `4 800 200 200 200 0 50 fifo` and a `t_sim` storage prefilled with `0x5A`, its bytes copied with `memcpy` into an `unsigned char before[sizeof sim]` (no struct copy), `run_simulation(&sim, &config)` returns 0 within 50 ms, writes nothing to stdout or stderr (both captured), and `memcmp` shows the storage byte-for-byte equal to `before` (no persistent change; that nothing was read, initialised or started is code review)",
+              "test": "tests/acceptance/test_9.4.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "normal end by the target: config `4 5000 200 200 200 3 50 fifo`, stdout to a pipe drained concurrently: returns 0 within the watchdog; the output is non-empty, every line is a complete `<ts> <id> <text>` with `ts >= 0`, `id` in 1..4 and one of the four state texts, timestamps non-decreasing, no `burned out` line, and each id has at least 3 `is compiling` lines; stderr is empty (a fifo scenario; the edf no-burnout guarantee is phase 10)",
+              "test": "tests/acceptance/test_9.4.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "normal end by a burnout: config `2 300 400 100 100 3 0 fifo` (a compile of 400 ms is longer than the 300 ms burnout, so a burnout must happen: the coder that compiles is due at 300 ms from its compile start, and the other one cannot start compiling before then because the two coders share both dongles): returns 0 within the watchdog; exactly one `burned out` line, of the form `<ts> <id> burned out` with `id` in 1..2 (either coder may be reported) and `300 <= ts <= 310 + S`, and it is the last line; every line complete, `ts >= 0`, ids and texts valid, timestamps non-decreasing; stderr is empty",
+              "test": "tests/acceptance/test_9.4.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "one coder: config `1 300 200 200 200 3 50 edf`: returns 0; the output is exactly `<ts> 1 has taken a dongle` then `<ts> 1 burned out` with the burnout `ts` in `300 .. 310 + S` (assumes the coder thread gets CPU before its deadline, as in 9.3.2 AC2); both lines complete, timestamps non-decreasing; stderr is empty",
+              "test": "tests/acceptance/test_9.4.1.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "runtime failure is reported: in a child process (forked while no test thread is alive, `open(\"/dev/full\")` and `dup2` onto stdout checked, a setup failure exiting with a distinct status) whose stderr is captured, `run_simulation` with config `4 5000 200 200 200 3 50 fifo` returns -1 within the watchdog and stderr stays empty; the child exits 0 only if both held; the parent requires normal termination with status 0 and reports a setup failure distinctly (which internal path produced -1 is code review)",
+              "test": "tests/acceptance/test_9.4.1.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "invalid input: `run_simulation(NULL, &config)` and `run_simulation(&sim, NULL)` return -1, write nothing and create no thread",
+              "test": "tests/acceptance/test_9.4.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-09-lifecycle/9.4.1-run-simulation.md"
+        }
+      ]
+    },
+    {
+      "id": "9.5",
+      "title": "Entry point",
       "phase": "09",
       "layer": "interfaces",
-      "goal": "`run_simulation` returns 0 at once with no threads and no output when `number_of_compiles_required` is 0 (user decision 2026-11-06), otherwise init → start → join → read `failed` → `free_sim` (no `free_sim` after a failed init, no free after a failed join), 0 on a normal end and -1 on any failure; `main` runs it after validation and on -1 prints an `Error:` line to stderr and exits with a runtime status distinct from `EXIT_USAGE`",
+      "goal": "`main` keeps a `t_sim` on its own stack, runs `run_simulation` after argument validation and, on -1, prints an `Error:` line to stderr and exits at once with a runtime status distinct from `EXIT_USAGE`",
       "status": "pending",
-      "subtasks": []
+      "subtasks": [
+        {
+          "id": "9.5.1",
+          "title": "Print run error",
+          "status": "pending",
+          "layer": "interfaces",
+          "depends": [
+            "2.4.1",
+            "9.4.1"
+          ],
+          "files": [
+            "coders/src/cli/print_run_error.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "`print_run_error()` writes exactly `Error: simulation failed\\n` to stderr and nothing to stdout (both captured)",
+              "test": "tests/acceptance/test_9.5.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "each call writes the line once: two calls write the line exactly twice, in order, and nothing else",
+              "test": "tests/acceptance/test_9.5.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-09-lifecycle/9.5.1-print-run-error.md"
+        },
+        {
+          "id": "9.5.2",
+          "title": "Main runs simulation",
+          "status": "pending",
+          "layer": "interfaces",
+          "depends": [
+            "9.4.1",
+            "9.5.1"
+          ],
+          "files": [
+            "coders/main.c",
+            "coders/main.h",
+            "README.md"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "target met: `./coders/codexion 4 5000 200 200 200 3 50 fifo` exits 0; stdout is non-empty, every line a complete `<ts> <id> <text>` with `id` in 1..4 and one of the four state texts, timestamps non-decreasing, no `burned out` line, each id with at least 3 `is compiling` lines; stderr is empty",
+              "test": "tests/acceptance/test_9.5.2.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "burnout: `./coders/codexion 2 300 400 100 100 3 0 fifo` exits 0; exactly one `burned out` line, the last one, with `id` in 1..2 and `300 <= ts <= 310 + S`; stderr is empty",
+              "test": "tests/acceptance/test_9.5.2.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "one coder: `./coders/codexion 1 300 200 200 200 3 50 edf` exits 0; stdout is exactly `<ts> 1 has taken a dongle` then `<ts> 1 burned out`, both lines complete, timestamps non-decreasing, the burnout `ts` in `300 .. 310 + S` (normal scheduling assumed); stderr is empty",
+              "test": "tests/acceptance/test_9.5.2.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "zero compiles required: `./coders/codexion 4 800 200 200 200 0 50 fifo` exits 0 with empty stdout and empty stderr, promptly (well before any simulated time could pass: within `500 + S` ms of the spawn, a liveness budget, not a precision bound)",
+              "test": "tests/acceptance/test_9.5.2.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "runtime failure: `./coders/codexion 4 5000 200 200 200 3 50 fifo` with stdout redirected to `/dev/full` exits with status 2 (`EXIT_RUNTIME`) within the watchdog and stderr is exactly `Error: simulation failed\\n`",
+              "test": "tests/acceptance/test_9.5.2.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "argument errors unchanged: `./coders/codexion 4 -5 abc 200 200 3 50 rr` still writes the error lines for positions 2, 3 and 8 then the usage once to stderr, nothing to stdout, and exits 1 (`EXIT_USAGE`); a wrong argument count still prints the usage and exits 1; no simulation output appears in either case",
+              "test": "tests/acceptance/test_9.5.2.c"
+            },
+            {
+              "id": "AC7",
+              "criterion": "no leaks on a full run: AC1, AC2 and AC4 run under `valgrind --leak-check=full --show-leak-kinds=all --errors-for-leak-kinds=all --error-exitcode=42` exit with the binary's status (0), not 42 (skipped with a diagnostic when valgrind is not installed; CI installs it)",
+              "test": "tests/acceptance/test_9.5.2.c"
+            }
+          ],
+          "spec": "docs/plan/phase-09-lifecycle/9.5.2-main-runs-simulation.md"
+        }
+      ]
     }
   ],
   "issues": [

@@ -7,12 +7,16 @@
 
 ## 9.2 Report runtime failures
 - layer: orchestration
-- goal: a coder marks `failed` only on a real error (a -1, never on the `sleep_ms` stop result 1 from ISS-32), and the monitor separates a clean target-met stop from an error exit (failed check, burnout line, `set_stopped`, `wake_dongles` or `usleep` failure) that marks `failed`, stops and wakes every waiter; a logged burnout stays a normal end
+- goal: `take_coder_dongles` keeps the `print_state` cause (1 stop, -1 error) instead of guessing it, a coder marks `failed` only on a real error (a -1, never on the stop result 1 of `sleep_ms` or `print_state`, ISS-32 and ISS-34), and the monitor separates a clean target-met stop from an error exit (failed check, burnout line, `set_stopped`, `wake_dongles` or `usleep` failure) that marks `failed`, stops and wakes every waiter; a logged burnout stays a normal end
 
 ## 9.3 Threads
 - layer: orchestration
 - goal: start the monitor first and then the N coders right after setting `start_ms` (no start barrier, user decision 2026-11-06); on any `pthread_create` failure mark `failed`, stop, wake every waiter and join exactly the threads created (none when the monitor itself failed, or when the clock read fails before any creation); join the monitor and the coders trying every join and reporting any failure
 
-## 9.4 Lifecycle
+## 9.4 Run simulation
+- layer: orchestration
+- goal: `run_simulation` drives one whole run on caller-owned storage: it returns 0 at once with no threads and no output when `number_of_compiles_required` is 0 (user decision 2026-11-06), otherwise init → start → join → read `failed` → `free_sim` (no `free_sim` after a failed init, nothing freed or re-joined after a failed recovery or final join), 0 on a normal end (target met or burnout) and -1 on any failure
+
+## 9.5 Entry point
 - layer: interfaces
-- goal: `run_simulation` returns 0 at once with no threads and no output when `number_of_compiles_required` is 0 (user decision 2026-11-06), otherwise init → start → join → read `failed` → `free_sim` (no `free_sim` after a failed init, no free after a failed join), 0 on a normal end and -1 on any failure; `main` runs it after validation and on -1 prints an `Error:` line to stderr and exits with a runtime status distinct from `EXIT_USAGE`
+- goal: `main` keeps a `t_sim` on its own stack, runs `run_simulation` after argument validation and, on -1, prints an `Error:` line to stderr and exits at once with a runtime status distinct from `EXIT_USAGE`

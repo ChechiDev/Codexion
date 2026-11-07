@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/11/05 14:00:00 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/11/07 12:00:00 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,8 @@ typedef struct s_sim
 	t_config		config;
 	long			start_ms;
 	int				stopped;
+	int				failed;
+	pthread_t		monitor;
 	long			next_ticket;
 	t_dongle		*dongles;
 	t_coder			*coders;

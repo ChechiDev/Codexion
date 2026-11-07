@@ -97,7 +97,7 @@ Rules:
   | `push_` / `pop_` | adds to / removes from a queue | `push_request`, `pop_request` |
   | `sift_` | restores the heap order after a change | `sift_up` |
   | `start_` / `join_` | launches / waits for threads | `start_threads`, `join_threads` |
-  | `run_` | body of a thread routine | `run_coder`, `run_monitor` |
+  | `run_` | body of a thread routine; also the one whole-run driver `run_simulation` (init → threads → join → teardown) | `run_coder`, `run_monitor`, `run_simulation` |
 
   A new verb is added to this table first (in a `style/` branch), then used.
 - **Exception — names fixed by the subject keep their exact spelling**: `main`,
