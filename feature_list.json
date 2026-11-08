@@ -3587,7 +3587,7 @@
         {
           "id": "9.2.2",
           "title": "Coder reports failure",
-          "status": "pending",
+          "status": "done",
           "layer": "orchestration",
           "depends": [
             "9.1.2",

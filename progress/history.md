@@ -681,3 +681,12 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_9.2.1.md`); implementation notes record clean acceptance Valgrind and ThreadSanitizer runs.
 - **Documentation:** docs/reference/9.2.1-take-keeps-print-result.md
 - **Commit:** feat(coder): preserve dongle print result [9.2.1]
+
+## 2026-11-08 — Subtask 9.2.2: Coder reports failure
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-09-lifecycle/9.2.2-coder-reports-failure.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/coder/run_coder.c` preserves helper results so normal stops return without marking failure, while runtime errors record failure before release, stop, and wake cleanup.
+- **Acceptance:** `tests/acceptance/test_9.2.2.c` — AC1–AC8 cover ordinary stops, resource release, three real failure paths, and invalid input.
+- **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_9.2.2.md`); implementation notes report clean Valgrind and ThreadSanitizer runs.
+- **Documentation:** docs/reference/9.2.2-coder-reports-failure.md
+- **Commit:** feat(coder): report coder runtime failures [9.2.2]
