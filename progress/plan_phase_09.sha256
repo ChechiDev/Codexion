@@ -1,0 +1,11 @@
+80812fb82a6c07014246899956c56a537a023a6438c81a18cc6cebbf74cce24c  docs/plan/phase-09-lifecycle.md
+9ed871834eb1f381ca64d7fe1cda70b98e380c14a3789fd6a241f925790d88f0  docs/plan/phase-09-lifecycle/9.1.1-failure-fields.md
+22f745466b128b2f59747467200613a8d1e9bb0980f1e862f484158a74f2a138  docs/plan/phase-09-lifecycle/9.1.2-set-failed.md
+3d830f31dcd7763c4ecfe0b7ad8a0af17093d27493128ee71ef60850cde9fdc4  docs/plan/phase-09-lifecycle/9.2.1-take-keeps-print-result.md
+c9c22a532969d74d20e4a97be4160001d951e9e269590b0ba7c58c7bf496a997  docs/plan/phase-09-lifecycle/9.2.2-coder-reports-failure.md
+c9203d7d10cf10d868640c696aea332caf7a09748c1b6f7e5a5eaf7017f311a2  docs/plan/phase-09-lifecycle/9.2.3-monitor-reports-failure.md
+9710f3634a9b00736ca5abc32d032aee87a9631430b605820605b9b8dc276477  docs/plan/phase-09-lifecycle/9.3.1-join-threads.md
+b6a7c029402882c42c3cb87d07fee83c9b04078a6a6bfb9fccc123b01b816307  docs/plan/phase-09-lifecycle/9.3.2-start-threads.md
+91b9b768bbef0d710099e68106865c072b2ba0d0f14d8efb351fcbee10d7350d  docs/plan/phase-09-lifecycle/9.4.1-run-simulation.md
+74f87abee5f492335e78736108ea74468f4c7b1af0d298a563c53b2f46408bd3  docs/plan/phase-09-lifecycle/9.5.1-print-run-error.md
+99db81c37fe85cf846d98946f888b0a5c7a9a37dde154bcaaf86020fadde6697  docs/plan/phase-09-lifecycle/9.5.2-main-runs-simulation.md

@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/11/05 14:00:00 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/11/08 11:37:12 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,8 @@ typedef struct s_sim
 	t_config		config;
 	long			start_ms;
 	int				stopped;
+	int				failed;
+	pthread_t		monitor;
 	long			next_ticket;
 	t_dongle		*dongles;
 	t_coder			*coders;
@@ -129,6 +131,7 @@ int		sleep_ms(t_sim *sim, long ms);
 /* ---- State ---- */
 
 int		is_stopped(t_sim *sim);
+int		set_failed(t_sim *sim);
 int		set_stopped(t_sim *sim);
 int		take_ticket(t_sim *sim, long *out);
 

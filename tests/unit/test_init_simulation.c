@@ -21,7 +21,9 @@ int	main(void)
 	t_config	config;
 
 	config = get_config(4);
+	memset(&sim, 0x5A, sizeof(sim));
 	assert(init_simulation(&sim, &config) == 0);
+	assert(sim.failed == 0);
 	assert(sim.config.time_to_burnout == 800 && sim.stopped == 0);
 	assert(sim.dongles != NULL && sim.coders != NULL);
 	assert(sim.coders[3].sim == &sim && sim.coders[3].id == 4);

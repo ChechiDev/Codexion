@@ -653,3 +653,21 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_ISS-34.1.md`).
 - **Documentation:** docs/reference/ISS-34.1-print-stop-result.md; task narrative: progress/pr_ISS-34.md
 - **Commit:** refactor(log): distinguish print stop result [ISS-34.1]
+
+## 2026-11-07 — Subtask 9.1.1: Failure fields
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-09-lifecycle/9.1.1-failure-fields.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/main.h` adds the simulation failure flag and monitor handle; `coders/src/init/init_simulation.c` clears the flag during valid initialization. The unit and acceptance tests cover initialization and field contracts.
+- **Acceptance:** `tests/acceptance/test_9.1.1.c` — AC1–AC4 cover dirty-state initialization, member types and use, and invalid arguments.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_9.1.1.md`).
+- **Documentation:** docs/reference/9.1.1-failure-fields.md
+- **Commit:** feat(lifecycle): add simulation failure fields [9.1.1]
+
+## 2026-11-08 — Subtask 9.1.2: Set failed
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-09-lifecycle/9.1.2-set-failed.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/state/set_failed.c`, `coders/main.h`, and `coders/Makefile` add a synchronized, idempotent failure-state setter using `stop_mutex`; it records failure without stopping or printing.
+- **Acceptance:** `tests/acceptance/test_9.1.2.c` — AC1–AC8 cover state, return and lock behavior, concurrency, and no output.
+- **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_9.1.2.md`); implementation notes record clean acceptance Valgrind and ThreadSanitizer runs.
+- **Documentation:** docs/reference/9.1.2-set-failed.md; task narrative: progress/pr_9.1.md
+- **Commit:** feat(state): record simulation failure [9.1.2]
