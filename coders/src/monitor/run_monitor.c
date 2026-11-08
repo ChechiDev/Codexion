@@ -6,19 +6,21 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/05 14:00:00 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/11/05 14:00:00 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/11/08 12:00:00 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 #include <unistd.h>
 
-/* Scan results: keep scanning, leave silently, leave after stop + wake, */
-/* leave after a burnout line (print_burnout already stopped the run). */
+/* Scan results: keep scanning, leave silently, leave after a clean stop, */
+/* leave after a logged burnout (print_burnout already stopped the run), */
+/* leave after an error (mark failed, then stop and wake). */
 #define KEEP_SCANNING 0
 #define LEAVE_SILENT 1
 #define LEAVE_STOP 2
 #define LEAVE_BURNED 3
+#define LEAVE_ERROR 4
 
 /* The only place that picks the coder to report (tie-break: lowest index). */
 static int	get_burned_index(t_sim *sim, int *index)
@@ -48,11 +50,11 @@ static int	handle_burnout(t_sim *sim)
 	int	index;
 
 	if (get_burned_index(sim, &index) != 0)
-		return (LEAVE_STOP);
+		return (LEAVE_ERROR);
 	if (index < 0)
 		return (KEEP_SCANNING);
 	if (print_burnout(sim, sim->coders[index].id) != 0)
-		return (LEAVE_STOP);
+		return (LEAVE_ERROR);
 	return (LEAVE_BURNED);
 }
 
@@ -63,14 +65,38 @@ static int	scan_step(t_sim *sim)
 
 	if (is_stopped(sim))
 		return (LEAVE_SILENT);
-	if (get_target_met(sim, &met) != 0 || met)
+	if (get_target_met(sim, &met) != 0)
+		return (LEAVE_ERROR);
+	if (met)
 		return (LEAVE_STOP);
 	result = handle_burnout(sim);
 	if (result != KEEP_SCANNING)
 		return (result);
 	if (usleep(1000) != 0)
-		return (LEAVE_STOP);
+		return (LEAVE_ERROR);
 	return (KEEP_SCANNING);
+}
+
+static void	set_monitor_end(t_sim *sim, int result)
+{
+	int	bad;
+
+	if (result == LEAVE_SILENT)
+		return ;
+	bad = 0;
+	if (result == LEAVE_ERROR)
+	{
+		set_failed(sim);
+		set_stopped(sim);
+		wake_dongles(sim);
+		return ;
+	}
+	if (result == LEAVE_STOP && set_stopped(sim) != 0)
+		bad = 1;
+	if (wake_dongles(sim) != 0)
+		bad = 1;
+	if (bad)
+		set_failed(sim);
 }
 
 void	*run_monitor(void *arg)
@@ -84,10 +110,6 @@ void	*run_monitor(void *arg)
 	result = KEEP_SCANNING;
 	while (result == KEEP_SCANNING)
 		result = scan_step(sim);
-	if (result == LEAVE_SILENT)
-		return (NULL);
-	if (result == LEAVE_STOP)
-		set_stopped(sim);
-	wake_dongles(sim);
+	set_monitor_end(sim, result);
 	return (NULL);
 }

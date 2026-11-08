@@ -38,6 +38,7 @@ static void	run_case(int target, int count)
 	sim.start_ms = get_time_ms() - 1000;
 	assert(run_monitor(&sim) == NULL);
 	assert(sim.stopped == 1);
+	assert(sim.failed == 0);
 	assert(free_sim(&sim) == 0);
 }
 

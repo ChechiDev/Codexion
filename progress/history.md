@@ -690,3 +690,12 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_9.2.2.md`); implementation notes report clean Valgrind and ThreadSanitizer runs.
 - **Documentation:** docs/reference/9.2.2-coder-reports-failure.md
 - **Commit:** feat(coder): report coder runtime failures [9.2.2]
+
+## 2026-11-08 — Subtask 9.2.3: Monitor reports failure
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-09-lifecycle/9.2.3-monitor-reports-failure.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/monitor/run_monitor.c` distinguishes clean target completion and burnout from runtime errors, records failure before attempting stop and waiter wake-up, and leaves externally stopped runs silent.
+- **Acceptance:** `tests/acceptance/test_9.2.3.c` — AC1–AC7 cover clean target outcomes, burnout logging and write failure, external stop, lock state, and waking waiters on error.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_9.2.3.md`); implementation notes report clean acceptance Valgrind and ThreadSanitizer runs.
+- **Documentation:** docs/reference/9.2.3-monitor-reports-failure.md; task narrative: progress/pr_9.2.md
+- **Commit:** feat(monitor): report monitor runtime failures [9.2.3]

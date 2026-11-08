@@ -3541,7 +3541,7 @@
       "phase": "09",
       "layer": "orchestration",
       "goal": "`take_coder_dongles` keeps the `print_state` cause (1 stop, -1 error) instead of guessing it, a coder marks `failed` only on a real error (a -1, never on the stop result 1 of `sleep_ms` or `print_state`, ISS-32 and ISS-34), and the monitor separates a clean target-met stop from an error exit (failed check, burnout line, `set_stopped`, `wake_dongles` or `usleep` failure) that marks `failed`, stops and wakes every waiter; a logged burnout stays a normal end",
-      "status": "in_progress",
+      "status": "done",
       "subtasks": [
         {
           "id": "9.2.1",
@@ -3645,7 +3645,7 @@
         {
           "id": "9.2.3",
           "title": "Monitor reports failure",
-          "status": "pending",
+          "status": "done",
           "layer": "orchestration",
           "depends": [
             "9.1.2",
