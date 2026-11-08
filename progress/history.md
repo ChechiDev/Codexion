@@ -671,3 +671,13 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_9.1.2.md`); implementation notes record clean acceptance Valgrind and ThreadSanitizer runs.
 - **Documentation:** docs/reference/9.1.2-set-failed.md; task narrative: progress/pr_9.1.md
 - **Commit:** feat(state): record simulation failure [9.1.2]
+
+## 2026-11-08 — Subtask 9.2.1: Take keeps print result
+
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-09-lifecycle/9.2.1-take-keeps-print-result.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/coder/take_coder_dongles.c` preserves the distinct stop and print-error results through dongle release, so a real output failure remains a failure if stop is set meanwhile.
+- **Acceptance:** `tests/acceptance/test_9.2.1.c` — AC1–AC5 cover pair and single acquisition, normal stop, output failure, and the deterministic coincident stop and write error.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_9.2.1.md`); implementation notes record clean acceptance Valgrind and ThreadSanitizer runs.
+- **Documentation:** docs/reference/9.2.1-take-keeps-print-result.md
+- **Commit:** feat(coder): preserve dongle print result [9.2.1]

@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/05 11:15:00 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/11/05 11:15:00 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/11/08 12:00:00 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ static int	print_taken(t_coder *coder)
 {
 	int	count;
 	int	i;
+	int	result;
 
 	count = 2;
 	if (coder->first_dongle == coder->second_dongle)
@@ -23,18 +24,17 @@ static int	print_taken(t_coder *coder)
 	i = 0;
 	while (i < count)
 	{
-		if (print_state(coder->sim, coder->id, STATE_TAKEN_DONGLE) != 0)
-			return (-1);
+		result = print_state(coder->sim, coder->id, STATE_TAKEN_DONGLE);
+		if (result != 0)
+			return (result);
 		i++;
 	}
 	return (0);
 }
 
-static int	release_taken(t_coder *coder, int *taken)
+static int	release_taken(t_coder *coder, int *taken, int print_result)
 {
-	if (release_dongles(coder) != 0)
-		return (-1);
-	if (is_stopped(coder->sim) == 0)
+	if (release_dongles(coder) != 0 || print_result < 0)
 		return (-1);
 	*taken = 0;
 	return (0);
@@ -50,6 +50,7 @@ static int	take_pair(t_coder *coder, int *got)
 int	take_coder_dongles(t_coder *coder, int *taken)
 {
 	int	got;
+	int	printed;
 
 	if (coder == NULL || taken == NULL || coder->sim == NULL)
 		return (-1);
@@ -61,8 +62,9 @@ int	take_coder_dongles(t_coder *coder, int *taken)
 		*taken = 0;
 		return (0);
 	}
-	if (print_taken(coder) != 0)
-		return (release_taken(coder, taken));
+	printed = print_taken(coder);
+	if (printed != 0)
+		return (release_taken(coder, taken, printed));
 	*taken = 1;
 	return (0);
 }

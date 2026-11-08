@@ -75,11 +75,33 @@ static void	check_ticket_exhaustion(void)
 	assert(free_sim(&sim) == 0);
 }
 
+static void	check_print_failure(void)
+{
+	t_sim	sim;
+	int		taken;
+	int		saved;
+	int		full_fd;
+
+	init_sim(&sim, 3);
+	saved = dup(STDOUT_FILENO);
+	full_fd = open("/dev/full", O_WRONLY);
+	assert(saved >= 0 && full_fd >= 0);
+	assert(dup2(full_fd, STDOUT_FILENO) >= 0);
+	taken = -9;
+	assert(take_coder_dongles(&sim.coders[0], &taken) == -1);
+	assert(dup2(saved, STDOUT_FILENO) >= 0);
+	assert(close(saved) == 0 && close(full_fd) == 0);
+	assert(taken == -9 && sim.stopped == 0);
+	assert(sim.dongles[0].available == 1 && sim.dongles[1].available == 1);
+	assert(free_sim(&sim) == 0);
+}
+
 int	main(void)
 {
 	check_invalid_input();
 	check_take_and_stop(3);
 	check_take_and_stop(1);
 	check_ticket_exhaustion();
+	check_print_failure();
 	return (0);
 }
