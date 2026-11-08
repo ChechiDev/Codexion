@@ -662,3 +662,12 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_9.1.1.md`).
 - **Documentation:** docs/reference/9.1.1-failure-fields.md
 - **Commit:** feat(lifecycle): add simulation failure fields [9.1.1]
+
+## 2026-11-08 — Subtask 9.1.2: Set failed
+- **Layer:** adapters
+- **Plan:** docs/plan/phase-09-lifecycle/9.1.2-set-failed.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/state/set_failed.c`, `coders/main.h`, and `coders/Makefile` add a synchronized, idempotent failure-state setter using `stop_mutex`; it records failure without stopping or printing.
+- **Acceptance:** `tests/acceptance/test_9.1.2.c` — AC1–AC8 cover state, return and lock behavior, concurrency, and no output.
+- **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_9.1.2.md`); implementation notes record clean acceptance Valgrind and ThreadSanitizer runs.
+- **Documentation:** docs/reference/9.1.2-set-failed.md; task narrative: progress/pr_9.1.md
+- **Commit:** feat(state): record simulation failure [9.1.2]

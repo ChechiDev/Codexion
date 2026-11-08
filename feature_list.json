@@ -3438,7 +3438,7 @@
       "phase": "09",
       "layer": "adapters",
       "goal": "`t_sim` gains a `failed` flag (cleared by `init_simulation`) and the monitor thread handle; `set_failed` marks a runtime failure under `stop_mutex` without stopping the run (stopping stays `set_stopped`'s job), so the lifecycle can tell a normal end (burnout or target met) from an internal error",
-      "status": "in_progress",
+      "status": "done",
       "subtasks": [
         {
           "id": "9.1.1",
@@ -3479,7 +3479,7 @@
         {
           "id": "9.1.2",
           "title": "Set failed",
-          "status": "pending",
+          "status": "done",
           "layer": "adapters",
           "depends": [
             "9.1.1"

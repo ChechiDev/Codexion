@@ -44,3 +44,6 @@ another session merges, installs or runs checks on the global harness.
 - **9.1.1 plan gate r1:** CHANGES_REQUESTED (AC1/AC2 said `released_at == 0`, sealed 5.4.2 + init_dongle use -1). Leader spec error, fixed; re-running gate.
 
 - **9.1.1 (2026-11-07):** close prepared on `feat/9.1-failure-state`; code review is `APPROVED` (`progress/review_9.1.1.md`) and supplied outside-sandbox close `make check` exited 0. Reference note, subtask status, generated index, and history are updated. Commit message is in `progress/close_9.1.1.msg`; harness will run the final check and commit. Next: 9.1.2 `Set failed` after the harness completes the 9.1.1 close.
+- **9.1.2 (2026-11-08):** close prepared on `feat/9.1-failure-state`; code review is `APPROVED` (`progress/review_9.1.2.md`) and supplied outside-sandbox close `make check` exited 0. Reference note, subtask status, generated index, history, and task 9.1 PR narrative are updated. Commit message is in `progress/close_9.1.2.msg`; harness will run the final check and commit. Task 9.1 is ready for the harness PR step.
+
+- **Task 9.1 complete:** failure fields and the synchronized failure setter are documented and marked done. Task PR narrative is `progress/pr_9.1.md`.
