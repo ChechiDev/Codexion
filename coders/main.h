@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/11/08 11:37:12 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/11/08 12:00:00 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,6 +203,10 @@ void	*run_coder(void *arg);
 int		get_burned_out(t_coder *coder, int *burned);
 int		get_target_met(t_sim *sim, int *met);
 void	*run_monitor(void *arg);
+
+/* ---- Lifecycle ---- */
+
+int		join_threads(t_sim *sim, int coders);
 
 /* ---- CLI ---- */
 

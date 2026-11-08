@@ -90,3 +90,30 @@
 - **Size:** Each phase has a coherent, independently verifiable goal. The final phase validates the integrated program and finishes its documentation.
 - **Architecture:** The overview keeps pure parsing, heap, and policy logic in core; time, logging, and resource lifecycle at the platform edge; and CLI in the interface. The revised logger uses the subject-allowed `write` function for immediate, mutex-serialized output, with decimal formatting in a pure utility. It names the concurrency protocol, ownership, timing precision, and Norm risks.
 - **Gate:** The supplied external `./.claude/scripts/regate_check.sh roadmap` exited 0. Its check found only the roadmap plan seal failure excused for this re-review; compilation and tests passed. Phase 03's new breakdown still requires its separate phase gate.
+
+## Round 7: roadmap gate, CHANGES_REQUESTED (2026-11-08 16:52)
+
+### Roadmap review
+
+**Verdict:** CHANGES_REQUESTED
+
+#### Analysis
+- **Coverage:** The ten phase goals cover the mandatory subject, input validation, FIFO/EDF arbitration with cooldown, coder and monitor threads, lifecycle, full-binary verification, and the required README. No phase goal falls outside the stated scope.
+- **Order and size:** Build, parsing, time, queue, and state precede arbitration; arbitration precedes the thread routines; lifecycle precedes integrated hardening. Each phase has a coherent goal and no phase depends on a later one.
+- **Architecture:** The added `lifecycle` module in `docs/plan/PLAN.md:44,60` is orchestration, matching the phase 09 goal and `docs/architecture.md`. The plan names the main concurrency and timing risks.
+- **Gate:** The supplied outside-sandbox `make check` exited 2. Compilation and tests passed, but the integrity check failed because `docs/plan/PLAN.md` changed after its roadmap seal. The reviewer role's hard rule forbids approval while the supplied check is red.
+
+#### Requested changes
+1. Reinvoke the roadmap review through the project's re-gate wrapper described in `docs/conventions.md` (style branches section), with an outside-sandbox check that accepts only the roadmap seal failure under re-review. Supply that green result to this gate; the roadmap content needs no change.
+
+## Round 8: roadmap gate, ROADMAP_APPROVED (2026-11-08 16:55)
+
+### Roadmap review
+
+**Verdict:** ROADMAP_APPROVED
+
+#### Analysis
+- **Coverage:** The ten phase goals cover the mandatory subject, input validation, FIFO/EDF arbitration with cooldown, coder and monitor threads, lifecycle, full-binary verification, and the required README. No phase goal falls outside the stated scope.
+- **Order and size:** Build, parsing, time, queue, and state precede arbitration; arbitration precedes the thread routines; lifecycle precedes integrated hardening. Each phase has a coherent goal and no phase depends on a later one.
+- **Architecture:** The added `lifecycle` module in `docs/plan/PLAN.md:44,60` is orchestration, matching the phase 09 goal and `docs/architecture.md`. The plan names the main concurrency and timing risks.
+- **Gate:** The supplied outside-sandbox `./.claude/scripts/regate_check.sh roadmap` exited 0. Its log shows the build and tests passed; the wrapper accepted only the expected roadmap seal and dependent approval failures while this roadmap is under re-review.

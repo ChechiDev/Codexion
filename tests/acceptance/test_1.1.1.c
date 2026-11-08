@@ -14,6 +14,7 @@ static void capture(const char *command, char *output, size_t capacity)
 	size_t used;
 	size_t count;
 	int status;
+	char discard[4096];
 
 	assert(capacity > 0);
 	pipe = popen(command, "r");
@@ -23,6 +24,9 @@ static void capture(const char *command, char *output, size_t capacity)
 		capacity - 1 - used, pipe)) != 0)
 		used += count;
 	output[used] = '\0';
+	while (fread(discard, 1, sizeof(discard), pipe) != 0)
+		;
+	assert(!ferror(pipe));
 	assert(feof(pipe));
 	status = pclose(pipe);
 	assert(status != -1 && WIFEXITED(status) && WEXITSTATUS(status) == 0);
@@ -129,7 +133,7 @@ static void test_ac1_builds_executable(void)
 /* AC2: dry-run compile and link use cc and the required warning/thread flags. */
 static void test_ac2_compile_and_link_flags(void)
 {
-	char output[8192];
+	char output[65536];
 	char *line;
 	int compile;
 	int link;
