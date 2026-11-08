@@ -6,7 +6,7 @@
 #    By: sperez-l@student.42barcelona.com           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/10/26 16:47:34 by sperez-l          #+#    #+#              #
-#    Updated: 2026/11/08 11:37:12 by sperez-l         ###   ########.fr        #
+#    Updated: 2026/11/08 18:08:24 by sperez-l         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,6 +43,8 @@ SRC = main.c \
 	src/init/init_dongle.c \
 	src/init/init_dongles.c \
 	src/init/init_simulation.c \
+	src/lifecycle/join_threads.c \
+	src/lifecycle/start_threads.c \
 	src/log/build_log_line.c \
 	src/log/print_burnout.c \
 	src/log/print_log_line.c \

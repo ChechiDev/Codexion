@@ -3701,12 +3701,12 @@
       "phase": "09",
       "layer": "orchestration",
       "goal": "start the monitor first and then the N coders right after setting `start_ms` (no start barrier, user decision 2026-11-06); on any `pthread_create` failure mark `failed`, stop, wake every waiter and join exactly the threads created (none when the monitor itself failed, or when the clock read fails before any creation); join the monitor and the coders trying every join and reporting any failure",
-      "status": "pending",
+      "status": "done",
       "subtasks": [
         {
           "id": "9.3.1",
           "title": "Join threads",
-          "status": "pending",
+          "status": "done",
           "layer": "orchestration",
           "depends": [
             "9.1.1",
@@ -3744,7 +3744,7 @@
         {
           "id": "9.3.2",
           "title": "Start threads",
-          "status": "pending",
+          "status": "done",
           "layer": "orchestration",
           "depends": [
             "9.3.1",
