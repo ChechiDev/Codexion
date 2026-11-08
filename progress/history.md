@@ -709,3 +709,13 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_9.3.1.md`); implementation notes report clean acceptance Valgrind and ThreadSanitizer runs.
 - **Documentation:** docs/reference/9.3.1-join-threads.md
 - **Commit:** feat(lifecycle): join simulation threads [9.3.1]
+
+## 2026-11-08 — Subtask 9.3.2: Start threads
+
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-09-lifecycle/9.3.2-start-threads.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/lifecycle/start_threads.c`, `coders/main.h`, and `coders/Makefile` establish the clock origin and start the monitor and coder threads, with stop, wake, and partial-join recovery on coder creation failure.
+- **Acceptance:** `tests/acceptance/test_9.3.2.c` — AC1–AC4 cover a normal target run, one-coder burnout, opportunistic creation failure, and NULL input.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_9.3.2.md`); implementation notes report clean native, Memcheck, and ThreadSanitizer runs.
+- **Documentation:** docs/reference/9.3.2-start-threads.md; task narrative: progress/pr_9.3.md
+- **Commit:** feat(lifecycle): start simulation threads [9.3.2]
