@@ -31,6 +31,7 @@ static void	check_invalid_and_stopped(void)
 	assert(run_coder(&bare) == NULL);
 	assert(set_stopped(&sim) == 0);
 	assert(run_coder(&sim.coders[0]) == NULL);
+	assert(sim.failed == 0);
 	assert(sim.dongles[0].available == 1);
 	assert(sim.coders[0].compile_count == 0);
 	assert(free_sim(&sim) == 0);
@@ -53,6 +54,7 @@ static void	check_count_failure_stops(void)
 	close(saved);
 	close(null_fd);
 	assert(is_stopped(&sim) == 1);
+	assert(sim.failed == 1);
 	assert(sim.dongles[0].available == 1);
 	assert(sim.dongles[1].available == 1);
 	assert(free_sim(&sim) == 0);

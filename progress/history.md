@@ -671,3 +671,31 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_9.1.2.md`); implementation notes record clean acceptance Valgrind and ThreadSanitizer runs.
 - **Documentation:** docs/reference/9.1.2-set-failed.md; task narrative: progress/pr_9.1.md
 - **Commit:** feat(state): record simulation failure [9.1.2]
+
+## 2026-11-08 — Subtask 9.2.1: Take keeps print result
+
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-09-lifecycle/9.2.1-take-keeps-print-result.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/coder/take_coder_dongles.c` preserves the distinct stop and print-error results through dongle release, so a real output failure remains a failure if stop is set meanwhile.
+- **Acceptance:** `tests/acceptance/test_9.2.1.c` — AC1–AC5 cover pair and single acquisition, normal stop, output failure, and the deterministic coincident stop and write error.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_9.2.1.md`); implementation notes record clean acceptance Valgrind and ThreadSanitizer runs.
+- **Documentation:** docs/reference/9.2.1-take-keeps-print-result.md
+- **Commit:** feat(coder): preserve dongle print result [9.2.1]
+
+## 2026-11-08 — Subtask 9.2.2: Coder reports failure
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-09-lifecycle/9.2.2-coder-reports-failure.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/coder/run_coder.c` preserves helper results so normal stops return without marking failure, while runtime errors record failure before release, stop, and wake cleanup.
+- **Acceptance:** `tests/acceptance/test_9.2.2.c` — AC1–AC8 cover ordinary stops, resource release, three real failure paths, and invalid input.
+- **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_9.2.2.md`); implementation notes report clean Valgrind and ThreadSanitizer runs.
+- **Documentation:** docs/reference/9.2.2-coder-reports-failure.md
+- **Commit:** feat(coder): report coder runtime failures [9.2.2]
+
+## 2026-11-08 — Subtask 9.2.3: Monitor reports failure
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-09-lifecycle/9.2.3-monitor-reports-failure.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/monitor/run_monitor.c` distinguishes clean target completion and burnout from runtime errors, records failure before attempting stop and waiter wake-up, and leaves externally stopped runs silent.
+- **Acceptance:** `tests/acceptance/test_9.2.3.c` — AC1–AC7 cover clean target outcomes, burnout logging and write failure, external stop, lock state, and waking waiters on error.
+- **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_9.2.3.md`); implementation notes report clean acceptance Valgrind and ThreadSanitizer runs.
+- **Documentation:** docs/reference/9.2.3-monitor-reports-failure.md; task narrative: progress/pr_9.2.md
+- **Commit:** feat(monitor): report monitor runtime failures [9.2.3]

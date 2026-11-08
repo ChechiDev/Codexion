@@ -3541,12 +3541,12 @@
       "phase": "09",
       "layer": "orchestration",
       "goal": "`take_coder_dongles` keeps the `print_state` cause (1 stop, -1 error) instead of guessing it, a coder marks `failed` only on a real error (a -1, never on the stop result 1 of `sleep_ms` or `print_state`, ISS-32 and ISS-34), and the monitor separates a clean target-met stop from an error exit (failed check, burnout line, `set_stopped`, `wake_dongles` or `usleep` failure) that marks `failed`, stops and wakes every waiter; a logged burnout stays a normal end",
-      "status": "pending",
+      "status": "done",
       "subtasks": [
         {
           "id": "9.2.1",
           "title": "Take keeps print result",
-          "status": "pending",
+          "status": "done",
           "layer": "orchestration",
           "depends": [
             "7.2.1",
@@ -3575,6 +3575,11 @@
               "id": "AC4",
               "criterion": "one coder: config `1 800 200 200 200 3 50 fifo`: returns 0 with `taken == 1`, exactly one `<ts> 1 has taken a dongle` line, dongle 0 `available == 0`; and in a `/dev/full` child, -1 with dongle 0 `available == 1` again",
               "test": "tests/acceptance/test_9.2.1.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "a real print error that coincides with a stop is still -1: the test binary defines its own `write` that forwards to `syscall(SYS_write, ...)` unless armed; armed and called for fd 1, it sets `sim.stopped = 1` under `stop_mutex` (it must not call `set_stopped`, which takes the `log_mutex` that `print_state` holds during the write), sets `errno = EIO` and returns -1. On a running simulation (config `4 800 200 200 200 3 50 fifo`, `start_ms = get_time_ms()`), single-threaded, with the stub armed only around the call, `take_coder_dongles(&sim.coders[0], &taken)` returns -1 with `taken` unchanged (sentinel), the armed stub was called exactly once for fd 1, `sim.stopped == 1`, both dongles of coder 1 are `available == 1` again (released once), and every dongle mutex, `log_mutex` and `stop_mutex` is unlocked; `free_sim` then returns 0",
+              "test": "tests/acceptance/test_9.2.1.c"
             }
           ],
           "spec": "docs/plan/phase-09-lifecycle/9.2.1-take-keeps-print-result.md"
@@ -3582,7 +3587,7 @@
         {
           "id": "9.2.2",
           "title": "Coder reports failure",
-          "status": "pending",
+          "status": "done",
           "layer": "orchestration",
           "depends": [
             "9.1.2",
@@ -3640,7 +3645,7 @@
         {
           "id": "9.2.3",
           "title": "Monitor reports failure",
-          "status": "pending",
+          "status": "done",
           "layer": "orchestration",
           "depends": [
             "9.1.2",
