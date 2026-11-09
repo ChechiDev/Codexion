@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/05 12:00:00 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/11/08 14:03:53 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/11/09 20:36:08 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,8 @@ void	*run_coder(void *arg)
 	if (coder == NULL || coder->sim == NULL)
 		return (NULL);
 	held = 0;
-	while (1)
+	res = sleep_start_turn(coder);
+	while (res == 0)
 	{
 		taken = 0;
 		res = take_coder_dongles(coder, &taken);
@@ -109,7 +110,6 @@ void	*run_coder(void *arg)
 		res = sleep_compile(coder, &held);
 		if (res == 0)
 			res = sleep_rest(coder);
-		if (res != 0)
-			return (release_run(coder, &held, res));
 	}
+	return (release_run(coder, &held, res));
 }

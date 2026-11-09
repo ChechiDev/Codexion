@@ -96,6 +96,14 @@ If an internal runtime operation fails, the program exits with status 2 and
 prints `Error: simulation failed` to stderr. Simulation events are written to
 stdout.
 
+At start-up, odd-numbered coder seats begin their first dongle request
+immediately, while even-numbered seats wait once for 1 ms. This offset gives
+non-neighbouring coders a chance to request first and begin compiling in
+parallel. It is a scheduling heuristic, not a guarantee: the operating system
+may delay a thread long enough to change the order. It does not change FIFO or
+EDF arbitration after requests arrive. The offset is set by
+`START_TURN_MS` in `coders/main.h`.
+
 ## Resources
 
 Classic references used while learning the topic:

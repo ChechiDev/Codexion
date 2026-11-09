@@ -3940,7 +3940,7 @@
       "phase": "10",
       "layer": "orchestration",
       "goal": "let non-neighbouring coders compile in parallel from the start by delaying even seats once, without changing the fifo/edf arbitration",
-      "status": "in_progress",
+      "status": "done",
       "subtasks": [
         {
           "id": "10.1.1",
@@ -3995,7 +3995,7 @@
         {
           "id": "10.1.2",
           "title": "Run coder start turn",
-          "status": "pending",
+          "status": "done",
           "layer": "orchestration",
           "depends": [
             "10.1.1"
