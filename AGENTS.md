@@ -22,6 +22,13 @@
    (read-only source inspection by Codex), never by a source-text acceptance
    test. Only a subtask with no observable behaviour change may be marked this
    way; the phase gate reviews that claim.
+   Exception — **test-only verification**: a subtask whose spec declares
+   `Test-only verification (no production behaviour change)` adds regression
+   oracles over behaviour that already exists, so they may already be green at
+   the plan gate and must stay green through the code gate and close. It is not
+   a structural refactor, and no failing assertion is manufactured to obtain a
+   red state. Its `files:` lists only what it really changes (for example CI or
+   `Makefile` scenarios), or none. The phase gate reviews that claim.
 2. Read `progress/current.md` (where the last session left off).
 3. Run `make status`: the whole plan, every gate verdict and the **next step**.
 
@@ -72,6 +79,9 @@ every subtask, documents, and closes (single commit). The unit of work is the
   project. A subtask that adds a source file, prototype, struct or user-visible
   behaviour declares the affected ones in its `files:` list and updates them
   (Makefile/`main.h` by the implementer, `README.md` by Codex at close).
+  Exception: a subtask whose spec declares `README subtask` has the README as
+  its deliverable, so the implementer writes it (its oracles must be green
+  before the close) and Codex reviews it at the code gate.
 - **One subtask `N.M.K` at a time.** At most one leaf `in_progress`.
 - **One phase at a time.** A phase is broken down only once the previous one is done.
 - **Plan lives in `docs/plan/`.** Never hand-edit `feature_list.json`; run `make plan`.

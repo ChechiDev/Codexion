@@ -750,3 +750,13 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_9.5.2.md`); implementation notes record clean verification, Valgrind, and ThreadSanitizer runs.
 - **Documentation:** docs/reference/9.5.2-main-runs-simulation.md; task narrative: progress/pr_9.5.md
 - **Commit:** feat(cli): run simulation from main [9.5.2]
+## 2026-11-09 — Subtask 10.1.1: Sleep start turn
+
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-10-hardening-and-readme/10.1.1-sleep-start-turn.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/coder/sleep_start_turn.c`, `coders/main.h`, and `coders/Makefile` add a one-time 1 ms offset for even seats before their first request. FIFO/EDF arbitration is unchanged; the helper delegates waiting and stop/error results to `sleep_ms`.
+- **Acceptance:** `tests/acceptance/test_10.1.1.c` — AC1–AC7 cover odd/even seats, delay completion, stopped and invalid inputs, unchanged state/output, stop during the wait, and clock failure.
+- **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_10.1.1.md`); implementation notes record clean acceptance Valgrind and ThreadSanitizer runs.
+- **Documentation:** docs/reference/10.1.1-sleep-start-turn.md
+- **Commit:** feat(coder): stagger even-seat start requests [10.1.1]
+

@@ -117,3 +117,39 @@
 - **Order and size:** Build, parsing, time, queue, and state precede arbitration; arbitration precedes the thread routines; lifecycle precedes integrated hardening. Each phase has a coherent goal and no phase depends on a later one.
 - **Architecture:** The added `lifecycle` module in `docs/plan/PLAN.md:44,60` is orchestration, matching the phase 09 goal and `docs/architecture.md`. The plan names the main concurrency and timing risks.
 - **Gate:** The supplied outside-sandbox `./.claude/scripts/regate_check.sh roadmap` exited 0. Its log shows the build and tests passed; the wrapper accepted only the expected roadmap seal and dependent approval failures while this roadmap is under re-review.
+
+## Round 9: roadmap gate, ROADMAP_APPROVED (2026-11-09 16:35)
+
+### Roadmap review
+
+**Verdict:** ROADMAP_APPROVED
+
+#### Analysis
+- **Coverage:** The ten phase goals cover the mandatory subject, strict input validation, FIFO/EDF arbitration with cooldown, coder and monitor threads, lifecycle, full-binary verification, and all required README sections. The phase 10 startup offset is within the stated simulation scope. Nothing in the phase goals exceeds that scope.
+- **Order and size:** Build, parsing, time, queue, and state precede arbitration; arbitration precedes thread routines; lifecycle precedes full-binary hardening. Each phase is a coherent increment. Phase 10 groups final timing adjustment, integration evidence, and documentation; it depends only on earlier phases.
+- **Architecture:** `PLAN.md` assigns pure parsing, policy, and heap logic to core; clock, logging, and resource lifecycle to adapters; thread coordination to orchestration; and CLI to the interface. The startup offset belongs to coder orchestration and does not change the arbitration policy. The plan names the heap, timing, and concurrency risks and distinguishes its sufficient EDF viability bound from empirical scenarios below it.
+- **Gate:** The supplied outside-sandbox `./.claude/scripts/regate_check.sh roadmap` exited 0. Its log reports Norm, compile, tests, plan sync, and gate consistency passing. The wrapper excused only the expected roadmap seal failures for the changed `PLAN.md` and phase 10 file.
+
+## Round 10: roadmap gate, ROADMAP_APPROVED (2026-11-09 18:33)
+
+### Roadmap review
+
+**Verdict:** ROADMAP_APPROVED
+
+#### Analysis
+- **Coverage:** The ten phase goals cover the mandatory C simulation, input validation, FIFO/EDF arbitration and cooldown, coder and monitor threads, lifecycle, subject verification, and the required README. The phase 10 startup offset stays within the simulation scope. Exact request ordering is covered by the phase 06 arbiter oracles; the revised phase 10 goal limits its full-binary claims to observable behaviour.
+- **Order and size:** Build and parsing precede time, the heap, and simulation state; those foundations precede arbitration, thread routines, and lifecycle. Phase 10 depends on the completed binary. Each phase is a coherent increment, with phase 10 serving as final hardening and documentation.
+- **Architecture:** The overview keeps pure parsing, heap, and policy in core; platform time, logging, and state lifecycle in adapters; coordination in orchestration; and CLI at the interface. It names the priority-queue, synchronization, cooldown, and timing choices. The one-time startup offset belongs to coder orchestration and does not alter FIFO/EDF arbitration. The EDF boundary is identified as a sufficient bound with explicit scheduling assumptions, while runs below it are empirical evidence.
+- **Gate:** The supplied outside-sandbox roadmap re-gate exited 0. Its log reports Norm, build, tests, plan sync, and gate consistency passing; it excuses only the roadmap seal change under review. Phase 10's separate phase-gate findings remain for that gate.
+
+## Round 11: roadmap gate, ROADMAP_APPROVED (2026-11-09 19:05)
+
+### Roadmap review
+
+**Verdict:** ROADMAP_APPROVED
+
+#### Analysis
+- **Coverage:** The ten phase goals cover the mandatory C simulation, input validation, FIFO/EDF arbitration and cooldown, coder and monitor threads, lifecycle, subject verification, and the required README. The phase 10 startup offset stays within the simulation scope. Exact request ordering is covered by the phase 06 arbiter oracles; the revised phase 10 goal limits its full-binary claims to observable behaviour.
+- **Order and size:** Build and parsing precede time, the heap, and simulation state; those foundations precede arbitration, thread routines, and lifecycle. Phase 10 depends on the completed binary. Each phase is a coherent increment, with phase 10 serving as final hardening and documentation.
+- **Architecture:** The overview keeps pure parsing, heap, and policy in core; platform time, logging, and state lifecycle in adapters; coordination in orchestration; and CLI at the interface. It names the priority-queue, synchronization, cooldown, and timing choices. The one-time startup offset belongs to coder orchestration and does not alter FIFO/EDF arbitration. The EDF boundary is identified as a sufficient bound with explicit scheduling assumptions, while runs below it are empirical evidence.
+- **Gate:** The supplied outside-sandbox roadmap re-gate exited 0. Its log reports Norm, build, tests, plan sync, and gate consistency passing; it excuses only the two roadmap seal changes under review (`PLAN.md` and the phase 10 header). Phase 10's separate phase-gate findings remain for that gate.

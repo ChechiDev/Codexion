@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/11/09 13:53:36 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/11/09 19:41:30 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # define NUMBER_TEXT_MAX 20
 # define LOG_TEXT_MAX 32
 # define LOG_LINE_MAX 64
+# define START_TURN_MS 1
 
 /* ---- Types ---- */
 
@@ -197,6 +198,7 @@ int		take_single_dongle(t_coder *coder, int *taken);
 int		set_compile_start(t_coder *coder);
 int		set_compile_count(t_coder *coder);
 int		take_coder_dongles(t_coder *coder, int *taken);
+int		sleep_start_turn(t_coder *coder);
 void	*run_coder(void *arg);
 
 /* ---- Monitor ---- */
