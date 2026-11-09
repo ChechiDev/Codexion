@@ -114,7 +114,7 @@ static void	test_exact_argument_count(void)
 	g_argc = 9;
 	assert(run_captured(call_main, &cap) == 0);
 	assert(cap.err[0] == '\0');
-	assert(cap.out[0] == '\0');
+	assert(cap.out[0] != '\0');
 }
 
 static void	test_usage_text(void)

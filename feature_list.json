@@ -120,7 +120,7 @@
       "title": "Simulation lifecycle",
       "goal": "main wires parse, init, start the coder and monitor threads, join and teardown end to end, with clean shutdown on pthread_create failure and the edge cases (1 coder, zero compiles required) behaving as specified",
       "file": "docs/plan/phase-09-lifecycle.md",
-      "status": "in_progress",
+      "status": "done",
       "tasks": [
         "9.1",
         "9.2",
@@ -3845,12 +3845,12 @@
       "phase": "09",
       "layer": "interfaces",
       "goal": "`main` keeps a `t_sim` on its own stack, runs `run_simulation` after argument validation and, on -1, prints an `Error:` line to stderr and exits at once with a runtime status distinct from `EXIT_USAGE`",
-      "status": "pending",
+      "status": "done",
       "subtasks": [
         {
           "id": "9.5.1",
           "title": "Print run error",
-          "status": "pending",
+          "status": "done",
           "layer": "interfaces",
           "depends": [
             "2.4.1",
@@ -3878,7 +3878,7 @@
         {
           "id": "9.5.2",
           "title": "Main runs simulation",
-          "status": "pending",
+          "status": "done",
           "layer": "interfaces",
           "depends": [
             "9.4.1",
