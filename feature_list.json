@@ -3845,12 +3845,12 @@
       "phase": "09",
       "layer": "interfaces",
       "goal": "`main` keeps a `t_sim` on its own stack, runs `run_simulation` after argument validation and, on -1, prints an `Error:` line to stderr and exits at once with a runtime status distinct from `EXIT_USAGE`",
-      "status": "pending",
+      "status": "in_progress",
       "subtasks": [
         {
           "id": "9.5.1",
           "title": "Print run error",
-          "status": "pending",
+          "status": "done",
           "layer": "interfaces",
           "depends": [
             "2.4.1",

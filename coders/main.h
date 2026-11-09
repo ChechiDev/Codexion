@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/11/09 12:26:47 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/11/09 13:16:54 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,5 +214,6 @@ int		run_simulation(t_sim *sim, const t_config *config);
 
 void	print_usage(void);
 void	print_arg_error(int position);
+void	print_run_error(void);
 
 #endif

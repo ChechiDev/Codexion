@@ -74,3 +74,8 @@ another session merges, installs or runs checks on the global harness.
 - **9.4.1 (2026-11-09):** close prepared on `feat/9.4-run-simulation`; code review is `APPROVED` (`progress/review_9.4.1.md`) and supplied outside-sandbox close `make check` exited 0. Reference note, subtask status, generated index, history, and task 9.4 PR narrative are updated. Commit message is in `progress/close_9.4.1.msg`; harness will run the final check and commit. Task 9.4 is ready for the harness PR step.
 
 - **Task 9.4 complete:** the end-to-end simulation lifecycle driver is documented and marked done. Task PR narrative is `progress/pr_9.4.md`.
+
+- **State (2026-11-09, handoff to a new session):** tasks 9.1 to 9.4 done and merged (PR #40 for 9.4, `main` at `1fbf78c`). `make status` -> `Next: start subtask 9.5.1`: create the task branch with `git switch -c "$(python3 harness/_harness.py branch 9.5)" main`, set `in_progress`, `make plan`, plan gate. Remaining in phase 09: 9.5.1, 9.5.2. This file travels uncommitted with the 9.5 task branch. The operating notes of the 2026-11-08 handoff block still apply (foreground gates, `< /dev/null`, implementer prompt requirements, re-seal procedure, open follow-ups). After `PLAN_APPROVED`, run `make check`: only the new oracle may be red.
+- **9.5.1 (2026-11-09):** started on `feat/9.5-entry-point`; status `in_progress`. Next: plan gate.
+
+- **9.5.1 (2026-11-09):** close prepared on `feat/9.5-entry-point`; code review is `APPROVED` (`progress/review_9.5.1.md`) and supplied outside-sandbox close `make check` exited 0. Reference note, subtask status, generated index, and history are updated. Commit message is in `progress/close_9.5.1.msg`; harness will run the final check and commit. Next: continue task 9.5 with subtask 9.5.2.

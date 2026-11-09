@@ -729,3 +729,14 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_9.4.1.md`); implementation notes report clean native, Memcheck, and ThreadSanitizer acceptance runs.
 - **Documentation:** docs/reference/9.4.1-run-simulation.md; task narrative: progress/pr_9.4.md
 - **Commit:** feat(lifecycle): run simulation [9.4.1]
+
+
+## 2026-11-09 — Subtask 9.5.1: Print run error
+
+- **Layer:** interfaces
+- **Plan:** docs/plan/phase-09-lifecycle/9.5.1-print-run-error.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/cli/print_run_error.c`, `coders/main.h`, and `coders/Makefile` provide a fixed CLI diagnostic on stderr for a runtime simulation failure.
+- **Acceptance:** `tests/acceptance/test_9.5.1.c` — AC1–AC2 cover exact output on stdout and stderr for one and repeated calls.
+- **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_9.5.1.md`); implementation notes record clean unit, acceptance, Memcheck, and ThreadSanitizer runs.
+- **Documentation:** docs/reference/9.5.1-print-run-error.md
+- **Commit:** feat(cli): print simulation run error [9.5.1]
