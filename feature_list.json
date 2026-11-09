@@ -3788,12 +3788,12 @@
       "phase": "09",
       "layer": "orchestration",
       "goal": "`run_simulation` drives one whole run on caller-owned storage: it returns 0 at once with no threads and no output when `number_of_compiles_required` is 0 (user decision 2026-11-06), otherwise init → start → join → read `failed` → `free_sim` (no `free_sim` after a failed init, nothing freed or re-joined after a failed recovery or final join), 0 on a normal end (target met or burnout) and -1 on any failure",
-      "status": "pending",
+      "status": "done",
       "subtasks": [
         {
           "id": "9.4.1",
           "title": "Run simulation",
-          "status": "pending",
+          "status": "done",
           "layer": "orchestration",
           "depends": [
             "9.3.2"

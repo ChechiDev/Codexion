@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/11/08 18:08:23 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/11/09 12:26:47 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,6 +208,7 @@ void	*run_monitor(void *arg);
 
 int		join_threads(t_sim *sim, int coders);
 int		start_threads(t_sim *sim);
+int		run_simulation(t_sim *sim, const t_config *config);
 
 /* ---- CLI ---- */
 
