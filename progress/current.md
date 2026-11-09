@@ -79,3 +79,6 @@ another session merges, installs or runs checks on the global harness.
 - **9.5.1 (2026-11-09):** started on `feat/9.5-entry-point`; status `in_progress`. Next: plan gate.
 
 - **9.5.1 (2026-11-09):** close prepared on `feat/9.5-entry-point`; code review is `APPROVED` (`progress/review_9.5.1.md`) and supplied outside-sandbox close `make check` exited 0. Reference note, subtask status, generated index, and history are updated. Commit message is in `progress/close_9.5.1.msg`; harness will run the final check and commit. Next: continue task 9.5 with subtask 9.5.2.
+- **9.5.2 (2026-11-09):** started on `feat/9.5-entry-point`; status `in_progress`. Next: plan gate.
+- **9.5.2 (2026-11-09):** close prepared on `feat/9.5-entry-point`; code review is `APPROVED` (`progress/review_9.5.2.md`) and supplied outside-sandbox close `make check` exited 0. Reference note, README exit statuses, subtask status, generated index, history, and task 9.5 PR narrative are updated. Commit message is in `progress/close_9.5.2.msg`; harness will run the final check and commit.
+- **Task 9.5 complete:** the entry point now runs the lifecycle driver and reports runtime failure with status 2; task narrative is `progress/pr_9.5.md`.

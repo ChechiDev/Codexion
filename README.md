@@ -86,9 +86,15 @@ Usage: ./codexion number_of_coders time_to_burnout time_to_compile time_to_debug
   scheduler is either fifo or edf
 ```
 
-For now that is all the program does: it only checks how many arguments you
-gave. Checking the values themselves and running the simulation are added in
-later steps, and this section will grow with them.
+The program validates every argument before starting the simulation. Invalid
+values produce an error line for each position, followed by the usage reminder,
+and exit with status 1. A normal simulation ends with status 0, whether each
+coder reached the compile target or a coder burned out. Requiring zero compiles
+also exits successfully without starting the simulation.
+
+If an internal runtime operation fails, the program exits with status 2 and
+prints `Error: simulation failed` to stderr. Simulation events are written to
+stdout.
 
 ## Resources
 
