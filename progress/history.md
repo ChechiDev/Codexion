@@ -719,3 +719,13 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox `make check` green (exit code 0). Code review: APPROVED (`progress/review_9.3.2.md`); implementation notes report clean native, Memcheck, and ThreadSanitizer runs.
 - **Documentation:** docs/reference/9.3.2-start-threads.md; task narrative: progress/pr_9.3.md
 - **Commit:** feat(lifecycle): start simulation threads [9.3.2]
+
+## 2026-11-09 — Subtask 9.4.1: Run simulation
+
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-09-lifecycle/9.4.1-run-simulation.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/lifecycle/run_simulation.c`, `coders/main.h`, and `coders/Makefile` add the end-to-end lifecycle driver. It handles zero-target completion, initialization, startup recovery results, joining, failure inspection, and cleanup while preserving caller storage if threads may remain active.
+- **Acceptance:** `tests/acceptance/test_9.4.1.c` — AC1–AC6 cover zero target, target completion, burnout, one coder, runtime output failure, and invalid input.
+- **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_9.4.1.md`); implementation notes report clean native, Memcheck, and ThreadSanitizer acceptance runs.
+- **Documentation:** docs/reference/9.4.1-run-simulation.md; task narrative: progress/pr_9.4.md
+- **Commit:** feat(lifecycle): run simulation [9.4.1]
