@@ -780,3 +780,13 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_10.2.1.md`); implementation notes report clean acceptance Valgrind and ThreadSanitizer runs.
 - **Documentation:** docs/reference/10.2.1-viability-boundary.md
 - **Commit:** test(acceptance): verify EDF viability boundary [10.2.1]
+
+## 2026-11-10 — Subtask 10.2.2: Observable rules
+
+- **Layer:** orchestration (test-only verification; no production behavior change)
+- **Plan:** docs/plan/phase-10-hardening-and-readme/10.2.2-observable-rules.md (plan_review: PLAN_APPROVED)
+- **Changes:** `tests/acceptance/test_10.2.2.c` checks full-binary log format, dongle takes, state cycles, neighbor exclusion, cooldown, two-coder alternation, burnout reporting, and target completion. The AC1 parser validates the parsed `long` ID before narrowing it.
+- **Acceptance:** `tests/acceptance/test_10.2.2.c` — AC1–AC8 cover the observable rules for FIFO and EDF scenarios.
+- **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_10.2.2.md`); implementation notes report green verification, Valgrind, and ThreadSanitizer runs.
+- **Documentation:** docs/reference/10.2.2-observable-rules.md
+- **Commit:** test(acceptance): verify observable simulation rules [10.2.2]

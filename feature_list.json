@@ -4084,7 +4084,7 @@
         {
           "id": "10.2.2",
           "title": "Observable rules",
-          "status": "pending",
+          "status": "done",
           "layer": "orchestration",
           "depends": [
             "10.1.2"
