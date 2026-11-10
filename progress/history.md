@@ -800,3 +800,13 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_10.2.3.md`); implementation notes record verification, Valgrind with a separate log file for the closed-stderr case, and ThreadSanitizer.
 - **Documentation:** docs/reference/10.2.3-literal-errors-with-write.md
 - **Commit:** feat(cli): write fixed error messages [10.2.3]
+
+## 2026-11-10 — Subtask 10.2.4: Evaluation runs
+
+- **Layer:** orchestration (test-only verification; no production behavior change)
+- **Plan:** docs/plan/phase-10-hardening-and-readme/10.2.4-evaluation-runs.md (plan_review: PLAN_APPROVED)
+- **Changes:** root `Makefile` adds two EDF scenarios to the Memcheck and ThreadSanitizer run list, preserving existing scenarios.
+- **Acceptance:** `tests/acceptance/test_10.2.4.c` — AC1–AC5 cover allowed symbols, file-scope data, impossible and invalid runs, and real Valgrind outcomes.
+- **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_10.2.4.md`); `progress/impl_10.2.4.md` records `make memcheck` and `make tsan` exit 0 and the empirical scenarios.
+- **Documentation:** docs/reference/10.2.4-evaluation-runs.md; task narrative: progress/pr_10.2.md
+- **Commit:** test(acceptance): add evaluation scenarios [10.2.4]

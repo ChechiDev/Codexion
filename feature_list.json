@@ -4036,7 +4036,7 @@
       "phase": "10",
       "layer": "orchestration",
       "goal": "prove the full binary against the subject with test-only oracles: viability boundary, observable rules and typical evaluation runs",
-      "status": "in_progress",
+      "status": "done",
       "subtasks": [
         {
           "id": "10.2.1",
@@ -4179,7 +4179,7 @@
         {
           "id": "10.2.4",
           "title": "Evaluation runs",
-          "status": "pending",
+          "status": "done",
           "layer": "orchestration",
           "depends": [
             "10.2.3"

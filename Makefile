@@ -27,7 +27,7 @@ TESTS    := $(shell find tests -name 'test_*.c' 2>/dev/null)
 UNIT     := $(filter tests/unit/%,$(TESTS))
 
 # Runs exercised by memcheck / tsan; '|' separates runs. Grows with the project.
-SCENARIOS := 4 410 200 200 200 3 0 edf|5 800 200 200 200 2 10 fifo|1 800 200 200 200 1 0 edf|2 300 100 100 100 2 20 fifo|4 410 200 x 200 3 0 edf
+SCENARIOS := 4 410 200 200 200 3 0 edf|5 800 200 200 200 2 10 fifo|1 800 200 200 200 1 0 edf|2 300 100 100 100 2 20 fifo|4 410 200 x 200 3 0 edf|5 800 200 200 200 3 0 edf|6 870 100 50 50 3 10 edf
 VALGRIND  := valgrind --leak-check=full --show-leak-kinds=all --errors-for-leak-kinds=all --error-exitcode=42 -q
 
 $(BUILD)/obj/%.o: %.c $(HDR)
