@@ -750,3 +750,23 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_9.5.2.md`); implementation notes record clean verification, Valgrind, and ThreadSanitizer runs.
 - **Documentation:** docs/reference/9.5.2-main-runs-simulation.md; task narrative: progress/pr_9.5.md
 - **Commit:** feat(cli): run simulation from main [9.5.2]
+## 2026-11-09 — Subtask 10.1.1: Sleep start turn
+
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-10-hardening-and-readme/10.1.1-sleep-start-turn.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/coder/sleep_start_turn.c`, `coders/main.h`, and `coders/Makefile` add a one-time 1 ms offset for even seats before their first request. FIFO/EDF arbitration is unchanged; the helper delegates waiting and stop/error results to `sleep_ms`.
+- **Acceptance:** `tests/acceptance/test_10.1.1.c` — AC1–AC7 cover odd/even seats, delay completion, stopped and invalid inputs, unchanged state/output, stop during the wait, and clock failure.
+- **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_10.1.1.md`); implementation notes record clean acceptance Valgrind and ThreadSanitizer runs.
+- **Documentation:** docs/reference/10.1.1-sleep-start-turn.md
+- **Commit:** feat(coder): stagger even-seat start requests [10.1.1]
+
+
+## 2026-11-09 — Subtask 10.1.2: Run coder start turn
+
+- **Layer:** orchestration
+- **Plan:** docs/plan/phase-10-hardening-and-readme/10.1.2-run-coder-start-turn.md (plan_review: PLAN_APPROVED)
+- **Changes:** `coders/src/coder/run_coder.c` applies `sleep_start_turn` once before the first request and routes stop/error through the existing release path. README explains the heuristic and tuning macro.
+- **Acceptance:** `tests/acceptance/test_10.1.2.c` — AC1–AC4 cover the stopped even-seat path, odd-seat request path, clock-error handling, and one-coder burnout log.
+- **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_10.1.2.md`); implementation notes record clean acceptance Valgrind and ThreadSanitizer runs and empirical burnout counts.
+- **Documentation:** docs/reference/10.1.2-run-coder-start-turn.md; task narrative: progress/pr_10.1.md
+- **Commit:** feat(coder): run coder start turn [10.1.2]

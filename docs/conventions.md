@@ -196,6 +196,17 @@ writes the mail alone; `Created`/`Updated` carry the real date):
 a file named `Makefile`. When editing an existing file, refresh its `Updated:`
 line the same way (the plugin also does it on every `:w` in Vim).
 
+**Legacy exception (user decision, 2026-11-09).** Some headers committed up to
+the end of phase 09 (`main` at `f4b8c33`) may have been written by hand: 36 of
+the 61 files have a `Created` or `Updated` time with seconds `:00`, a strong but
+unproven sign. Those headers are accepted as they are, and their timestamps are
+not reliable evidence of when a file was created or changed. They are not
+regenerated solely because their provenance is uncertain: regeneration would
+record the regeneration date, not establish the original file creation date.
+The exception covers only those existing headers. Any new file gets a
+generated header, and any later edit to a legacy file refreshes its `Updated:`
+line with the plugin. Analysis: `progress/advisory_stdheader_debt.md`.
+
 ### Build and test tooling (root Makefile, not delivered)
 
 - Production code lives in `coders/` (`harness.toml` `src_dirs = ["coders"]`); the

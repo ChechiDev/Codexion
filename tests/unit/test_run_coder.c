@@ -60,8 +60,24 @@ static void	check_count_failure_stops(void)
 	assert(free_sim(&sim) == 0);
 }
 
+static void	check_start_turn_order(void)
+{
+	t_sim	sim;
+
+	init_sim(&sim, 2);
+	assert(set_stopped(&sim) == 0);
+	assert(run_coder(&sim.coders[1]) == NULL);
+	assert(sim.failed == 0);
+	assert(sim.next_ticket == 0);
+	assert(run_coder(&sim.coders[0]) == NULL);
+	assert(sim.failed == 0);
+	assert(sim.next_ticket == 1);
+	assert(free_sim(&sim) == 0);
+}
+
 int	main(void)
 {
+	check_start_turn_order();
 	check_invalid_and_stopped();
 	check_count_failure_stops();
 	return (0);

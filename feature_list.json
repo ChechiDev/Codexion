@@ -132,10 +132,14 @@
     {
       "id": "10",
       "title": "Hardening and README",
-      "goal": "prove the whole program against the subject with full-binary simulation tests (fifo/edf ordering, cooldown, no burnout under edf at and above the PLAN.md viability boundary including the N = 6 interleaved case, typical evaluation runs, valgrind leak-free, TSan race-free, Norm-clean) and complete the README with its mandatory sections, real outputs and didactic tone",
+      "goal": "make non-neighbouring coders start in parallel with a one-time offset, then prove the whole program against the subject with full-binary simulation tests (log rules, exclusion, fairness, cooldown; exact fifo/edf request order stays proven by the sealed phase 06 API oracles; no burnout under edf at and above the PLAN.md viability boundary including an N = 6 case, typical evaluation runs, valgrind leak-free, TSan race-free, Norm-clean) and complete the README with its mandatory sections, real outputs and didactic tone",
       "file": "docs/plan/phase-10-hardening-and-readme.md",
-      "status": "pending",
-      "tasks": []
+      "status": "in_progress",
+      "tasks": [
+        "10.1",
+        "10.2",
+        "10.3"
+      ]
     }
   ],
   "features": [
@@ -3927,6 +3931,350 @@
             }
           ],
           "spec": "docs/plan/phase-09-lifecycle/9.5.2-main-runs-simulation.md"
+        }
+      ]
+    },
+    {
+      "id": "10.1",
+      "title": "Startup stagger",
+      "phase": "10",
+      "layer": "orchestration",
+      "goal": "let non-neighbouring coders compile in parallel from the start by delaying even seats once, without changing the fifo/edf arbitration",
+      "status": "done",
+      "subtasks": [
+        {
+          "id": "10.1.1",
+          "title": "Sleep start turn",
+          "status": "done",
+          "layer": "orchestration",
+          "depends": [],
+          "files": [
+            "coders/src/coder/sleep_start_turn.c",
+            "coders/main.h",
+            "coders/Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "an odd id returns 0 without sleeping, even on a stopped simulation: a test-defined `gettimeofday` records no call",
+              "test": "tests/acceptance/test_10.1.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "an even id on a running simulation returns 0 after at least START_TURN_MS (lower bound only)",
+              "test": "tests/acceptance/test_10.1.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "an even id on an already stopped simulation returns 1 (sleep_ms contract)",
+              "test": "tests/acceptance/test_10.1.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "a NULL coder, or a coder with a NULL sim, returns -1",
+              "test": "tests/acceptance/test_10.1.1.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "it prints nothing and changes neither last_compile_start, compile_count nor next_ticket",
+              "test": "tests/acceptance/test_10.1.1.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "stop during the offset: with a test-defined `gettimeofday` that stops the simulation on its first call, an even id returns 1",
+              "test": "tests/acceptance/test_10.1.1.c"
+            },
+            {
+              "id": "AC7",
+              "criterion": "clock failure: with a test-defined `gettimeofday` that fails, an even id returns -1",
+              "test": "tests/acceptance/test_10.1.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-10-hardening-and-readme/10.1.1-sleep-start-turn.md"
+        },
+        {
+          "id": "10.1.2",
+          "title": "Run coder start turn",
+          "status": "done",
+          "layer": "orchestration",
+          "depends": [
+            "10.1.1"
+          ],
+          "files": [
+            "coders/src/coder/run_coder.c",
+            "README.md"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "offset before the first request: `run_coder` called directly on an even coder of an already stopped simulation returns NULL, prints nothing, does not set `failed` and leaves `next_ticket` unchanged",
+              "test": "tests/acceptance/test_10.1.2.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "no offset for odd seats: `run_coder` called directly on an odd coder of an already stopped simulation returns NULL, does not set `failed` and advances `next_ticket` by exactly 1 (it reached its request)",
+              "test": "tests/acceptance/test_10.1.2.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "offset error routing: with a test-defined `gettimeofday` that fails, `run_coder` called directly on an even coder returns NULL, sets `failed` and `stopped`, prints nothing and takes no ticket",
+              "test": "tests/acceptance/test_10.1.2.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "one coder: `./coders/codexion 1 300 200 200 200 3 50 edf` still prints exactly one `has taken a dongle` and then `burned out`, its timestamp in `300 .. 310 + S`",
+              "test": "tests/acceptance/test_10.1.2.c"
+            }
+          ],
+          "spec": "docs/plan/phase-10-hardening-and-readme/10.1.2-run-coder-start-turn.md"
+        }
+      ]
+    },
+    {
+      "id": "10.2",
+      "title": "Subject verification",
+      "phase": "10",
+      "layer": "orchestration",
+      "goal": "prove the full binary against the subject with test-only oracles: viability boundary, observable rules and typical evaluation runs",
+      "status": "pending",
+      "subtasks": [
+        {
+          "id": "10.2.1",
+          "title": "Viability boundary",
+          "status": "pending",
+          "layer": "orchestration",
+          "depends": [
+            "10.1.2"
+          ],
+          "files": [],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "at the bound: `./coders/codexion 6 870 100 50 50 3 10 edf` exits 0 with no `burned out` line and every coder compiled at least 3 times",
+              "test": "tests/acceptance/test_10.2.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "at the bound: `./coders/codexion 5 1610 200 200 200 3 0 edf` gives the same result",
+              "test": "tests/acceptance/test_10.2.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "at the bound with cooldown: `./coders/codexion 4 1610 200 200 200 3 50 edf` gives the same result",
+              "test": "tests/acceptance/test_10.2.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "smallest table: `./coders/codexion 2 1010 200 200 200 3 0 edf` gives the same result",
+              "test": "tests/acceptance/test_10.2.1.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "above the bound: `./coders/codexion 6 1200 100 50 50 5 10 edf` gives the same result with at least 5 compiles per coder",
+              "test": "tests/acceptance/test_10.2.1.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "every line of those runs is a complete `<ts> <id> <text>` with non-decreasing timestamps, and stderr is empty",
+              "test": "tests/acceptance/test_10.2.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-10-hardening-and-readme/10.2.1-viability-boundary.md"
+        },
+        {
+          "id": "10.2.2",
+          "title": "Observable rules",
+          "status": "pending",
+          "layer": "orchestration",
+          "depends": [
+            "10.1.2"
+          ],
+          "files": [],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "format: in `./coders/codexion 5 5000 100 100 100 3 20 fifo` and the same run with `edf`, every line is a complete `<ts> <id> <text>`, `id` in 1..5, one of the four state texts, timestamps non-decreasing",
+              "test": "tests/acceptance/test_10.2.2.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "two dongles: in those runs, each `is compiling` follows exactly two `has taken a dongle` lines of that coder since its previous compile",
+              "test": "tests/acceptance/test_10.2.2.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "cycle: per coder the states go compiling, debugging, refactoring, next take; only the last, interrupted cycle may be incomplete",
+              "test": "tests/acceptance/test_10.2.2.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "exclusion: in those runs two neighbours never have overlapping intervals `[is compiling ts, ts + C)`, allowing 1 ms for rounding",
+              "test": "tests/acceptance/test_10.2.2.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "cooldown: in `./coders/codexion 4 5000 100 100 100 3 50 fifo`, a coder's `has taken a dongle` after a neighbour's compile on a shared dongle is at least that compile's `ts + C + D - 1`",
+              "test": "tests/acceptance/test_10.2.2.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "fairness: in `./coders/codexion 2 5000 100 100 100 4 0 fifo` and the same run with `edf`, the `is compiling` lines strictly alternate between the two coders",
+              "test": "tests/acceptance/test_10.2.2.c"
+            },
+            {
+              "id": "AC7",
+              "criterion": "burnout: `./coders/codexion 2 300 400 100 100 3 0 fifo` prints exactly one `burned out` line, the last one, with `ts` in `300 .. 310 + S`",
+              "test": "tests/acceptance/test_10.2.2.c"
+            },
+            {
+              "id": "AC8",
+              "criterion": "target met: `./coders/codexion 4 5000 100 100 100 3 0 edf` exits 0 with no `burned out` line, every coder compiled at least 3 times, and the process ends within a watchdog",
+              "test": "tests/acceptance/test_10.2.2.c"
+            }
+          ],
+          "spec": "docs/plan/phase-10-hardening-and-readme/10.2.2-observable-rules.md"
+        },
+        {
+          "id": "10.2.3",
+          "title": "Literal errors with write",
+          "status": "pending",
+          "layer": "interfaces",
+          "depends": [
+            "10.1.2"
+          ],
+          "files": [
+            "coders/src/cli/print_usage.c",
+            "coders/src/cli/print_run_error.c",
+            "coders/src/cli/print_arg_error.c"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "`nm -u coders/codexion` lists neither `fwrite`, `fputs`, `fputc` nor `puts`",
+              "test": "tests/acceptance/test_10.2.3.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "`print_usage` writes the exact current bytes to stderr and nothing to stdout",
+              "test": "tests/acceptance/test_10.2.3.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "`print_run_error` writes exactly `Error: simulation failed\\n` to stderr",
+              "test": "tests/acceptance/test_10.2.3.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "`print_arg_error(8)` writes exactly `Error: scheduler must be fifo or edf\\n`; positions 1..7 keep their text; out-of-range positions print nothing",
+              "test": "tests/acceptance/test_10.2.3.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "with stderr closed, `./coders/codexion 1 2` still exits 1 without crashing",
+              "test": "tests/acceptance/test_10.2.3.c"
+            }
+          ],
+          "spec": "docs/plan/phase-10-hardening-and-readme/10.2.3-literal-errors-with-write.md"
+        },
+        {
+          "id": "10.2.4",
+          "title": "Evaluation runs",
+          "status": "pending",
+          "layer": "orchestration",
+          "depends": [
+            "10.2.3"
+          ],
+          "files": [
+            "Makefile"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "allowed functions: every undefined symbol of `coders/codexion` is in the subject's list (6.1) or in a fixed list of toolchain start-up symbols",
+              "test": "tests/acceptance/test_10.2.4.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "no globals: `nm` on the `coders/` objects shows no data symbol at file scope, external or internal (types B, D, C, G, S, R, b, d, g, s, r); function-local statics, which GCC names `<name>.<digits>`, are not globals and are accepted",
+              "test": "tests/acceptance/test_10.2.4.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "impossible run: `./coders/codexion 4 410 200 200 200 3 0 edf` exits 0 with exactly one `burned out` line, the last one, with `ts` in `410 .. 420 + S`",
+              "test": "tests/acceptance/test_10.2.4.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "invalid input: `./coders/codexion 4 410 200 x 200 3 0 edf` exits 1 with empty stdout, an `Error:` line and the usage on stderr",
+              "test": "tests/acceptance/test_10.2.4.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "leaks: under `valgrind --leak-check=full --show-leak-kinds=all --errors-for-leak-kinds=all --error-exitcode=42`, `1 300 200 200 200 3 0 edf` and `5 5000 200 200 200 2 0 edf` exit 0 and the AC4 input exits 1; each run must really start valgrind and return the target's status, never 42 or a launch failure (skipped with a diagnostic only when valgrind is not installed; CI installs it)",
+              "test": "tests/acceptance/test_10.2.4.c"
+            }
+          ],
+          "spec": "docs/plan/phase-10-hardening-and-readme/10.2.4-evaluation-runs.md"
+        }
+      ]
+    },
+    {
+      "id": "10.3",
+      "title": "README",
+      "phase": "10",
+      "layer": "interfaces",
+      "goal": "complete the README with the mandatory sections of subject section 7, real outputs and didactic tone",
+      "status": "pending",
+      "subtasks": [
+        {
+          "id": "10.3.1",
+          "title": "Complete README",
+          "status": "pending",
+          "layer": "interfaces",
+          "depends": [
+            "10.2.4"
+          ],
+          "files": [
+            "README.md"
+          ],
+          "acceptance": [
+            {
+              "id": "AC1",
+              "criterion": "the first line is exactly `*This project has been created as part of the 42 curriculum by sperez-l.*`",
+              "test": "tests/acceptance/test_10.3.1.c"
+            },
+            {
+              "id": "AC2",
+              "criterion": "it has the headings Description, Instructions, Resources, Blocking cases handled and Thread synchronization mechanisms, once each",
+              "test": "tests/acceptance/test_10.3.1.c"
+            },
+            {
+              "id": "AC3",
+              "criterion": "no placeholder remains (`At this stage`, `nothing to block`, `will describe`, `will explain`)",
+              "test": "tests/acceptance/test_10.3.1.c"
+            },
+            {
+              "id": "AC4",
+              "criterion": "Blocking cases handled names deadlock, Coffman, starvation, cooldown, burnout detection and log serialization",
+              "test": "tests/acceptance/test_10.3.1.c"
+            },
+            {
+              "id": "AC5",
+              "criterion": "Thread synchronization mechanisms names `pthread_mutex_t` and `pthread_cond_t`, and covers dongles, logging and monitor state",
+              "test": "tests/acceptance/test_10.3.1.c"
+            },
+            {
+              "id": "AC6",
+              "criterion": "the usage text shown in the README equals what `./coders/codexion` really prints",
+              "test": "tests/acceptance/test_10.3.1.c"
+            },
+            {
+              "id": "AC7",
+              "criterion": "the Resources section contains the AI paragraph quoted in the Description, verbatim",
+              "test": "tests/acceptance/test_10.3.1.c"
+            }
+          ],
+          "spec": "docs/plan/phase-10-hardening-and-readme/10.3.1-complete-readme.md"
         }
       ]
     }

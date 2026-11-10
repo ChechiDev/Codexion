@@ -6,7 +6,7 @@
 #    By: sperez-l@student.42barcelona.com           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/10/26 16:47:34 by sperez-l          #+#    #+#              #
-#    Updated: 2026/11/09 13:16:54 by sperez-l         ###   ########.fr        #
+#    Updated: 2026/11/09 19:41:30 by sperez-l         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,6 +26,7 @@ SRC = main.c \
 	src/coder/run_coder.c \
 	src/coder/set_compile_count.c \
 	src/coder/set_compile_start.c \
+	src/coder/sleep_start_turn.c \
 	src/coder/take_coder_dongles.c \
 	src/dongle/build_request.c \
 	src/dongle/release_dongles.c \
