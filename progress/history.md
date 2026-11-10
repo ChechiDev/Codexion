@@ -770,3 +770,13 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_10.1.2.md`); implementation notes record clean acceptance Valgrind and ThreadSanitizer runs and empirical burnout counts.
 - **Documentation:** docs/reference/10.1.2-run-coder-start-turn.md; task narrative: progress/pr_10.1.md
 - **Commit:** feat(coder): run coder start turn [10.1.2]
+
+## 2026-11-10 — Subtask 10.2.1: Viability boundary
+
+- **Layer:** orchestration (test-only verification; no production behavior change)
+- **Plan:** docs/plan/phase-10-hardening-and-readme/10.2.1-viability-boundary.md (plan_review: PLAN_APPROVED)
+- **Changes:** `tests/acceptance/test_10.2.1.c` verifies five full-binary EDF runs at or above the sufficient no-burnout boundary, including six coders, compile counts, and complete ordered logs. AC6 rejects embedded NULs across the entire captured stdout and requires empty stderr.
+- **Acceptance:** `tests/acceptance/test_10.2.1.c` — AC1–AC5 cover the boundary and above-bound scenarios; AC6 checks complete ordered logs and empty stderr.
+- **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_10.2.1.md`); implementation notes report clean acceptance Valgrind and ThreadSanitizer runs.
+- **Documentation:** docs/reference/10.2.1-viability-boundary.md
+- **Commit:** test(acceptance): verify EDF viability boundary [10.2.1]
