@@ -790,3 +790,13 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_10.2.2.md`); implementation notes report green verification, Valgrind, and ThreadSanitizer runs.
 - **Documentation:** docs/reference/10.2.2-observable-rules.md
 - **Commit:** test(acceptance): verify observable simulation rules [10.2.2]
+
+## 2026-11-10 — Subtask 10.2.3: Literal errors with write
+
+- **Layer:** interfaces
+- **Plan:** docs/plan/phase-10-hardening-and-readme/10.2.3-literal-errors-with-write.md (plan_review: PLAN_APPROVED)
+- **Changes:** fixed CLI messages now use `write` and `strlen`, removing the compiler-generated `fwrite` reference while preserving exact output; formatted argument errors remain unchanged.
+- **Acceptance:** `tests/acceptance/test_10.2.3.c` — AC1–AC5 cover binary symbols, output bytes and streams, and the closed-stderr exit path.
+- **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_10.2.3.md`); implementation notes record verification, Valgrind with a separate log file for the closed-stderr case, and ThreadSanitizer.
+- **Documentation:** docs/reference/10.2.3-literal-errors-with-write.md
+- **Commit:** feat(cli): write fixed error messages [10.2.3]
