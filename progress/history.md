@@ -770,3 +770,43 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_10.1.2.md`); implementation notes record clean acceptance Valgrind and ThreadSanitizer runs and empirical burnout counts.
 - **Documentation:** docs/reference/10.1.2-run-coder-start-turn.md; task narrative: progress/pr_10.1.md
 - **Commit:** feat(coder): run coder start turn [10.1.2]
+
+## 2026-11-10 — Subtask 10.2.1: Viability boundary
+
+- **Layer:** orchestration (test-only verification; no production behavior change)
+- **Plan:** docs/plan/phase-10-hardening-and-readme/10.2.1-viability-boundary.md (plan_review: PLAN_APPROVED)
+- **Changes:** `tests/acceptance/test_10.2.1.c` verifies five full-binary EDF runs at or above the sufficient no-burnout boundary, including six coders, compile counts, and complete ordered logs. AC6 rejects embedded NULs across the entire captured stdout and requires empty stderr.
+- **Acceptance:** `tests/acceptance/test_10.2.1.c` — AC1–AC5 cover the boundary and above-bound scenarios; AC6 checks complete ordered logs and empty stderr.
+- **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_10.2.1.md`); implementation notes report clean acceptance Valgrind and ThreadSanitizer runs.
+- **Documentation:** docs/reference/10.2.1-viability-boundary.md
+- **Commit:** test(acceptance): verify EDF viability boundary [10.2.1]
+
+## 2026-11-10 — Subtask 10.2.2: Observable rules
+
+- **Layer:** orchestration (test-only verification; no production behavior change)
+- **Plan:** docs/plan/phase-10-hardening-and-readme/10.2.2-observable-rules.md (plan_review: PLAN_APPROVED)
+- **Changes:** `tests/acceptance/test_10.2.2.c` checks full-binary log format, dongle takes, state cycles, neighbor exclusion, cooldown, two-coder alternation, burnout reporting, and target completion. The AC1 parser validates the parsed `long` ID before narrowing it.
+- **Acceptance:** `tests/acceptance/test_10.2.2.c` — AC1–AC8 cover the observable rules for FIFO and EDF scenarios.
+- **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_10.2.2.md`); implementation notes report green verification, Valgrind, and ThreadSanitizer runs.
+- **Documentation:** docs/reference/10.2.2-observable-rules.md
+- **Commit:** test(acceptance): verify observable simulation rules [10.2.2]
+
+## 2026-11-10 — Subtask 10.2.3: Literal errors with write
+
+- **Layer:** interfaces
+- **Plan:** docs/plan/phase-10-hardening-and-readme/10.2.3-literal-errors-with-write.md (plan_review: PLAN_APPROVED)
+- **Changes:** fixed CLI messages now use `write` and `strlen`, removing the compiler-generated `fwrite` reference while preserving exact output; formatted argument errors remain unchanged.
+- **Acceptance:** `tests/acceptance/test_10.2.3.c` — AC1–AC5 cover binary symbols, output bytes and streams, and the closed-stderr exit path.
+- **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_10.2.3.md`); implementation notes record verification, Valgrind with a separate log file for the closed-stderr case, and ThreadSanitizer.
+- **Documentation:** docs/reference/10.2.3-literal-errors-with-write.md
+- **Commit:** feat(cli): write fixed error messages [10.2.3]
+
+## 2026-11-10 — Subtask 10.2.4: Evaluation runs
+
+- **Layer:** orchestration (test-only verification; no production behavior change)
+- **Plan:** docs/plan/phase-10-hardening-and-readme/10.2.4-evaluation-runs.md (plan_review: PLAN_APPROVED)
+- **Changes:** root `Makefile` adds two EDF scenarios to the Memcheck and ThreadSanitizer run list, preserving existing scenarios.
+- **Acceptance:** `tests/acceptance/test_10.2.4.c` — AC1–AC5 cover allowed symbols, file-scope data, impossible and invalid runs, and real Valgrind outcomes.
+- **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_10.2.4.md`); `progress/impl_10.2.4.md` records `make memcheck` and `make tsan` exit 0 and the empirical scenarios.
+- **Documentation:** docs/reference/10.2.4-evaluation-runs.md; task narrative: progress/pr_10.2.md
+- **Commit:** test(acceptance): add evaluation scenarios [10.2.4]
