@@ -73,3 +73,30 @@
 - Template: every section of `harness/issue_template.md` is present. Intended changes use future tense; statements about current behaviour use present tense.
 - Labels: exactly one type label (`refactor`); priority `now` is valid.
 - Size: one production function, its unit test, and four affected sealed oracles fit one issue. The migration list includes both stop-sensitive worker loops and their post-stop assertions. No agent attribution appears in the draft.
+
+## Round 6: issue-draft gate, CHANGES_REQUESTED (2026-11-10 15:04)
+
+### Issue draft review
+
+**Verdict:** CHANGES_REQUESTED
+
+#### Analysis
+- Problem: the draft gives a concrete at-bound EDF failure, reproduction command, expected and actual results, and its impact. The stated 1610 ms boundary matches the formula in `docs/plan/PLAN.md`.
+- Template / labels / size: all template sections are present; `bug` is the sole type label and `now` is a valid priority. Diagnosis followed by a focused correction fits one issue.
+- Gate blocker: the supplied pre-session `make check` exited 2. `tests/acceptance/test_9.4.1.c:287` failed after the run logged a burnout at 1000 ms instead of the asserted 300–310 ms range. This is a different oracle from the proposed issue. The reviewer role's hard rule forbids approval while the check is red.
+
+#### Requested changes
+1. Resolve the `test_9.4.1.c:287` failure and provide a green outside-sandbox `make check` result before rerunning the issue-draft gate. The draft itself needs no content change based on this review.
+
+## Round 7: issue-draft gate, DRAFT_APPROVED (2026-11-10 15:26)
+
+### Issue draft review
+
+**Verdict:** DRAFT_APPROVED
+
+#### Analysis
+- Problem: `progress/issue_draft.md:8-49` identifies the intermittent EDF burnout at the claimed 1610 ms viability boundary, gives a reproduction command, distinguishes expected from actual behavior, and explains the effect on the sealed oracle and CI. The boundary matches `docs/plan/PLAN.md:92-96`. The rare late burnout is recorded as a possibly related symptom for diagnosis.
+- Template: all sections of `harness/issue_template.md` are present. The Overview and Approach describe intended investigation and correction; open questions preserve the unresolved root cause. No agent attribution appears in the draft.
+- Labels: the front matter has exactly one type label (`bug`) and a valid priority (`now`).
+- Size: diagnosis and a focused fix to the viability claim or its implementation fit one issue. The draft calls for one subtask per affected unit and a roadmap re-seal plus explicit oracle migration if the claim changes.
+- Gate: the supplied outside-sandbox pre-session `make check` exited 0.

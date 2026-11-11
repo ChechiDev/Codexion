@@ -13,8 +13,9 @@ The interesting part is not the story but the problem underneath it: many
 threads compete for few resources, and the program must stay correct and never
 get stuck. That is what this project is about.
 
-At this stage the repository only contains the build skeleton. The simulation
-itself is added step by step, and this README grows with it.
+The program prints one line per event, in the form `<timestamp_ms> <coder_id>
+<event>`, and a run is driven by eight command-line arguments that are
+explained below.
 
 ## Instructions
 
@@ -86,15 +87,119 @@ Usage: ./codexion number_of_coders time_to_burnout time_to_compile time_to_debug
   scheduler is either fifo or edf
 ```
 
-The program validates every argument before starting the simulation. Invalid
-values produce an error line for each position, followed by the usage reminder,
-and exit with status 1. A normal simulation ends with status 0, whether each
-coder reached the compile target or a coder burned out. Requiring zero compiles
-also exits successfully without starting the simulation.
+Argument values are validated before the program does any simulation work.
+Numeric arguments must contain decimal digits only, fit in the range up to
+2147483647, and may have surrounding whitespace; the number of coders and time
+to burnout must be at least 1, while the other numeric values may be 0. The
+scheduler must be exactly `fifo` or `edf`. Every invalid value gets its own
+error line, followed by the usage reminder, and the program exits with status
+1. For example:
 
-If an internal runtime operation fails, the program exits with status 2 and
-prints `Error: simulation failed` to stderr. Simulation events are written to
-stdout.
+```
+$ ./coders/codexion 4 -5 abc 200 200 3 50 rr
+Error: time_to_burnout must be an integer from 1 to 2147483647
+Error: time_to_compile must be an integer from 0 to 2147483647
+Error: scheduler must be fifo or edf
+Usage: ./codexion number_of_coders time_to_burnout time_to_compile time_to_debug time_to_refactor number_of_compiles_required dongle_cooldown scheduler
+  scheduler is either fifo or edf
+```
+
+A normal simulation ends with status 0, whether each coder reached the compile
+target or a coder burned out. Requiring zero compiles also exits successfully
+without starting the simulation. If an internal runtime operation fails, the
+program exits with status 2 and prints `Error: simulation failed` to stderr.
+Simulation events are written to stdout.
+
+### Example runs
+
+Every output below was copied from a real run of the final binary. Timestamps
+are in milliseconds since the simulation started, and the exact numbers can
+shift by a millisecond or two between runs.
+
+**A normal end by compile count.** Two coders, a generous burnout limit, and
+each coder must compile once:
+
+```
+$ ./coders/codexion 2 1010 200 200 200 1 0 edf
+0 1 has taken a dongle
+0 1 has taken a dongle
+0 1 is compiling
+200 1 is debugging
+200 2 has taken a dongle
+200 2 has taken a dongle
+200 2 is compiling
+400 1 is refactoring
+400 2 is debugging
+```
+
+Coder 1 takes both dongles, compiles for 200 ms and moves on to debug, which
+frees the dongles. Coder 2 gets them right away and starts compiling at 200 ms.
+When both have compiled once, the monitor stops the run and the exit status is
+0.
+
+**A burnout.** The same table, but the burnout limit is only 400 ms and each
+coder must compile twice:
+
+```
+$ ./coders/codexion 2 400 200 200 200 2 50 fifo
+0 1 has taken a dongle
+0 1 has taken a dongle
+0 1 is compiling
+200 1 is debugging
+250 2 has taken a dongle
+250 2 has taken a dongle
+250 2 is compiling
+400 1 is refactoring
+400 1 burned out
+```
+
+Coder 1 started compiling at 0 and had not started again when 400 ms were
+reached, so it burned out at exactly that moment. The monitor prints that line last and nothing is printed after it.
+
+**fifo and edf.** With `fifo` the dongle goes to whoever asked first. With `edf`
+it goes to the coder whose deadline (last compile start plus `time_to_burnout`)
+is closest. On a table with enough room, both give the same result:
+
+```
+$ ./coders/codexion 3 800 100 100 100 1 20 fifo
+0 1 has taken a dongle
+0 1 has taken a dongle
+0 1 is compiling
+100 1 is debugging
+120 3 has taken a dongle
+120 3 has taken a dongle
+120 3 is compiling
+200 1 is refactoring
+220 3 is debugging
+240 2 has taken a dongle
+240 2 has taken a dongle
+240 2 is compiling
+320 3 is refactoring
+340 2 is debugging
+```
+
+Running the same line with `edf` printed an identical trace here. The
+difference only shows up when the table is tight, because `edf` then serves the
+most urgent coder first.
+
+### When is a run viable under edf?
+
+The subject asks that nobody burns out under `edf` when the parameters are
+viable. This project uses a sufficient condition. With `N` coders,
+`C = time_to_compile`, `D = dongle_cooldown`, `R = time_to_debug +
+time_to_refactor` and `B = time_to_burnout`, a run is considered viable when:
+
+```
+N >= 2 and B >= C + R + N * (C + D) + 10
+```
+
+The 10 ms is slack for the operating system. This is a bound that is enough,
+not the definition of every run that survives, and a single coder (one dongle)
+can never be viable. For example, `./coders/codexion 4 1610 200 200 200 3 50
+edf` sits exactly on the bound. A run whose own cycle `C + R` is longer than
+`B` can never survive.
+
+### Start-up offset
 
 At start-up, odd-numbered coder seats begin their first dongle request
 immediately, while even-numbered seats wait once for 1 ms. This offset gives
@@ -115,34 +220,87 @@ Classic references used while learning the topic:
 - GNU Make manual, for the Makefile rules above.
 - The 42 Norm, checked with `norminette`.
 
-How AI was used: an AI assistant helps with planning, reviewing and
-implementing parts of the code. Nothing is accepted blindly. The author reads,
-tests and understands every line that ends up in the repository.
+**How AI was used.** I used this project to learn concurrency, and AI
+assistants were part of how I worked and learned. They helped break the work
+into small steps, drafted code and tests, and reviewed changes. I made the
+design decisions, approved each step, and used the process to study how
+threads, mutexes and scheduling work.
 
 ## Blocking cases handled
 
-There is no concurrency yet, so there is nothing to block. This section will
-explain, with examples, how the program avoids deadlock, starvation and
-dongle cooldown problems once the simulation exists.
+Here is what could go wrong when many threads fight over few dongles, and what
+the program does about each case.
+
+**Deadlock and the Coffman conditions.** A deadlock needs four things at once
+(the Coffman conditions): mutual exclusion, hold and wait, no preemption, and a
+circular wait. A dongle is exclusive by nature (mutual exclusion stays) and
+nobody can snatch one from a coder (no preemption stays), so the program
+removes the other two conditions with two separate mechanisms.
+
+The first removes hold and wait. A coder never holds one dongle while waiting
+for the other. It queues for both, and only marks them as taken, together in
+one step, when it is at the head of both queues and both are off cooldown.
+Otherwise it takes nothing and waits.
+
+The second removes the circular wait at the mutex level. The short critical
+sections that inspect and update the two dongles always lock the mutexes in the
+same global order, the lower dongle index first, so a ring of coders each
+locking one mutex and waiting for the next cannot form.
+
+**Starvation.** Each dongle keeps a priority queue (a heap) of the coders
+waiting for it. Under `fifo` the key is a ticket number taken when the request
+is made, so nobody can be overtaken forever. Under `edf` the key is the coder's
+burnout deadline, so the coder closest to burning out is served first and its
+wait is bounded when the parameters are viable.
+
+**Dongle cooldown.** When a coder releases its dongles, they record the release
+time. A dongle only counts as ready for the next coder once `dongle_cooldown`
+milliseconds have passed. A waiting coder sleeps on a condition variable with a
+short timeout and re-checks, so it neither spins nor misses the moment the
+cooldown ends.
+
+**Burnout detection.** The monitor thread scans the coders about once per
+millisecond. A coder has burned out as soon as `time_to_burnout`
+milliseconds have elapsed since its last compile start (reaching the limit is
+enough, it does not have to be exceeded). The monitor then prints
+`burned out` and stops the run, and the line appears within 10 ms of the real
+burnout. It also stops the run once every coder reached the compile target.
+
+**Log serialization.** Without care, two threads writing at once could
+interleave their lines. Every event is built in a buffer and sent with a single
+`write` while holding the log mutex, so each line comes out whole. The
+burnout line is printed under that same mutex together with the stop flag, so no
+coder event can appear after it.
 
 ## Thread synchronization mechanisms
 
-This section will describe which mutexes and condition variables protect the
-shared data, how data races are avoided, and how the coders and the monitor
-communicate in a thread-safe way. It is filled in as those pieces are built.
+The program uses only `pthread_mutex_t` and `pthread_cond_t`. Each one protects
+one clearly named piece of shared data.
 
-Argument values are validated before the program does any simulation work.
-Numeric arguments must contain decimal digits only, fit in the range up to
-2147483647, and may have surrounding whitespace; the number of coders and time
-to burnout must be at least 1, while the other numeric values may be 0. The
-scheduler must be exactly `fifo` or `edf`. Every invalid value gets its own
-error line, followed by the usage reminder. For example:
+- **Dongles.** Every dongle has its own `pthread_mutex_t` and its own
+  `pthread_cond_t`. The mutex protects the dongle's `available` flag, its
+  `released_at` time and its heap of waiting requests. A coder that is not
+  first in line waits on the condition variable of its first dongle. Releasing
+  the dongles marks them as available and broadcasts on both condition
+  variables so the waiting neighbours re-check.
+- **Logging.** One `log_mutex` serializes every line written to stdout. The
+  timestamp is computed inside the critical section, so lines are also printed
+  in non-decreasing time order.
+- **Monitor state.** The stop flag lives behind `stop_mutex`; every thread reads
+  it through `is_stopped` and the monitor sets it through `set_stopped`. Each
+  coder also has its own mutex protecting its `last_compile_start` and
+  `compile_count`, which the monitor reads to decide whether the coder burned
+  out or reached the target. A small `ticket_mutex` hands out the FIFO tickets.
 
-```
-$ ./coders/codexion 4 -5 abc 200 200 3 50 rr
-Error: time_to_burnout must be an integer from 1 to 2147483647
-Error: time_to_compile must be an integer from 0 to 2147483647
-Error: scheduler must be fifo or edf
-Usage: ./coders/codexion number_of_coders time_to_burnout time_to_compile time_to_debug time_to_refactor number_of_compiles_required dongle_cooldown scheduler
-  scheduler is either fifo or edf
-```
+**How races are avoided.** No shared field is touched without its mutex. For
+instance, a coder updates `last_compile_start` under its own coder mutex, and
+the monitor reads it under that same mutex, so the monitor never sees a
+half-written value. When a lock order matters (the log mutex before the stop
+mutex, the lower dongle before the higher one) it is always the same.
+
+**How coders and the monitor talk safely.** They never call each other. The
+coders publish their progress through the per-coder mutex, and the monitor
+publishes the end of the run through the stop flag. When the monitor decides to
+stop, it sets the flag and then locks each dongle mutex and broadcasts on its
+condition variable. Coders waiting for a dongle wake up, see the flag and
+leave, so no thread stays blocked and every thread can be joined.

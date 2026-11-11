@@ -134,7 +134,7 @@
       "title": "Hardening and README",
       "goal": "make non-neighbouring coders start in parallel with a one-time offset, then prove the whole program against the subject with full-binary simulation tests (log rules, exclusion, fairness, cooldown; exact fifo/edf request order stays proven by the sealed phase 06 API oracles; no burnout under edf at and above the PLAN.md viability boundary including an N = 6 case, typical evaluation runs, valgrind leak-free, TSan race-free, Norm-clean) and complete the README with its mandatory sections, real outputs and didactic tone",
       "file": "docs/plan/phase-10-hardening-and-readme.md",
-      "status": "in_progress",
+      "status": "done",
       "tasks": [
         "10.1",
         "10.2",
@@ -4224,12 +4224,12 @@
       "phase": "10",
       "layer": "interfaces",
       "goal": "complete the README with the mandatory sections of subject section 7, real outputs and didactic tone",
-      "status": "pending",
+      "status": "done",
       "subtasks": [
         {
           "id": "10.3.1",
           "title": "Complete README",
-          "status": "pending",
+          "status": "done",
           "layer": "interfaces",
           "depends": [
             "10.2.4"
