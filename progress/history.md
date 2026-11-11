@@ -810,3 +810,13 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_10.2.4.md`); `progress/impl_10.2.4.md` records `make memcheck` and `make tsan` exit 0 and the empirical scenarios.
 - **Documentation:** docs/reference/10.2.4-evaluation-runs.md; task narrative: progress/pr_10.2.md
 - **Commit:** test(acceptance): add evaluation scenarios [10.2.4]
+
+## 2026-11-11 — Subtask 10.3.1: Complete README
+
+- **Layer:** interfaces
+- **Plan:** docs/plan/phase-10-hardening-and-readme/10.3.1-complete-readme.md (plan_review: PLAN_APPROVED)
+- **Changes:** `README.md` now documents building and running Codexion, its command-line contract and examples, the EDF sufficient bound and start-up heuristic, handled blocking cases, and thread synchronization mechanisms. It includes the user-approved AI-use paragraph.
+- **Acceptance:** `tests/acceptance/test_10.3.1.c` — AC1–AC7 check the required headings and content, actual usage text, and the verbatim AI paragraph.
+- **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_10.3.1.md`).
+- **Documentation:** docs/reference/10.3.1-complete-readme.md; task narrative: progress/pr_10.3.md
+- **Commit:** docs(readme): complete project documentation [10.3.1]
