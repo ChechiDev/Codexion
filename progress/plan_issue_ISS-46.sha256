@@ -1,0 +1,4 @@
+9d39b88a688cc1334a059a9f2328af8218ef7ae8a125e86ca70ebcec55cad724  docs/plan/issues/ISS-46-fix-an-expired-burnout-deadline-can-be-erased-before-the-monitor-sees-it-8-1.md
+93239b58f0ed9821d33d979e83287c534bcde70793247999a690a0286c61ee58  docs/plan/issues/ISS-46-fix-an-expired-burnout-deadline-can-be-erased-before-the-monitor-sees-it-8-1/ISS-46.1-keep-expired-deadline.md
+96f1c310285bf71505e5b547752c7cd05d4196449665fec314fdd10004272ee9  docs/plan/issues/ISS-46-fix-an-expired-burnout-deadline-can-be-erased-before-the-monitor-sees-it-8-1/ISS-46.2-burnout-before-target.md
+b122e505435ba8277d9b82e99ca59d9331ee415ece771d8f367778f01c13442b  progress/issue_migrations_ISS-46.json

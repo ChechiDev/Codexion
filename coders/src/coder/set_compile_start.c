@@ -6,12 +6,17 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/04 18:25:00 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/11/04 18:25:00 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/11/11 12:00:00 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
+/*
+** Stores the elapsed time as last_compile_start unless the burnout deadline
+** was already reached. Check and write share one critical section.
+** Returns 0 stored, 1 deadline reached (field kept), -1 error.
+*/
 int	set_compile_start(t_coder *coder)
 {
 	long	now;
@@ -27,8 +32,12 @@ int	set_compile_start(t_coder *coder)
 		pthread_mutex_unlock(&coder->mutex);
 		return (-1);
 	}
-	coder->last_compile_start = now;
-	status = 0;
+	status = 1;
+	if (coder->last_compile_start > now - coder->sim->config.time_to_burnout)
+	{
+		coder->last_compile_start = now;
+		status = 0;
+	}
 	if (pthread_mutex_unlock(&coder->mutex) != 0)
 		status = -1;
 	return (status);

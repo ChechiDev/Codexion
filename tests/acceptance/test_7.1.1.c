@@ -38,10 +38,10 @@ static void assert_unlocked(pthread_mutex_t *mutex)
 	assert(pthread_mutex_unlock(mutex) == 0);
 }
 
-static void set_sentinel(t_coder *coder)
+static void set_sentinel(t_coder *coder, long value)
 {
 	assert(pthread_mutex_lock(&coder->mutex) == 0);
-	coder->last_compile_start = -12345;
+	coder->last_compile_start = value;
 	assert(pthread_mutex_unlock(&coder->mutex) == 0);
 }
 
@@ -60,7 +60,7 @@ static void test_ac1_record_elapsed_start(void)
 	assert(start > 0);
 	sim.start_ms = start;
 	sim.coders[1].compile_count = 7;
-	set_sentinel(&sim.coders[1]);
+	set_sentinel(&sim.coders[1], 100);
 	before = get_elapsed_ms(start);
 	assert(before >= 0);
 	assert(set_compile_start(&sim.coders[1]) == 0);
@@ -121,7 +121,7 @@ static void test_ac3_clamp_future_start(void)
 
 	assert(init_simulation(&sim, &config) == 0);
 	sim.start_ms = LONG_MAX;
-	set_sentinel(&sim.coders[1]);
+	set_sentinel(&sim.coders[1], 100);
 	assert(set_compile_start(&sim.coders[1]) == 0);
 	assert(sim.coders[1].last_compile_start == 0);
 	assert(free_sim(&sim) == 0);
@@ -167,7 +167,7 @@ static void test_ac4_wait_for_coder_mutex(void)
 	assert(init_simulation(&sim, &config) == 0);
 	sim.start_ms = get_time_ms() - 500;
 	assert(sim.start_ms > 0);
-	set_sentinel(&sim.coders[1]);
+	set_sentinel(&sim.coders[1], 100);
 	memset(&call, 0, sizeof(call));
 	call.coder = &sim.coders[1];
 	assert(pthread_mutex_init(&call.mutex, NULL) == 0);
@@ -179,7 +179,7 @@ static void test_ac4_wait_for_coder_mutex(void)
 	assert(pthread_mutex_lock(&call.mutex) == 0);
 	assert(call.done == 0);
 	assert(pthread_mutex_unlock(&call.mutex) == 0);
-	assert(sim.coders[1].last_compile_start == -12345);
+	assert(sim.coders[1].last_compile_start == 100);
 	t0 = get_elapsed_ms(sim.start_ms);
 	assert(t0 >= 0);
 	assert(pthread_mutex_unlock(&sim.coders[1].mutex) == 0);

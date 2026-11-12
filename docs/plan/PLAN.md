@@ -412,7 +412,7 @@ make non-neighbouring coders start in parallel with a one-time offset, then prov
 - **10.3 README** — done
   - [x] [10.3.1 Complete README](phase-10-hardening-and-readme/10.3.1-complete-readme.md) · [plan review](../../progress/plan_review_10.3.1.md) · [code review](../../progress/review_10.3.1.md) · [reference](../reference/10.3.1-complete-readme.md)
 
-### Issues · 3/3 done
+### Issues · 4/5 done
 
 - **ISS-14 refactor: replace parse_config bit mask with invalid flags [2.3]** — done · refactor · priority next
   - [x] [ISS-14.1 Report invalid arguments as flags](issues/ISS-14-refactor-replace-parse-config-bit-mask-with-invalid-flags-2-3/ISS-14.1-invalid-flags.md) · [plan review](../../progress/plan_review_ISS-14.1.md) · [code review](../../progress/review_ISS-14.1.md) · [reference](../reference/ISS-14.1-invalid-flags.md)
@@ -420,5 +420,8 @@ make non-neighbouring coders start in parallel with a one-time offset, then prov
   - [x] [ISS-32.1 Sleep stop result](issues/ISS-32-refactor-sleep-ms-returns-1-on-stop-1-only-on-error-3-3/ISS-32.1-sleep-stop-result.md) · [plan review](../../progress/plan_review_ISS-32.1.md) · [code review](../../progress/review_ISS-32.1.md) · [reference](../reference/ISS-32.1-sleep-stop-result.md)
 - **ISS-34 "refactor: print_state returns 1 on stop, -1 only on error [3.4]"** — done · refactor · priority now
   - [x] [ISS-34.1 Print stop result](issues/ISS-34-refactor-print-state-returns-1-on-stop-1-only-on-error-3-4/ISS-34.1-print-stop-result.md) · [plan review](../../progress/plan_review_ISS-34.1.md) · [code review](../../progress/review_ISS-34.1.md) · [reference](../reference/ISS-34.1-print-stop-result.md)
+- **ISS-46 "fix: an expired burnout deadline can be erased before the monitor sees it [8.1]"** — in progress · fix · priority now
+  - [x] [ISS-46.1 Keep expired deadline](issues/ISS-46-fix-an-expired-burnout-deadline-can-be-erased-before-the-monitor-sees-it-8-1/ISS-46.1-keep-expired-deadline.md) · [plan review](../../progress/plan_review_ISS-46.1.md) · [code review](../../progress/review_ISS-46.1.md) · [reference](../reference/ISS-46.1-keep-expired-deadline.md)
+  - [ ] [ISS-46.2 Burnout before target](issues/ISS-46-fix-an-expired-burnout-deadline-can-be-erased-before-the-monitor-sees-it-8-1/ISS-46.2-burnout-before-target.md)
 
 <!-- plan:index:end -->
