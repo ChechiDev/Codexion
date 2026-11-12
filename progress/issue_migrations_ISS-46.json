@@ -3,6 +3,7 @@
     "tests/acceptance/test_7.1.1.c"
   ],
   "ISS-46.2": [
-    "tests/acceptance/test_8.2.1.c"
+    "tests/acceptance/test_8.2.1.c",
+    "tests/acceptance/test_9.2.3.c"
   ]
 }

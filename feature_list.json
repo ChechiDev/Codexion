@@ -4492,7 +4492,7 @@
       "priority": "now",
       "goal": "an expired burnout deadline is never erased by its coder, and the monitor reports burnout before the compile target, so every burnout is logged as the subject requires",
       "file": "docs/plan/issues/ISS-46-fix-an-expired-burnout-deadline-can-be-erased-before-the-monitor-sees-it-8-1.md",
-      "status": "in_progress",
+      "status": "done",
       "subtasks": [
         {
           "id": "ISS-46.1",
@@ -4552,7 +4552,7 @@
         {
           "id": "ISS-46.2",
           "title": "Burnout before target",
-          "status": "pending",
+          "status": "done",
           "layer": "orchestration",
           "depends": [
             "ISS-46.1",
@@ -4595,7 +4595,8 @@
           ],
           "spec": "docs/plan/issues/ISS-46-fix-an-expired-burnout-deadline-can-be-erased-before-the-monitor-sees-it-8-1/ISS-46.2-burnout-before-target.md",
           "migrates": [
-            "tests/acceptance/test_8.2.1.c"
+            "tests/acceptance/test_8.2.1.c",
+            "tests/acceptance/test_9.2.3.c"
           ]
         }
       ]

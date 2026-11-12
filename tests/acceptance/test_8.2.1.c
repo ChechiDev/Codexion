@@ -291,8 +291,8 @@ static void test_ac4_target_met_later(void)
 	assert(free_sim(&sim) == 0);
 }
 
-/* AC5: zero required wins even when every deadline passed. */
-static void test_ac5_zero_target_precedes_burnout(void)
+/* AC5: an overdue coder is reported even when zero compiles are required. */
+static void test_ac5_zero_target_reports_burnout(void)
 {
 	t_sim sim;
 	t_capture cap;
@@ -306,12 +306,13 @@ static void test_ac5_zero_target_precedes_burnout(void)
 	join_run(&run);
 	end_capture(&cap);
 	alarm(0);
-	assert(cap.len == 0 && sim.stopped == 1);
+	assert_line(&cap, 0, sim.start_ms, 0);
+	assert(sim.stopped == 1);
 	assert(free_sim(&sim) == 0);
 }
 
-/* AC6: target wins a joint observation; a short target reports burnout. */
-static void test_ac6_target_precedes_burnout_in_same_scan(void)
+/* AC6: burnout wins a joint observation with or without a met target. */
+static void test_ac6_burnout_precedes_target_in_same_scan(void)
 {
 	t_sim sim;
 	t_capture cap;
@@ -332,10 +333,7 @@ static void test_ac6_target_precedes_burnout_in_same_scan(void)
 		end_capture(&cap);
 		alarm(0);
 		assert(sim.stopped == 1);
-		if (short_target)
-			assert_line(&cap, 1, sim.start_ms, 0);
-		else
-			assert(cap.len == 0);
+		assert_line(&cap, 1, sim.start_ms, 0);
 		assert(free_sim(&sim) == 0);
 	}
 }
@@ -518,8 +516,8 @@ int main(void)
 	test_ac2_simultaneous_deadlines();
 	test_ac3_target_met();
 	test_ac4_target_met_later();
-	test_ac5_zero_target_precedes_burnout();
-	test_ac6_target_precedes_burnout_in_same_scan();
+	test_ac5_zero_target_reports_burnout();
+	test_ac6_burnout_precedes_target_in_same_scan();
 	test_ac7_stop_by_someone_else();
 	test_ac8_wakes_every_waiter();
 	test_ac9_null_argument();

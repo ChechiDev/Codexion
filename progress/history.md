@@ -830,3 +830,12 @@ Entry template (filled in at close):
 - **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_ISS-46.1.md`); implementation notes record clean acceptance Valgrind and ThreadSanitizer runs.
 - **Documentation:** docs/reference/ISS-46.1-keep-expired-deadline.md
 - **Commit:** feat(coder): preserve expired burnout deadline [ISS-46.1]
+
+## 2026-11-12 — Subtask ISS-46.2: Burnout before target
+
+- **Plan:** docs/plan/issues/ISS-46-fix-an-expired-burnout-deadline-can-be-erased-before-the-monitor-sees-it-8-1/ISS-46.2-burnout-before-target.md (plan_review: PLAN_APPROVED)
+- **Implementation:** `coders/src/monitor/run_monitor.c` checks external stop, burnout, then the compile target; existing logging, error handling, and waiter wake-ups remain in place.
+- **Acceptance:** `tests/acceptance/test_ISS-46.2.c` covers the six approved criteria. The affected target-first expectations in `test_8.2.1.c` and `test_9.2.3.c` were migrated.
+- **Verification:** supplied outside-sandbox close `make check` green (exit code 0). Code review: APPROVED (`progress/review_ISS-46.2.md`); implementation notes record clean TSan runs and the baseline-reproduced Valgrind timing assertion in migrated 8.2.1.
+- **Documentation:** docs/reference/ISS-46.2-burnout-before-target.md; task PR narrative: progress/pr_ISS-46.md
+- **Commit:** fix(monitor): prioritize burnout over target [ISS-46.2]

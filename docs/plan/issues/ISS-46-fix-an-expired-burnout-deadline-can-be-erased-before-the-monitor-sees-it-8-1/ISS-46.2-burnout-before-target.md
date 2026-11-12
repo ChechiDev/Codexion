@@ -1,11 +1,12 @@
 # ISS-46.2 Burnout before target
-- status: pending
+- status: done
 - layer: orchestration
 - depends: ISS-46.1, 8.2.1
 - files:
   - coders/src/monitor/run_monitor.c  # modifica: scan_step checks burnout before the compile target; update the scan-order comment
 - migrates:
   - tests/acceptance/test_8.2.1.c
+  - tests/acceptance/test_9.2.3.c
 - acceptance:
   - AC1 | burnout wins a joint observation: synthetic state (no coder thread), config `4 300 200 200 200 3 50 fifo` built with `init_simulation`, every coder with `compile_count = 3` (global target met), index 0 with `last_compile_start = 0` and the others at `LONG_MAX`, `start_ms = get_time_ms() - 1000` (index 0 overdue); stdout captured by a draining reader thread; `run_monitor` runs in a thread joined within a 1000 ms hang guard: it returns NULL, exactly one line `<ts> 1 burned out\n` is captured, `sim.stopped == 1`, `sim.failed == 0` | tests/acceptance/test_ISS-46.2.c
   - AC2 | target alone still ends cleanly: same config, every coder with `compile_count = 3` and `last_compile_start = LONG_MAX` (nobody due): the monitor returns within the hang guard, nothing is captured (0 bytes), `sim.stopped == 1`, `sim.failed == 0` | tests/acceptance/test_ISS-46.2.c
@@ -14,7 +15,7 @@
   - AC5 | zero required at the program boundary unchanged: `./coders/codexion 4 800 200 200 200 0 50 fifo` (through `CODEXION_BIN`) exits 0 with nothing on stdout or stderr | tests/acceptance/test_ISS-46.2.c
   - AC6 | `make -C coders` builds `codexion`, the binary defines `run_monitor` (`nm`), and `norminette coders/` reports no error | tests/acceptance/test_ISS-46.2.c
 
-Migration of the sealed oracle (gate step, Codex-owned): in `tests/acceptance/test_8.2.1.c` only the two cases that pin target-before-burnout change. AC5 (`test_ac5_zero_target_precedes_burnout`, zero required with every deadline passed, a state that `run_simulation` never reaches because it returns before any thread when zero compiles are required, 9.4.1): it now expects exactly one `<ts> <id> burned out\n` line with `id` in 1..4 (no winner pinned, as AC2 of 8.2.1) and `sim.stopped == 1`. AC6 (`test_ac6_target_precedes_burnout_in_same_scan`): its first case now expects exactly one `<ts> 1 burned out\n` line and `sim.stopped == 1`; its counter-case (target not met) is unchanged. Function names and comments in that file are updated to the new rule. Every other case of `test_8.2.1.c` stays as it is. The migrated file keeps passing in `make check`.
+Migration of the sealed oracle (gate step, Codex-owned): in `tests/acceptance/test_8.2.1.c` only the two cases that pin target-before-burnout change. AC5 (`test_ac5_zero_target_precedes_burnout`, zero required with every deadline passed, a state that `run_simulation` never reaches because it returns before any thread when zero compiles are required, 9.4.1): it now expects exactly one `<ts> <id> burned out\n` line with `id` in 1..4 (no winner pinned, as AC2 of 8.2.1) and `sim.stopped == 1`. AC6 (`test_ac6_target_precedes_burnout_in_same_scan`): its first case now expects exactly one `<ts> 1 burned out\n` line and `sim.stopped == 1`; its counter-case (target not met) is unchanged. Function names and comments in that file are updated to the new rule. Every other case of `test_8.2.1.c` stays as it is. In `tests/acceptance/test_9.2.3.c`, AC2 (`test_ac2_zero_required_clean`, zero required with every deadline passed, same unreachable state as 8.2.1 AC5) now expects exactly one `<ts> <id> burned out\n` line with `id` in 1..4, `sim.stopped == 1` and `sim.failed == 0`; its name and comment are updated to the new rule; every other case of that file stays as it is (oracle fix 2026-11-12, leader spec error: this file was missed in the first `migrates:` list, see `progress/current.md`). The migrated file keeps passing in `make check`.
 
 Test notes for the oracle: at the code gate the leader also runs the acceptance binary under valgrind (`--leak-check=full --show-leak-kinds=all --errors-for-leak-kinds=all --error-exitcode=42`, exit 0) and built with `-fsanitize=thread` under `setarch -R` (no `WARNING: ThreadSanitizer`). Every shared test flag is read and written under a test mutex.
 
@@ -39,7 +40,7 @@ deadline (Codex advisory `progress/advisory_ISS-46.2_order.md`, user decision
 2026-11-11).
 
 **Supersedes.** In 8.2.1: the "target checked before burnout" rule and its
-AC5 and AC6 (first case). The sealed spec stays as the historical record; only
+AC5 and AC6 (first case); in 9.2.3: its AC2. The sealed spec stays as the historical record; only
 the acceptance test is migrated (`migrates:`).
 
 **Zero required.** Unaffected at the program boundary: `run_simulation`
