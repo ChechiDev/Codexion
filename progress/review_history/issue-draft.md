@@ -100,3 +100,32 @@
 - Labels: the front matter has exactly one type label (`bug`) and a valid priority (`now`).
 - Size: diagnosis and a focused fix to the viability claim or its implementation fit one issue. The draft calls for one subtask per affected unit and a roadmap re-seal plus explicit oracle migration if the claim changes.
 - Gate: the supplied outside-sandbox pre-session `make check` exited 0.
+
+## Round 8: issue-draft gate, CHANGES_REQUESTED (2026-11-11 16:53)
+
+### Issue draft review
+
+**Verdict:** CHANGES_REQUESTED
+
+#### Analysis
+- Problem: the missed burnout and target-priority race are concrete and supported by `coders/src/coder/set_compile_start.c:30`, `coders/src/monitor/get_burned_out.c:25-32`, and `coders/src/monitor/run_monitor.c:68-72`. The draft gives expected and actual behavior and a deterministic reproduction approach.
+- Template and labels: all required sections and front matter are present; `bug` is the sole type label and `now` is a valid priority. The intended-work sections need future-tense wording.
+- Size: the burnout fix fits one issue. The README AI-use correction is a separate documentation concern, so including it expands this issue beyond one task.
+- Attribution: `progress/issue_draft.md:8-10` names the reviewing agents, contrary to the issue-draft rule forbidding agent attribution.
+
+#### Requested changes
+1. Remove the attribution at `progress/issue_draft.md:8-10`; retain the concrete defect and code evidence.
+2. Keep this issue focused on missed burnout. Move the unrelated README correction at lines 34-36, 41-42, 52, 65, 75, 85, and 89-92 to a separate documentation issue or the existing README work. Update the affected sections consistently.
+3. Write the intended work in future tense, especially the `Approach` and `Decisions` bullets at lines 46-58. Correct the `set_compile_start` spec reference in `Documentation`: it is 7.1.1, not 7.2.x.
+
+## Round 9: issue-draft gate, DRAFT_APPROVED (2026-11-11 16:57)
+
+### Issue draft review
+
+**Verdict:** DRAFT_APPROVED
+
+#### Analysis
+- Problem: the draft identifies two concrete ways an expired burnout can be missed, cites the relevant code and subject clauses, and gives a deterministic reproduction with expected and actual behavior.
+- Template: every section of `harness/issue_template.md` is present. The proposed work is in future tense, and the documentation references the correct existing specs and potentially affected sealed oracles.
+- Labels: `bug` is the sole type label; `now` is a valid priority. The draft contains no agent attribution.
+- Size: preserving an expired deadline and checking burnout before the compile target form one focused issue, with two plausible subtasks.

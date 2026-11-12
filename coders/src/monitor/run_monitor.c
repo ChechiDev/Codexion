@@ -6,13 +6,16 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/05 14:00:00 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/11/08 12:00:00 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/11/12 16:58:26 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 #include <unistd.h>
 
+/* Scan order: stopped, burnout, target. A burnout seen in the same pass as */
+/* the target is reported: their order cannot be rebuilt, so a reached */
+/* deadline is never hidden. */
 /* Scan results: keep scanning, leave silently, leave after a clean stop, */
 /* leave after a logged burnout (print_burnout already stopped the run), */
 /* leave after an error (mark failed, then stop and wake). */
@@ -65,13 +68,13 @@ static int	scan_step(t_sim *sim)
 
 	if (is_stopped(sim))
 		return (LEAVE_SILENT);
+	result = handle_burnout(sim);
+	if (result != KEEP_SCANNING)
+		return (result);
 	if (get_target_met(sim, &met) != 0)
 		return (LEAVE_ERROR);
 	if (met)
 		return (LEAVE_STOP);
-	result = handle_burnout(sim);
-	if (result != KEEP_SCANNING)
-		return (result);
 	if (usleep(1000) != 0)
 		return (LEAVE_ERROR);
 	return (KEEP_SCANNING);

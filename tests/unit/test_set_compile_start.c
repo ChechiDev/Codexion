@@ -38,9 +38,29 @@ static void	check_stores_and_unlocks(void)
 	config = get_config();
 	assert(init_simulation(&sim, &config) == 0);
 	sim.start_ms = get_time_ms() - 300;
+	sim.coders[0].last_compile_start = 100;
 	assert(set_compile_start(&sim.coders[0]) == 0);
 	assert(sim.coders[0].last_compile_start >= 300);
 	assert(sim.coders[1].last_compile_start == 0);
+	assert(pthread_mutex_trylock(&sim.coders[0].mutex) == 0);
+	assert(pthread_mutex_unlock(&sim.coders[0].mutex) == 0);
+	assert(free_sim(&sim) == 0);
+}
+
+static void	check_keeps_expired_deadline(void)
+{
+	t_config	config;
+	t_sim		sim;
+
+	config = get_config();
+	assert(init_simulation(&sim, &config) == 0);
+	sim.start_ms = get_time_ms() - 1000;
+	sim.coders[0].last_compile_start = 200;
+	assert(set_compile_start(&sim.coders[0]) == 1);
+	assert(sim.coders[0].last_compile_start == 200);
+	sim.coders[0].last_compile_start = 400;
+	assert(set_compile_start(&sim.coders[0]) == 0);
+	assert(sim.coders[0].last_compile_start >= 1000);
 	assert(pthread_mutex_trylock(&sim.coders[0].mutex) == 0);
 	assert(pthread_mutex_unlock(&sim.coders[0].mutex) == 0);
 	assert(free_sim(&sim) == 0);
@@ -50,5 +70,6 @@ int	main(void)
 {
 	check_null_inputs();
 	check_stores_and_unlocks();
+	check_keeps_expired_deadline();
 	return (0);
 }

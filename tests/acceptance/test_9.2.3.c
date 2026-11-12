@@ -158,8 +158,8 @@ static void test_ac1_target_met_clean(void)
 	assert(free_sim(&sim) == 0);
 }
 
-/* AC2: zero required wins over already passed burnout deadlines. */
-static void test_ac2_zero_required_clean(void)
+/* AC2: already passed burnout deadlines win over zero required. */
+static void test_ac2_zero_required_reports_burnout(void)
 {
 	t_sim sim;
 	t_capture cap;
@@ -171,7 +171,16 @@ static void test_ac2_zero_required_clean(void)
 	monitor_join(&sim);
 	capture_end(&cap);
 	alarm(0);
-	assert(cap.len == 0);
+	{
+		long ts;
+		int id;
+		int end = -1;
+
+		assert(sscanf(cap.data, "%ld %d burned out%n", &ts, &id, &end) == 2);
+		assert(ts >= 0 && id >= 1 && id <= 4);
+		assert(end >= 0 && cap.data[end] == '\n');
+		assert((size_t)end + 1 == cap.len);
+	}
 	assert(sim.stopped == 1 && sim.failed == 0);
 	assert(free_sim(&sim) == 0);
 }
@@ -343,7 +352,7 @@ static void test_ac7_error_wakes_waiters(void)
 int main(void)
 {
 	test_ac1_target_met_clean();
-	test_ac2_zero_required_clean();
+	test_ac2_zero_required_reports_burnout();
 	test_ac3_logged_burnout_clean();
 	test_ac4_burnout_write_failure();
 	test_ac5_external_stop_untouched();
