@@ -226,6 +226,11 @@ into small steps, drafted code and tests, and reviewed changes. I made the
 design decisions, approved each step, and used the process to study how
 threads, mutexes and scheduling work.
 
+In practice that help touched every part of the project: the development
+plan, the C sources in `coders/` (parsing, dongles and their queues, the coder
+and monitor threads, logging and cleanup), the unit and acceptance tests, the
+Makefile and this README.
+
 ## Blocking cases handled
 
 Here is what could go wrong when many threads fight over few dongles, and what
