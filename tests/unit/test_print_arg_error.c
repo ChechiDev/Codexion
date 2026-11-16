@@ -43,7 +43,7 @@ static void	test_numeric_positions(void)
 	while (pos <= 7)
 	{
 		capture_err(pos, got, sizeof(got));
-		snprintf(want, sizeof(want), "Error: %s must be an integer "
+		snprintf(want, sizeof(want), "Error: %s: expected an integer "
 			"from %d to %d\n", names[pos - 1], get_arg_minimum(pos), INT_MAX);
 		assert(strcmp(got, want) == 0);
 		pos++;
@@ -55,7 +55,7 @@ static void	test_scheduler_and_out_of_range(void)
 	char	got[256];
 
 	capture_err(8, got, sizeof(got));
-	assert(strcmp(got, "Error: scheduler must be fifo or edf\n") == 0);
+	assert(strcmp(got, "Error: scheduler: expected fifo or edf\n") == 0);
 	capture_err(0, got, sizeof(got));
 	assert(got[0] == '\0');
 	capture_err(9, got, sizeof(got));

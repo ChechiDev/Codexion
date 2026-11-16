@@ -96,7 +96,7 @@ static void	check_usage_rejected(int argc)
 	g_argc = argc;
 	assert(run_captured(call_main, &cap) == EXIT_USAGE);
 	assert(EXIT_USAGE == 1);
-	assert(strncmp(cap.err, "Usage:", 6) == 0);
+	assert(strncmp(cap.err, "\nUsage:", 7) == 0);
 	assert(cap.out[0] == '\0');
 }
 
@@ -119,16 +119,15 @@ static void	test_exact_argument_count(void)
 
 static void	test_usage_text(void)
 {
-	static const char	*names[] = {"number_of_coders", "time_to_burnout",
-		"time_to_compile", "time_to_debug", "time_to_refactor",
-		"number_of_compiles_required", "dongle_cooldown", "scheduler"};
+	static const char	*names[] = {"coders", "burnout", "compile",
+		"debug", "refactor", "compiles", "cooldown", "fifo|edf"};
 	t_capture			cap;
 	const char			*pos;
 	const char			*found;
 	size_t				i;
 
 	run_captured(call_usage, &cap);
-	assert(strncmp(cap.err, "Usage:", 6) == 0);
+	assert(strncmp(cap.err, "\nUsage:", 7) == 0);
 	assert(cap.out[0] == '\0');
 	pos = cap.err;
 	i = 0;

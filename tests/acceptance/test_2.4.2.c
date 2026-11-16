@@ -17,10 +17,9 @@ typedef struct s_run
 } t_run;
 
 static const char *usage =
-	"Usage: ./codexion number_of_coders time_to_burnout "
-	"time_to_compile time_to_debug time_to_refactor "
-	"number_of_compiles_required dongle_cooldown scheduler\n"
-	"  scheduler is either fifo or edf\n";
+	"\nUsage: ./codexion coders burnout compile debug refactor "
+		"compiles cooldown fifo|edf\n\n"
+		"  e.g. ./codexion 4 800 200 200 200 3 50 edf\n";
 
 static const char *binary_path(void)
 {
@@ -107,7 +106,7 @@ static void test_ac1_negative_burnout(void)
 
 	set_valid_args(args);
 	args[2] = "-5";
-	assert_rejected(args, "Error: time_to_burnout must be an integer "
+	assert_rejected(args, "Error: time_to_burnout: expected an integer "
 		"from 1 to 2147483647\n");
 }
 
@@ -116,14 +115,14 @@ static void test_ac2_invalid_fields(void)
 {
 	static const struct { int position; const char *value; const char *error; }
 		cases[] = {
-		{1, "0", "Error: number_of_coders must be an integer from 1 to 2147483647\n"},
-		{3, "abc", "Error: time_to_compile must be an integer from 0 to 2147483647\n"},
-		{4, "+3", "Error: time_to_debug must be an integer from 0 to 2147483647\n"},
-		{5, "", "Error: time_to_refactor must be an integer from 0 to 2147483647\n"},
-		{6, "2147483648", "Error: number_of_compiles_required must be an integer from 0 to 2147483647\n"},
-		{7, "1.5", "Error: dongle_cooldown must be an integer from 0 to 2147483647\n"},
-		{8, "FIFO", "Error: scheduler must be fifo or edf\n"},
-		{8, " edf", "Error: scheduler must be fifo or edf\n"}
+		{1, "0", "Error: number_of_coders: expected an integer from 1 to 2147483647\n"},
+		{3, "abc", "Error: time_to_compile: expected an integer from 0 to 2147483647\n"},
+		{4, "+3", "Error: time_to_debug: expected an integer from 0 to 2147483647\n"},
+		{5, "", "Error: time_to_refactor: expected an integer from 0 to 2147483647\n"},
+		{6, "2147483648", "Error: number_of_compiles_required: expected an integer from 0 to 2147483647\n"},
+		{7, "1.5", "Error: dongle_cooldown: expected an integer from 0 to 2147483647\n"},
+		{8, "FIFO", "Error: scheduler: expected fifo or edf\n"},
+		{8, " edf", "Error: scheduler: expected fifo or edf\n"}
 	};
 	char *args[10];
 	size_t i;
@@ -147,10 +146,10 @@ static void test_ac3_multiple_errors_ordered(void)
 	args[2] = "-5";
 	args[3] = "abc";
 	args[8] = "rr";
-	assert_rejected(args, "Error: time_to_burnout must be an integer "
+	assert_rejected(args, "Error: time_to_burnout: expected an integer "
 		"from 1 to 2147483647\n"
-		"Error: time_to_compile must be an integer from 0 to 2147483647\n"
-		"Error: scheduler must be fifo or edf\n");
+		"Error: time_to_compile: expected an integer from 0 to 2147483647\n"
+		"Error: scheduler: expected fifo or edf\n");
 }
 
 /* AC4: standard, minimum, and trimmed numeric arguments are accepted. */
