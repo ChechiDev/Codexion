@@ -234,9 +234,9 @@ static void test_ac5_binary_output(void)
 	argv[3] = "abc";
 	argv[8] = "rr";
 	assert(snprintf(expected, sizeof(expected),
-		"Error: time_to_burnout must be an integer from 1 to 2147483647\n"
-		"Error: time_to_compile must be an integer from 0 to 2147483647\n"
-		"Error: scheduler must be fifo or edf\n%s", usage)
+		"Error: time_to_burnout: expected an integer from 1 to 2147483647\n"
+		"Error: time_to_compile: expected an integer from 0 to 2147483647\n"
+		"Error: scheduler: expected fifo or edf\n%s", usage)
 		< (int)sizeof(expected));
 	run = run_process(argv);
 	assert(run.status == 1 && run.out[0] == '\0');
@@ -244,7 +244,7 @@ static void test_ac5_binary_output(void)
 	binary_args(argv);
 	argv[2] = "-5";
 	assert(snprintf(expected, sizeof(expected),
-		"Error: time_to_burnout must be an integer from 1 to 2147483647\n%s",
+		"Error: time_to_burnout: expected an integer from 1 to 2147483647\n%s",
 		usage) < (int)sizeof(expected));
 	run = run_process(argv);
 	assert(run.status == 1 && run.out[0] == '\0');

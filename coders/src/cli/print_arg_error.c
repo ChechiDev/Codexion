@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/28 10:00:00 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/11/10 12:58:18 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/11/16 10:00:00 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,11 @@ void	print_arg_error(int position)
 	const char			*text;
 
 	if (position >= 1 && position <= 7)
-		fprintf(stderr, "Error: %s must be an integer from %d to %d\n",
+		fprintf(stderr, "Error: %s: expected an integer from %d to %d\n",
 			names[position - 1], get_arg_minimum(position), INT_MAX);
 	else if (position == 8)
 	{
-		text = "Error: scheduler must be fifo or edf\n";
+		text = "Error: scheduler: expected fifo or edf\n";
 		if (write(2, text, strlen(text)) < 0)
 			return ;
 	}

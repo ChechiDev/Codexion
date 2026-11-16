@@ -55,9 +55,9 @@ static void assert_arg_error(int position, const char *expected)
 /* AC1: positions 1 and 2 emit exact positive-integer errors to stderr. */
 static void test_ac1_positive_integer_errors(void)
 {
-	assert_arg_error(1, "Error: number_of_coders must be an integer "
+	assert_arg_error(1, "Error: number_of_coders: expected an integer "
 		"from 1 to 2147483647\n");
-	assert_arg_error(2, "Error: time_to_burnout must be an integer "
+	assert_arg_error(2, "Error: time_to_burnout: expected an integer "
 		"from 1 to 2147483647\n");
 }
 
@@ -73,7 +73,7 @@ static void test_ac2_nonnegative_integer_errors(void)
 	position = 3;
 	while (position <= 7)
 	{
-		assert(snprintf(expected, sizeof(expected), "Error: %s must be an "
+		assert(snprintf(expected, sizeof(expected), "Error: %s: expected an "
 			"integer from 0 to 2147483647\n", names[position - 3]) > 0);
 		assert_arg_error(position, expected);
 		position++;
@@ -83,7 +83,7 @@ static void test_ac2_nonnegative_integer_errors(void)
 /* AC3: position 8 emits the exact scheduler error. */
 static void test_ac3_scheduler_error(void)
 {
-	assert_arg_error(8, "Error: scheduler must be fifo or edf\n");
+	assert_arg_error(8, "Error: scheduler: expected fifo or edf\n");
 }
 
 /* AC4: out-of-range positions produce no output. */
@@ -106,7 +106,7 @@ static void test_ac5_minimum_matches_parser(void)
 	position = 1;
 	while (position <= 7)
 	{
-		assert(snprintf(expected, sizeof(expected), "Error: %s must be an "
+		assert(snprintf(expected, sizeof(expected), "Error: %s: expected an "
 			"integer from %d to %d\n", names[position - 1],
 			get_arg_minimum(position), INT_MAX) > 0);
 		assert_arg_error(position, expected);

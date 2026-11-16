@@ -171,13 +171,13 @@ static void test_ac4_argument_errors(void)
 	while (position <= 7)
 	{
 		count = snprintf(expected, sizeof(expected),
-			"Error: %s must be an integer from %d to %d\n",
+			"Error: %s: expected an integer from %d to %d\n",
 			names[position - 1], get_arg_minimum(position), INT_MAX);
 		assert(count > 0 && (size_t)count < sizeof(expected));
 		assert_arg_error(position, expected);
 		position++;
 	}
-	assert_arg_error(8, "Error: scheduler must be fifo or edf\n");
+	assert_arg_error(8, "Error: scheduler: expected fifo or edf\n");
 	assert_arg_error(0, "");
 	assert_arg_error(9, "");
 	assert_arg_error(-1, "");
