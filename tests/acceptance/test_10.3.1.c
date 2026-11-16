@@ -180,7 +180,7 @@ static void test_ac5_synchronization_topics(void)
 		assert(contains_case_insensitive(body, topics[i]));
 }
 
-static void get_actual_usage(char *out, size_t capacity)
+static void get_actual_usage(char *out, size_t capacity, int invalid)
 {
 	const char *binary;
 	FILE *error;
@@ -199,7 +199,11 @@ static void get_actual_usage(char *out, size_t capacity)
 	{
 		if (dup2(fileno(error), STDERR_FILENO) < 0)
 			_exit(126);
-		execl(binary, binary, (char *)NULL);
+		if (invalid)
+			execl(binary, binary, "4", "-5", "abc", "200", "200",
+				"3", "50", "rr", (char *)NULL);
+		else
+			execl(binary, binary, (char *)NULL);
 		_exit(127);
 	}
 	assert(waitpid(child, &status, 0) == child);
@@ -215,24 +219,36 @@ static void get_actual_usage(char *out, size_t capacity)
 /* AC6: every README usage block equals the final binary's actual usage. */
 static void test_ac6_usage_matches_binary(void)
 {
+	static const char *commands[] = {"$ ./coders/codexion\n",
+		"$ ./coders/codexion 4 -5 abc 200 200 3 50 rr\n"};
 	char actual[OUTPUT_CAP];
+	const char *block;
+	const char *end;
 	const char *cursor;
-	const char *line;
+	int i;
 	int count;
 
-	get_actual_usage(actual, sizeof(actual));
-	assert(strncmp(actual, "Usage: ", 7) == 0);
-	assert(strchr(actual, '\n') != NULL);
+	i = 0;
+	while (i < 2)
+	{
+		get_actual_usage(actual, sizeof(actual), i);
+		block = strstr(g_readme, commands[i]);
+		assert(block != NULL);
+		block += strlen(commands[i]);
+		end = strstr(block, "```");
+		assert(end != NULL);
+		assert((size_t)(end - block) == strlen(actual));
+		assert(strncmp(block, actual, strlen(actual)) == 0);
+		i++;
+	}
 	cursor = g_readme;
 	count = 0;
-	while ((line = strstr(cursor, "Usage: ")) != NULL)
+	while ((cursor = strstr(cursor, "Usage: ")) != NULL)
 	{
-		assert(line == g_readme || line[-1] == '\n');
-		assert(strncmp(line, actual, strlen(actual)) == 0);
-		cursor = line + strlen(actual);
 		count++;
+		cursor += strlen("Usage: ");
 	}
-	assert(count > 0);
+	assert(count == 2);
 }
 
 /* AC7: Resources contains the user-approved AI paragraph verbatim, with line breaks normalized. */

@@ -103,18 +103,15 @@ static void test_ac2_wrong_argument_counts(void)
 /* AC3: usage names all eight arguments in order and lists fifo and edf. */
 static void test_ac3_usage_content(void)
 {
-	static const char *names[] = {
-		"number_of_coders", "time_to_burnout", "time_to_compile",
-		"time_to_debug", "time_to_refactor",
-		"number_of_compiles_required", "dongle_cooldown", "scheduler"
-	};
+	static const char *names[] = {"coders", "burnout", "compile",
+		"debug", "refactor", "compiles", "cooldown"};
 	t_run run;
 	const char *cursor;
 	size_t i;
 
 	run = run_with_argument_count(0);
-	assert(strncmp(run.err, "Usage:", strlen("Usage:")) == 0);
-	cursor = run.err;
+	assert(strncmp(run.err, "\nUsage: ", strlen("\nUsage: ")) == 0);
+	cursor = run.err + strlen("\nUsage: ");
 	i = 0;
 	while (i < sizeof(names) / sizeof(names[0]))
 	{
@@ -123,8 +120,7 @@ static void test_ac3_usage_content(void)
 		cursor += strlen(names[i]);
 		i++;
 	}
-	assert(strstr(cursor, "fifo") != NULL);
-	assert(strstr(cursor, "edf") != NULL);
+	assert(strncmp(cursor, " fifo|edf\n", strlen(" fifo|edf\n")) == 0);
 }
 
 /* AC4: norminette reports no error in the deliverable directory. */

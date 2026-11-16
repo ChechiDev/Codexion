@@ -17,10 +17,9 @@ typedef struct s_run
 } t_run;
 
 static const char *usage =
-	"Usage: ./codexion number_of_coders time_to_burnout "
-	"time_to_compile time_to_debug time_to_refactor "
-	"number_of_compiles_required dongle_cooldown scheduler\n"
-	"  scheduler is either fifo or edf\n";
+	"\nUsage: ./codexion coders burnout compile debug refactor "
+		"compiles cooldown fifo|edf\n\n"
+		"  e.g. ./codexion 4 800 200 200 200 3 50 edf\n";
 
 static const char *binary_path(void)
 {

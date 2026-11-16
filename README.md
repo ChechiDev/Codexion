@@ -83,8 +83,10 @@ arguments at all:
 
 ```
 $ ./coders/codexion
-Usage: ./codexion number_of_coders time_to_burnout time_to_compile time_to_debug time_to_refactor number_of_compiles_required dongle_cooldown scheduler
-  scheduler is either fifo or edf
+
+Usage: ./codexion coders burnout compile debug refactor compiles cooldown fifo|edf
+
+  e.g. ./codexion 4 800 200 200 200 3 50 edf
 ```
 
 Argument values are validated before the program does any simulation work.
@@ -97,11 +99,13 @@ error line, followed by the usage reminder, and the program exits with status
 
 ```
 $ ./coders/codexion 4 -5 abc 200 200 3 50 rr
-Error: time_to_burnout must be an integer from 1 to 2147483647
-Error: time_to_compile must be an integer from 0 to 2147483647
-Error: scheduler must be fifo or edf
-Usage: ./codexion number_of_coders time_to_burnout time_to_compile time_to_debug time_to_refactor number_of_compiles_required dongle_cooldown scheduler
-  scheduler is either fifo or edf
+Error: time_to_burnout: expected an integer from 1 to 2147483647
+Error: time_to_compile: expected an integer from 0 to 2147483647
+Error: scheduler: expected fifo or edf
+
+Usage: ./codexion coders burnout compile debug refactor compiles cooldown fifo|edf
+
+  e.g. ./codexion 4 800 200 200 200 3 50 edf
 ```
 
 A normal simulation ends with status 0, whether each coder reached the compile
