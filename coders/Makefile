@@ -6,7 +6,7 @@
 #    By: sperez-l@student.42barcelona.com           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/10/26 16:47:34 by sperez-l          #+#    #+#              #
-#    Updated: 2026/11/09 19:41:30 by sperez-l         ###   ########.fr        #
+#    Updated: 2026/11/16 12:46:21 by sperez-l         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -80,13 +80,16 @@ OBJ = $(SRC:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
+	@printf '%s \\\n' "$(CC) $(CFLAGS)"
+	@printf '    %s \\\n' $(OBJ)
+	@printf '    -o %s\n' $(NAME)
+	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
 
 %.o: %.c main.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJ)
+	@for f in $(OBJ); do echo "rm -f $$f"; rm -f $$f || exit 1; done
 
 fclean: clean
 	rm -f $(NAME)
