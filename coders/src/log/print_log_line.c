@@ -11,14 +11,8 @@
 /* ************************************************************************** */
 
 #include <unistd.h>
-
 #include "main.h"
 
-/*
-** Caller holds log_mutex. Sends "<ts> <coder> <text>\n" with one write, no
-** retry. Returns 0 only if the whole line was written, -1 otherwise. Takes no
-** lock and ignores the stop flag.
-*/
 int	print_log_line(t_sim *sim, int coder, const char *text)
 {
 	char	line[LOG_LINE_MAX];

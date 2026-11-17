@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include <string.h>
-
 #include "main.h"
 
 int	parse_mode(const char *str, t_mode *out)

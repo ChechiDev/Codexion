@@ -12,11 +12,6 @@
 
 #include "main.h"
 
-/*
-** Caller holds log_mutex. Takes stop_mutex, sets stopped to 1 if it was 0 and
-** releases stop_mutex. Returns 0 only if this call made the first stop and the
-** unlock succeeded; -1 if already stopped or on a lock failure.
-*/
 static int	set_stopped_once(t_sim *sim)
 {
 	int	status;
@@ -34,12 +29,6 @@ static int	set_stopped_once(t_sim *sim)
 	return (status);
 }
 
-/*
-** Performs the first stop and writes "<ts> <coder> burned out\n" in one
-** critical section under log_mutex. Returns 0 if this call made the first
-** stop and the line was written; -1 if already stopped or on any failure (the
-** stop stays committed once made). No retries.
-*/
 int	print_burnout(t_sim *sim, int coder)
 {
 	int	status;

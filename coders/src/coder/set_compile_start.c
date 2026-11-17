@@ -12,11 +12,6 @@
 
 #include "main.h"
 
-/*
-** Stores the elapsed time as last_compile_start unless the burnout deadline
-** was already reached. Check and write share one critical section.
-** Returns 0 stored, 1 deadline reached (field kept), -1 error.
-*/
 int	set_compile_start(t_coder *coder)
 {
 	long	now;
