@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include <string.h>
-
 #include "main.h"
 
 static int	has_line_break(const char *text)
@@ -50,11 +49,6 @@ static int	build_log_text(char *dest, const char *text)
 	return (index);
 }
 
-/*
-** Writes "<ts> <coder> <text>\n" at the start of line, which must hold
-** LOG_LINE_MAX bytes. No '\0'. Returns the line length, or -1 (writing
-** nothing) if an input is invalid. text must not overlap line.
-*/
 int	build_log_line(char *line, long ts, int coder, const char *text)
 {
 	int	pos;

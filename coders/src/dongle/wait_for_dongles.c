@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "main.h"
-
 #include <errno.h>
 
 static int	release_pair(t_dongle *first, t_dongle *second, int hold_second)

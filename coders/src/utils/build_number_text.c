@@ -25,11 +25,6 @@ static int	get_digit_count(long n)
 	return (count);
 }
 
-/*
-** Writes the decimal digits of n (>= 0) at the start of buf, which must hold
-** NUMBER_TEXT_MAX bytes. No sign, no '\0'. Returns the digit count, or -1
-** (writing nothing) if n < 0 or buf is NULL.
-*/
 int	build_number_text(long n, char *buf)
 {
 	int	count;

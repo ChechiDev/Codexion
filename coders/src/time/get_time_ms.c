@@ -12,7 +12,6 @@
 
 #include <stddef.h>
 #include <sys/time.h>
-
 #include "main.h"
 
 long	get_time_ms(void)

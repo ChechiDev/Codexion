@@ -32,12 +32,6 @@ static int	get_stopped(t_sim *sim, int *stopped)
 	return (0);
 }
 
-/*
-** Writes "<ts> <coder> <text>\n" to stdout with one unbuffered write, under
-** log_mutex. Returns 0 on success, 1 if the simulation is stopped (nothing
-** written), -1 on rejected input (bad state or coder) or any failure, which
-** wins over 1. No retries.
-*/
 int	print_state(t_sim *sim, int coder, t_state state)
 {
 	const char	*text;

@@ -13,7 +13,6 @@
 #include <limits.h>
 #include <stddef.h>
 #include <sys/time.h>
-
 #include "main.h"
 
 int	get_deadline(long ms, struct timespec *out)

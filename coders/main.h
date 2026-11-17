@@ -143,12 +143,6 @@ int		build_log_line(char *line, long ts, int coder, const char *text);
 int		print_state(t_sim *sim, int coder, t_state state);
 int		print_burnout(t_sim *sim, int coder);
 
-/*
-** Caller holds log_mutex. Reads the timestamp, builds the line with
-** build_log_line and sends it with exactly one write, no retry.
-** Returns 0 only if write returned len; -1 on clock, build or write
-** failure. Never locks/unlocks a mutex, never reads or changes stopped.
-*/
 int		print_log_line(t_sim *sim, int coder, const char *text);
 
 /* ---- Policy ---- */

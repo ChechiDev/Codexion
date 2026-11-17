@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "main.h"
-
 #include <errno.h>
 
 static int	get_single_dongle(t_coder *coder, int *taken, t_dongle **out)
@@ -27,7 +26,6 @@ static int	get_single_dongle(t_coder *coder, int *taken, t_dongle **out)
 	return (0);
 }
 
-/* 1: queued, held; -1: nothing queued, released; -2: fatal, unlock failed. */
 static int	push_single_request(t_coder *coder, t_dongle *dongle)
 {
 	t_request	req;
@@ -45,7 +43,6 @@ static int	push_single_request(t_coder *coder, t_dongle *dongle)
 	return (1);
 }
 
-/* Holding the mutex: 1 waited, -1 fatal (mutex still treated as held). */
 static int	wait_for_single_dongle(t_dongle *dongle)
 {
 	struct timespec	deadline;
@@ -59,7 +56,6 @@ static int	wait_for_single_dongle(t_dongle *dongle)
 	return (1);
 }
 
-/* Holding the mutex: 0 done (out set), 1 waited, -1 fatal. */
 static int	take_single_step(t_coder *coder, t_dongle *dongle, int *out)
 {
 	long		now;

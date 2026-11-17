@@ -38,7 +38,6 @@ static int	release_pair(t_dongle *first, t_dongle *second)
 	return (status);
 }
 
-/* 1: both held and queued; -1: nothing queued, released; -2: fatal. */
 static int	push_requests(t_coder *coder, t_dongle *first, t_dongle *second)
 {
 	t_request	req;
@@ -67,7 +66,6 @@ static int	push_requests(t_coder *coder, t_dongle *first, t_dongle *second)
 	return (1);
 }
 
-/* Holding both: 0 done (out set), 1 waited, -1 fatal, -2 fatal released. */
 static int	take_pair(t_coder *coder, t_dongle *first, t_dongle *second,
 		int *out)
 {

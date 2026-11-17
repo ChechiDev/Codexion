@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include <unistd.h>
-
 #include "main.h"
 
 static useconds_t	get_slice_us(long remaining_ms)

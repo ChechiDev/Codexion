@@ -13,19 +13,12 @@
 #include "main.h"
 #include <unistd.h>
 
-/* Scan order: stopped, burnout, target. A burnout seen in the same pass as */
-/* the target is reported: their order cannot be rebuilt, so a reached */
-/* deadline is never hidden. */
-/* Scan results: keep scanning, leave silently, leave after a clean stop, */
-/* leave after a logged burnout (print_burnout already stopped the run), */
-/* leave after an error (mark failed, then stop and wake). */
 #define KEEP_SCANNING 0
 #define LEAVE_SILENT 1
 #define LEAVE_STOP 2
 #define LEAVE_BURNED 3
 #define LEAVE_ERROR 4
 
-/* The only place that picks the coder to report (tie-break: lowest index). */
 static int	get_burned_index(t_sim *sim, int *index)
 {
 	int	burned;
