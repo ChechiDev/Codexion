@@ -49,6 +49,25 @@ only on the object files, and each object depends on its source file, so when
 nothing changed `make` has nothing to do and says so. Relinking on every call
 would waste time and is not allowed by the subject.
 
+The build output is meant to be easy to read. Each source file is compiled on
+its own line, and the final link lists one object file per line, like this
+(shortened):
+
+```
+$ make -C coders
+cc -Wall -Wextra -Werror -pthread -I. -c main.c -o main.o
+cc -Wall -Wextra -Werror -pthread -I. -c src/cleanup/destroy_coder.c -o src/cleanup/destroy_coder.o
+...
+cc -Wall -Wextra -Werror -pthread \
+    main.o \
+    src/cleanup/destroy_coder.o \
+    ...
+    -o codexion
+```
+
+`make clean` and `make fclean` work the same way: one `rm -f` line per file,
+so you can see exactly what was removed.
+
 ### Running it
 
 The program takes exactly eight arguments, all of them required:
@@ -186,6 +205,11 @@ Running the same line with `edf` printed an identical trace here. The
 difference only shows up when the table is tight, because `edf` then serves the
 most urgent coder first.
 
+**Ties.** Two requests can have the same key, for example under `edf` at the
+very start, when nobody has compiled yet and every coder shares the same
+deadline. The tie is then broken by the FIFO ticket: whoever asked first is
+served first. This lives in `coders/src/policy/is_request_before.c`.
+
 ### When is a run viable under edf?
 
 The subject asks that nobody burns out under `edf` when the parameters are
@@ -212,6 +236,19 @@ parallel. It is a scheduling heuristic, not a guarantee: the operating system
 may delay a thread long enough to change the order. It does not change FIFO or
 EDF arbitration after requests arrive. The offset is set by
 `START_TURN_MS` in `coders/main.h`.
+
+## Further documentation
+
+The `documentation/` folder goes deeper than this README:
+
+- [documentation/project-documentation.md](documentation/project-documentation.md):
+  a full walkthrough of the project, its design and its code, prepared for the
+  defense.
+- [documentation/main-h-explained.md](documentation/main-h-explained.md): the
+  shared header `coders/main.h` explained piece by piece (structs, constants
+  and prototypes).
+- [documentation/live-coding.md](documentation/live-coding.md): a practice
+  guide for a live coding change (an EDF tie-break by highest coder id).
 
 ## Resources
 
