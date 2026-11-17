@@ -58,7 +58,7 @@ $ make -C coders
 cc -Wall -Wextra -Werror -pthread -I. -c main.c -o main.o
 cc -Wall -Wextra -Werror -pthread -I. -c src/cleanup/destroy_coder.c -o src/cleanup/destroy_coder.o
 ...
-cc -Wall -Wextra -Werror -pthread \
+cc -Wall -Wextra -Werror -pthread -I. \
     main.o \
     src/cleanup/destroy_coder.o \
     ...
