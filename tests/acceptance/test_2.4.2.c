@@ -117,7 +117,7 @@ static void test_ac2_invalid_fields(void)
 		cases[] = {
 		{1, "0", "Error: number_of_coders: expected an integer from 1 to 2147483647\n"},
 		{3, "abc", "Error: time_to_compile: expected an integer from 0 to 2147483647\n"},
-		{4, "+3", "Error: time_to_debug: expected an integer from 0 to 2147483647\n"},
+		{4, "-3", "Error: time_to_debug: expected an integer from 0 to 2147483647\n"},
 		{5, "", "Error: time_to_refactor: expected an integer from 0 to 2147483647\n"},
 		{6, "2147483648", "Error: number_of_compiles_required: expected an integer from 0 to 2147483647\n"},
 		{7, "1.5", "Error: dongle_cooldown: expected an integer from 0 to 2147483647\n"},

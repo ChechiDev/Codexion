@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 18:02:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/11/09 19:41:30 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/11/17 18:21:30 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,9 @@ t_slice	trim_slice(const char *str);
 int		build_number_text(long n, char *buf);
 
 /* ---- Parsing ---- */
+
+# define ARG_BAD_RANGE 1
+# define ARG_BAD_SIGN 2
 
 int		get_arg_minimum(int position);
 int		parse_number(const char *str, int *out);

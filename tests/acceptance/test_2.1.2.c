@@ -48,18 +48,24 @@ static void test_ac2_surrounding_whitespace(void)
 	expect_value("1\n", 1);
 }
 
-/* AC3: empty, signed, mixed, and non-ASCII input leaves output untouched. */
+/* AC3: invalid digits and malformed signs leave output untouched. */
 static void test_ac3_invalid_digits(void)
 {
 	static const char *inputs[] = {
-		"", "   ", "4 2", "-1", " -1", "+1", "+ 1", "-0",
-		"- 0", "+0", "--1", "1-", "1a", "a1", "1.5", "0x10",
+		"", "   ", "4 2", "-1", " -1", "-0",
+		"- 0", "--1", "1-", "1a", "a1", "1.5", "0x10",
 		"1\xff", "\xd9\xa1"
 	};
 	size_t i;
+	int value;
 
 	for (i = 0; i < sizeof(inputs) / sizeof(inputs[0]); i++)
 		expect_rejection(inputs[i]);
+	expect_value("+1", 1);
+	expect_value("+0", 0);
+	value = 12345;
+	assert(parse_number("+ 1", &value) == -2);
+	assert(value == 12345);
 }
 
 /* AC4: values beyond INT_MAX are rejected before arithmetic can wrap. */
