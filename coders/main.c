@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/26 16:47:34 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/11/09 13:53:36 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/11/18 11:35:04 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void	print_arg_errors(const int *invalid)
 	while (position <= 8)
 	{
 		if (invalid[position])
-			print_arg_error(position);
+			print_arg_error(position, invalid[position]);
 		position++;
 	}
 }

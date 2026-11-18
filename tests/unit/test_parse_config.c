@@ -53,8 +53,29 @@ static void	test_flags(void)
 	assert(invalid[5] == 0 && invalid[6] == 0);
 }
 
+static void	test_kinds(void)
+{
+	char		*argv[10];
+	t_config	config;
+	int			invalid[9];
+
+	fill(argv);
+	argv[1] = "+0";
+	argv[2] = "+-5";
+	argv[3] = "+200";
+	argv[8] = "+";
+	invalid[0] = 42;
+	assert(parse_config(argv, &config, invalid) == 3);
+	assert(invalid[0] == 42);
+	assert(invalid[1] == ARG_BAD_RANGE);
+	assert(invalid[2] == ARG_BAD_SIGN);
+	assert(invalid[3] == 0 && config.time_to_compile == 200);
+	assert(invalid[8] == ARG_BAD_RANGE);
+}
+
 int	main(void)
 {
+	test_kinds();
 	test_valid();
 	test_flags();
 	return (0);

@@ -109,12 +109,13 @@ Usage: ./codexion coders burnout compile debug refactor compiles cooldown fifo|e
 ```
 
 Argument values are validated before the program does any simulation work.
-Numeric arguments must contain decimal digits only, fit in the range up to
-2147483647, and may have surrounding whitespace; the number of coders and time
-to burnout must be at least 1, while the other numeric values may be 0. The
-scheduler must be exactly `fifo` or `edf`. Every invalid value gets its own
-error line, followed by the usage reminder, and the program exits with status
-1. For example:
+Numeric arguments are decimal digits that may start with a single `+`, fit in
+the range up to 2147483647, and may have surrounding whitespace.
+A malformed sign, such as `++800`, gets its own error line (shown below). The
+number of coders and time to burnout must be at least 1, while the other
+numeric values may be 0. The scheduler must be exactly `fifo` or `edf`. Every invalid value
+gets its own error line, followed by the usage reminder, and the program exits
+with status 1. For example:
 
 ```
 $ ./coders/codexion 4 -5 abc 200 200 3 50 rr
@@ -125,6 +126,13 @@ Error: scheduler: expected fifo or edf
 Usage: ./codexion coders burnout compile debug refactor compiles cooldown fifo|edf
 
   e.g. ./codexion 4 800 200 200 200 3 50 edf
+```
+
+And a malformed sign reports itself rather than a range problem:
+
+```
+$ ./coders/codexion 4 ++800 200 200 200 3 50 edf
+Error: time_to_burnout: invalid sign, use at most one '+' right before the digits
 ```
 
 A normal simulation ends with status 0, whether each coder reached the compile

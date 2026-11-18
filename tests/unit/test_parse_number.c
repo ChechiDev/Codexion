@@ -35,8 +35,37 @@ static void	test_embedded_garbage_after_digits(void)
 	assert(parse_number(":", &value) == -1 && value == -1);
 }
 
+static void	test_plus_sign(void)
+{
+	int	value;
+
+	value = -1;
+	assert(parse_number("+0002147483647", &value) == 0);
+	assert(value == INT_MAX);
+	assert(parse_number(" +7\t", &value) == 0 && value == 7);
+	value = -1;
+	assert(parse_number("+2147483648", &value) == -1 && value == -1);
+	assert(parse_number("-+1", &value) == -1 && value == -1);
+	assert(parse_number("+1+", &value) == -1 && value == -1);
+}
+
+static void	test_malformed_sign(void)
+{
+	int	value;
+
+	value = -1;
+	assert(parse_number("+", &value) == -2 && value == -1);
+	assert(parse_number("++1", &value) == -2 && value == -1);
+	assert(parse_number("+-1", &value) == -2 && value == -1);
+	assert(parse_number("+ 1", &value) == -2 && value == -1);
+	assert(parse_number(" + ", &value) == -2 && value == -1);
+	assert(parse_number("+x", &value) == -2 && value == -1);
+}
+
 int	main(void)
 {
+	test_plus_sign();
+	test_malformed_sign();
 	test_max_boundary_with_padding();
 	test_ten_times_overflow();
 	test_embedded_garbage_after_digits();

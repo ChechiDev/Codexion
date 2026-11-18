@@ -40,7 +40,7 @@ static void assert_arg_error(int position, const char *expected)
 	assert(saved_out >= 0 && saved_err >= 0);
 	assert(dup2(fileno(out), STDOUT_FILENO) >= 0);
 	assert(dup2(fileno(err), STDERR_FILENO) >= 0);
-	print_arg_error(position);
+	print_arg_error(position, ARG_BAD_RANGE);
 	assert(fflush(stdout) == 0 && fflush(stderr) == 0);
 	assert(dup2(saved_out, STDOUT_FILENO) >= 0);
 	assert(dup2(saved_err, STDERR_FILENO) >= 0);

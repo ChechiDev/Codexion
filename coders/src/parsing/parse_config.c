@@ -6,7 +6,7 @@
 /*   By: sperez-l@student.42barcelona.com           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/28 12:00:00 by sperez-l          #+#    #+#             */
-/*   Updated: 2026/11/12 17:30:41 by sperez-l         ###   ########.fr       */
+/*   Updated: 2026/11/17 18:21:30 by sperez-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,13 @@
 static int	parse_field(const char *str, int position, int *out)
 {
 	int	value;
+	int	status;
 
-	if (parse_number(str, &value) != 0)
-		return (-1);
-	if (value < get_arg_minimum(position))
-		return (-1);
+	status = parse_number(str, &value);
+	if (status == -2)
+		return (ARG_BAD_SIGN);
+	if (status != 0 || value < get_arg_minimum(position))
+		return (ARG_BAD_RANGE);
 	*out = value;
 	return (0);
 }
@@ -47,11 +49,13 @@ int	parse_config(char **argv, t_config *config, int *invalid)
 	while (position <= 7)
 	{
 		invalid[position] = parse_field(argv[position], position,
-				fields[position]) != 0;
-		count += invalid[position];
+				fields[position]);
+		count += invalid[position] != 0;
 		position++;
 	}
-	invalid[8] = parse_mode(argv[8], &config->mode) != 0;
-	count += invalid[8];
+	invalid[8] = 0;
+	if (parse_mode(argv[8], &config->mode) != 0)
+		invalid[8] = ARG_BAD_RANGE;
+	count += invalid[8] != 0;
 	return (count);
 }

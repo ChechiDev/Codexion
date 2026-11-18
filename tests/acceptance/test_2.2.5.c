@@ -13,7 +13,7 @@
 static void test_ac1_parse_number_regression(void)
 {
 	static const char *invalid[] = {
-		"2147483648", "-1", "+1", "4 2", "1a", "", "   "
+		"2147483648", "-1", "4 2", "1a", "", "   "
 	};
 	int value;
 	size_t i;
