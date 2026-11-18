@@ -147,76 +147,110 @@ Every output below was copied from a real run of the final binary. Timestamps
 are in milliseconds since the simulation started, and the exact numbers can
 shift by a millisecond or two between runs.
 
-**A normal end by compile count.** Two coders, a generous burnout limit, and
-each coder must compile once:
+### Normal run
+
+Ten coders, each must compile three times, no cooldown, under `edf`. The
+burnout limit of 1310 ms sits exactly on the viability bound explained below
+(`100 + 200 + 10 * (100 + 0) + 10`).
+
+<details>
+<summary><code>./coders/codexion 10 1310 100 100 100 3 0 edf</code></summary>
 
 ```
-$ ./coders/codexion 2 1010 200 200 200 1 0 edf
+$ ./coders/codexion 10 1310 100 100 100 3 0 edf
+1 1 has taken a dongle
+1 1 has taken a dongle
+1 1 is compiling
+1 3 has taken a dongle
+1 3 has taken a dongle
+1 3 is compiling
+1 5 has taken a dongle
+1 5 has taken a dongle
+1 5 is compiling
+1 7 has taken a dongle
+1 7 has taken a dongle
+1 7 is compiling
+2 9 has taken a dongle
+2 9 has taken a dongle
+2 9 is compiling
+101 5 is debugging
+101 3 is debugging
+101 2 has taken a dongle
+101 2 has taken a dongle
+101 2 is compiling
+...
+801 2 is debugging
+801 3 is refactoring
+801 1 is refactoring
+802 7 is refactoring
+802 8 is debugging
+802 9 is refactoring
+802 6 is debugging
+803 10 is debugging
+```
+
+<p align="center">
+  <img src="assets/run-normal.gif" alt="Normal run animation" width="801">
+</p>
+
+The odd seats start compiling in parallel, and the even seats take over as soon
+as their neighbours release the dongles. The full trace has 145 lines. Once all
+thirty compiles are done, the monitor stops the run, nobody burns out, and the
+exit status is 0.
+
+</details>
+
+### Burnout run
+
+The same ten coders, but every dongle now needs a 100 ms cooldown after being
+released, and the burnout limit drops to 380 ms, under `fifo`.
+
+<details>
+<summary><code>./coders/codexion 10 380 100 100 100 3 100 fifo</code></summary>
+
+```
+$ ./coders/codexion 10 380 100 100 100 3 100 fifo
 0 1 has taken a dongle
 0 1 has taken a dongle
 0 1 is compiling
-200 1 is debugging
-200 2 has taken a dongle
-200 2 has taken a dongle
-200 2 is compiling
-400 1 is refactoring
-400 2 is debugging
-```
-
-Coder 1 takes both dongles, compiles for 200 ms and moves on to debug, which
-frees the dongles. Coder 2 gets them right away and starts compiling at 200 ms.
-When both have compiled once, the monitor stops the run and the exit status is
-0.
-
-**A burnout.** The same table, but the burnout limit is only 400 ms and each
-coder must compile twice:
-
-```
-$ ./coders/codexion 2 400 200 200 200 2 50 fifo
-0 1 has taken a dongle
-0 1 has taken a dongle
-0 1 is compiling
-200 1 is debugging
-250 2 has taken a dongle
-250 2 has taken a dongle
-250 2 is compiling
-400 1 is refactoring
-400 1 burned out
-```
-
-Coder 1 started compiling at 0 and had not started again when 400 ms were
-reached, so it burned out at exactly that moment. The monitor prints that line last and nothing is printed after it.
-
-**fifo and edf.** With `fifo` the dongle goes to whoever asked first. With `edf`
-it goes to the coder whose deadline (last compile start plus `time_to_burnout`)
-is closest. On a table with enough room, both give the same result:
-
-```
-$ ./coders/codexion 3 800 100 100 100 1 20 fifo
-0 1 has taken a dongle
-0 1 has taken a dongle
-0 1 is compiling
+0 3 has taken a dongle
+0 3 has taken a dongle
+0 3 is compiling
+0 5 has taken a dongle
+0 5 has taken a dongle
+0 5 is compiling
+0 7 has taken a dongle
+0 7 has taken a dongle
+0 7 is compiling
+1 9 has taken a dongle
+1 9 has taken a dongle
+1 9 is compiling
+100 5 is debugging
+100 7 is debugging
 100 1 is debugging
-120 3 has taken a dongle
-120 3 has taken a dongle
-120 3 is compiling
-200 1 is refactoring
-220 3 is debugging
-240 2 has taken a dongle
-240 2 has taken a dongle
-240 2 is compiling
-320 3 is refactoring
-340 2 is debugging
+100 3 is debugging
+101 9 is debugging
+...
+201 8 has taken a dongle
+201 8 is compiling
+300 4 is debugging
+301 8 is debugging
+301 6 is debugging
+301 10 is debugging
+301 2 is debugging
+380 1 burned out
 ```
 
-Running the same line with `edf` printed an identical trace here. The
-difference only shows up when the table is tight, because `edf` then serves the
-most urgent coder first.
+<p align="center">
+  <img src="assets/run-burnout.gif" alt="Burnout run animation" width="801">
+</p>
 
-**Ties.** Two requests can have the same key, for example under `edf` at the
-very start, when nobody has compiled yet and every coder shares the same
-deadline. The tie is then broken by the FIFO ticket: whoever asked first is
-served first. This lives in `coders/src/policy/is_request_before.c`.
+Each dongle is busy for 100 ms of compiling plus 100 ms of cooldown, and it is
+shared with a neighbour, so coder 1 cannot get both dongles back before about
+400 ms. Its limit is 380 ms, so it burns out at that moment. The monitor prints
+that line last and nothing is printed after it.
+
+</details>
 
 ### When is a run viable under edf?
 
@@ -234,6 +268,11 @@ not the definition of every run that survives, and a single coder (one dongle)
 can never be viable. For example, `./coders/codexion 4 1610 200 200 200 3 50
 edf` sits exactly on the bound. A run whose own cycle `C + R` is longer than
 `B` can never survive.
+
+**Ties.** Two requests can have the same key, for example under `edf` at the
+very start, when nobody has compiled yet and every coder shares the same
+deadline. The tie is then broken by the FIFO ticket: whoever asked first is
+served first. This lives in `coders/src/policy/is_request_before.c`.
 
 ### Start-up offset
 
