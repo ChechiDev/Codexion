@@ -245,19 +245,6 @@ may delay a thread long enough to change the order. It does not change FIFO or
 EDF arbitration after requests arrive. The offset is set by
 `START_TURN_MS` in `coders/main.h`.
 
-## Further documentation
-
-The `documentation/` folder goes deeper than this README:
-
-- [documentation/project-documentation.md](documentation/project-documentation.md):
-  a full walkthrough of the project, its design and its code, prepared for the
-  defense.
-- [documentation/main-h-explained.md](documentation/main-h-explained.md): the
-  shared header `coders/main.h` explained piece by piece (structs, constants
-  and prototypes).
-- [documentation/live-coding.md](documentation/live-coding.md): a practice
-  guide for a live coding change (an EDF tie-break by highest coder id).
-
 ## Resources
 
 Classic references used while learning the topic:
