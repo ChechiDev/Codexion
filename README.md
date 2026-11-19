@@ -153,9 +153,6 @@ Ten coders, each must compile three times, no cooldown, under `edf`. The
 burnout limit of 1310 ms sits exactly on the viability bound explained below
 (`100 + 200 + 10 * (100 + 0) + 10`).
 
-<details>
-<summary><code>./coders/codexion 10 1310 100 100 100 3 0 edf</code></summary>
-
 ```
 $ ./coders/codexion 10 1310 100 100 100 3 0 edf
 1 1 has taken a dongle
@@ -198,15 +195,10 @@ as their neighbours release the dongles. The full trace has 145 lines. Once all
 thirty compiles are done, the monitor stops the run, nobody burns out, and the
 exit status is 0.
 
-</details>
-
 ### Burnout run
 
 The same ten coders, but every dongle now needs a 100 ms cooldown after being
 released, and the burnout limit drops to 380 ms, under `fifo`.
-
-<details>
-<summary><code>./coders/codexion 10 380 100 100 100 3 100 fifo</code></summary>
 
 ```
 $ ./coders/codexion 10 380 100 100 100 3 100 fifo
@@ -249,8 +241,6 @@ Each dongle is busy for 100 ms of compiling plus 100 ms of cooldown, and it is
 shared with a neighbour, so coder 1 cannot get both dongles back before about
 400 ms. Its limit is 380 ms, so it burns out at that moment. The monitor prints
 that line last and nothing is printed after it.
-
-</details>
 
 ### When is a run viable under edf?
 
